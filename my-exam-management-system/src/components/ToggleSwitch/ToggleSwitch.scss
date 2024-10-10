@@ -1,0 +1,38 @@
+.toggle-switch {
+  display: grid;
+  place-items: center;
+  width: 3.7rem;
+  height: 1.5rem;
+  border-radius: 0.9375rem;
+  background-color: #ccc;
+  cursor: pointer;
+  position: absolute;
+
+  transform: translate(0%, -50%);
+
+  &.active_ {
+    background-color: rgb(1, 124, 1);
+  }
+
+  &.inactive {
+    background-color: rgb(177, 177, 177);
+  }
+
+  .toggle-switch-circle {
+    position: absolute;
+    width: 1.4rem;
+    height: 1.4rem;
+    background-color: white;
+    border-radius: 50%;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    left: 0.1rem;
+  }
+
+  &.active_ .toggle-switch-circle {
+    transform: translateX(2.1rem);
+  }
+
+  &.inactive .toggle-switch-circle {
+    transform: translateX(0);
+  }
+}

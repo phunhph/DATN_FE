@@ -1,0 +1,252 @@
+@use "@scss/variables.scss" as vars;
+@use "@scss/mixin.scss" as m;
+// base layout
+.layout {
+  &__container {
+    display: flex;
+    position: relative;
+    background-color: vars.$bg-theme-light;
+    overflow: hidden;
+    height: 100svh;
+  }
+  &__menu {
+    width: 16.25rem;
+    background-color: vars.$ctn-theme-light;
+    height: 100svh;
+    box-shadow: 0 0.5rem 0.5rem 2px rgba(47, 43, 61, 0.12);
+    transition: transform 0.3s ease-out, width 0.3s ease-out;
+    transform: translateX(0);
+    z-index: 30;
+    &:hover .menu__outer {
+      visibility: visible;
+    }
+  }
+  &__main {
+    flex-grow: 1;
+    padding: 1rem 1.5rem 0 1.5rem;
+    position: relative;
+    height: 100svh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    &::before {
+      content: "";
+      width: calc(100% - 17.5rem);
+      height: 4.25rem;
+      z-index: 10;
+      position: fixed;
+      top: 0px;
+      right: 1rem;
+      backdrop-filter: saturate(200%) blur(5px);
+      background: linear-gradient(
+        180deg,
+        rgba(248, 247, 250, 0.7) 44%,
+        rgba(248, 247, 250, 0.43) 73%,
+        rgba(248, 247, 250, 0)
+      );
+    }
+  }
+}
+
+// aside
+.menu {
+  &__logo {
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    & > a {
+      display: inline-block;
+      background: none;
+    }
+    & > .active {
+      filter: brightness(0) saturate(100%) invert(44%) sepia(28%)
+        saturate(7376%) hue-rotate(228deg) brightness(98%) contrast(91%);
+    }
+  }
+  &__logo img {
+    height: 2rem;
+    filter: brightness(0) saturate(100%) invert(44%) sepia(28%) saturate(7376%)
+      hue-rotate(228deg) brightness(98%) contrast(91%);
+  }
+  &__outer {
+    visibility: hidden;
+    overflow-y: auto;
+    height: calc(100svh - 4rem);
+    scrollbar-gutter: stable both-edges;
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: #00000040;
+      border: 1px solid #ffffff40;
+      border-radius: 24px;
+    }
+  }
+  &__list {
+    padding: 0 0.375rem;
+    visibility: visible;
+    color: vars.$text-theme-light;
+  }
+}
+.active {
+  color: #fff;
+  background: linear-gradient(270deg, #7367f0b3 0%, #7367f0 100%);
+  // box-shadow: 0px 2px 6px 0px rgba(115, 103, 240, 0.3);
+  & > img {
+    filter: brightness(0) saturate(100%) invert(100%) sepia(100%) saturate(0%)
+      hue-rotate(202deg) brightness(108%) contrast(101%);
+  }
+}
+.activeSM {
+  background-color: rgba(47, 43, 61, 0.157);
+}
+.submenu {
+  &__btn {
+    height: inherit;
+    display: flex;
+    align-items: center;
+    &::after {
+      content: "▼";
+      position: absolute;
+      right: 0;
+      transform: rotate(-90deg);
+      transition: transform 0.3s ease-in-out;
+    }
+  }
+  &__list {
+    padding-left: 0.375rem;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    background: #fff;
+    transition: opacity 0s ease-in-out, max-height 0.3s ease-in-out;
+  }
+}
+// main
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 3.5rem;
+  width: 100%;
+  padding: 0 1.5rem;
+  background-color: vars.$ctn-theme-light;
+  border-radius: 5px;
+  box-shadow: 0px 0rem 0.5rem 0px rgba(47, 43, 61, 0.12);
+  &__dropdown {
+    height: 40px;
+  }
+  &__menu-toggle img {
+    display: none;
+    cursor: pointer;
+  }
+}
+.content-wrapper {
+  padding-top: 1rem;
+  // display: flex;
+  // flex: 1;
+}
+.user {
+  display: flex;
+  align-items: center;
+  span {
+    margin-right: 1em;
+  }
+  img {
+    width: 40px;
+  }
+  &__avatar {
+    height: 40px;
+  }
+}
+.dropdown {
+  &__button {
+    position: relative;
+    display: inline-block;
+    & img {
+      height: 2.5rem;
+    }
+    cursor: pointer;
+  }
+  &__menu {
+    position: absolute;
+    right: 0;
+    top: 147%;
+    display: block;
+    background: white;
+    list-style: none;
+    border-radius: 4px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    min-width: 14rem;
+    border: 1px solid #dddddd;
+  }
+  &__user {
+    margin: 0.5rem 0;
+    padding-left: 1rem;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    & img {
+      margin-right: 0.5rem;
+    }
+  }
+  &__divider {
+    margin: 3px 0.5rem;
+    border-top: 1px solid #dfdfe1;
+  }
+  &__button {
+    width: 100%;
+  }
+  &__logout {
+    background-color: #ff4c51;
+    border-color: #ff4c51;
+    border-radius: 5px;
+    color: white;
+    transition: background-color 0.3s ease-in-out;
+    display: flex !important;
+    justify-content: center;
+    & small {
+      line-height: 2.5rem;
+    }
+    & img {
+      margin-left: 0.5rem;
+      width: 16px;
+    }
+    &:hover {
+      background-color: rgb(205, 41, 46);
+    }
+  }
+}
+.footer {
+  margin-top: 2rem;
+  height: 2rem;
+  border-top: 1px solid #dddddd;
+  text-align: center;
+}
+
+.display-menu {
+  transform: translateX(0) !important;
+  position: absolute;
+}
+
+@include m.responsive-to(xl) {
+  .layout {
+    &__container {
+      display: block;
+    }
+    &__menu {
+      position: absolute;
+      transform: translateX(-100%);
+    }
+    &__main {
+      width: 100%;
+    }
+  }
+  .navbar__menu-toggle img {
+    display: block;
+  }
+}

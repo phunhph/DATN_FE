@@ -1,0 +1,19 @@
+@use '@scss/variables.scss' as vars;
+.title--light{
+    color: vars.$text-theme-light;
+}
+.title--dark{
+    color: vars.$text-theme-dark;
+}
+.background--light{
+    background-color:vars.$bg-theme-light; 
+}
+.background--dark{
+    background-color:vars.$bg-theme-dark; 
+}
+.container--light{
+    background-color: vars.$ctn-theme-light;
+}
+.container--dark{
+    background-color: vars.$ctn-theme-dark;
+}

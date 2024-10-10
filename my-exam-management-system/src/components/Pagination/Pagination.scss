@@ -1,0 +1,62 @@
+.pagination-container {
+    margin-top: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  
+    .pagination-info {
+      margin-bottom: 1rem;
+      font-size: 1rem;
+      color: #333;
+    }
+  
+    .items-per-page {
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+  
+      label {
+        font-size: 1rem;
+        color: #333;
+      }
+  
+      select {
+        padding: 0.5rem;
+        border: 0.0625rem solid #ddd;
+        border-radius: 0.25rem;
+        font-size: 1rem;
+      }
+    }
+  
+    .pagination {
+      display: flex;
+      gap: 0.625rem;
+  
+      button {
+        padding: 0.5rem 0.75rem;
+        border: none;
+        border-radius: 0.25rem;
+        background-color: #007bff;
+        color: white;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: background-color 0.3s ease;
+  
+        &:hover {
+          background-color: #0056b3;
+        }
+  
+        &.active {
+          background-color: #0056b3;
+          font-weight: bold;
+        }
+  
+        &:disabled {
+          background-color: #ddd;
+          cursor: not-allowed;
+        }
+      }
+    }
+  }
+  

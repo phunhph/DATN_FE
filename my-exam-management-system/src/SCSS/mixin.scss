@@ -1,0 +1,19 @@
+@mixin responsive-to($size) {
+    $breakpoints: (
+        xs:390px,
+        sm: 576px,
+        md: 768px,
+        lg: 920px,
+        xl: 1200px,
+        xxl:1440px
+    );
+
+    @if map-has-key($breakpoints, $size) {
+        $value: map-get($breakpoints, $size);
+        @media screen and (max-width: $value) {
+            @content;
+        }
+    } @else {
+        @error "No breakpoint found for #{$size}.";
+    }
+}

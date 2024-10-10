@@ -1,0 +1,99 @@
+.modal__content {
+    .modal__file-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center; 
+  
+        height: 80%; 
+      
+        p {
+          margin-left: 0;
+          align-self: flex-start;
+        }
+      
+        .file-upload-container {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 100%;
+      
+          .file-input {
+            flex: 1;
+            color: #777777;
+            padding: 0.5rem;
+            border: 1px solid #000000;
+            border-right: none;
+            border-radius: 4px 0px 0px 4px;
+            background-color: #f9f9f9;
+            cursor: not-allowed;
+          }
+      
+          .file-select-button {
+            padding: 0.5rem 1rem;
+            background-color: #7267f0;
+            color: white;
+            border: 1px solid #000000d0;
+            border-left: none;
+            border-radius: 0px 4px 4px 0px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+      
+            &:hover {
+              background-color: #7267f0d0;
+            }
+          }
+        }
+      }
+}
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+
+  input[type="file"] {
+      display: none;
+      width: 100%;
+  }
+
+  .label_upload {
+      width: 100%;
+      border: 1px solid #000;
+      border-radius: 5px;
+      cursor: pointer;
+      display: grid;
+      grid-template-columns: 70% 30%;
+
+      .left_content {
+          margin: 10px 20px;
+          color: gray;
+      }
+
+      .right_content {  
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          background-color: #ac1717;
+      }
+  }
+}
+.submit-button {
+ margin-top: 10px;
+  padding: 10px 15px;
+  background-color: #7267f0d0;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: #7267f0d0;
+  }
+  
+  &:focus {
+    outline: none;
+  }
+}
