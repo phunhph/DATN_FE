@@ -1,15 +1,16 @@
 import React, { useState, useMemo, useEffect } from "react";
-import { TableSearch } from "../TableSearch/TableSearch";
+import { TableSearch } from "@components/TableSearch/TableSearch";
 import "./Table.scss";
-import { Pagination } from "../Pagination/Pagination";
-import { ToggleSwitch } from "../ToggleSwitch/ToggleSwitch";
+import { Pagination } from "@components/Pagination/Pagination";
+import { ToggleSwitch } from "@components/ToggleSwitch/ToggleSwitch";
 
 interface TableAction {
   name: string;
-  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void; // Thay đổi kiểu tham số
+  onClick?: (type: "add" | "edit" | "file" | string | undefined) => void;
 }
 
-interface TableProps<T extends Record<string, any>> {
+
+interface TableProps<T extends { [key: string] }> {
   data: T[];
   tableName: string;
   actions_add?: TableAction;
@@ -17,11 +18,13 @@ interface TableProps<T extends Record<string, any>> {
   actions_detail?: TableAction;
   action_dowload?: TableAction;
   action_upload?: TableAction;
+
+
   action_status?: (id: string) => void; // Có thể truyền hoặc không
-  children?: string; 
 }
 
-export const Table = <T extends Record<string, any>>({
+
+export const Table = <T extends { [key: string] }>({
   data,
   tableName,
   actions_add,
@@ -37,6 +40,7 @@ export const Table = <T extends Record<string, any>>({
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
+
   const [items, setItems] = useState(data);
 
   const hasData = items.length > 0;
@@ -73,7 +77,7 @@ export const Table = <T extends Record<string, any>>({
       action_status(id);
       setItems((prevItems) =>
         prevItems.map((item) =>
-          item.id === id ? { ...item, Status: item.Status === 'true' ? 'false' : 'true' } : item
+          item.id === id ? { ...item, Status: item.Status=='true'?'false':'true' } : item
         )
       );
     }
@@ -102,13 +106,11 @@ export const Table = <T extends Record<string, any>>({
         )
       );
   };
-
   useEffect(() => {
-    if (data) {
-      setItems(data);
+    if (data) { //theo dõi data thay đổi
+      setItems(data)
     }
-  }, [data]);
-
+  }, [data])
   return (
     <div className="table-container">
       <div className="table-header">
@@ -126,9 +128,7 @@ export const Table = <T extends Record<string, any>>({
             </button>
           )}
           {actions_add && (
-            <button className="table-button" onClick={actions_add.onClick}>
-              {actions_add.name}
-            </button>
+            <button className="table-button" onClick={actions_add.onClick}>{actions_add.name}</button>
           )}
         </div>
       </div>
@@ -186,18 +186,12 @@ export const Table = <T extends Record<string, any>>({
                   ))}
                   <td className="table-button-group">
                     {actions_edit && (
-                      <button
-                        className="table-button"
-                        onClick={(event) => actions_edit.onClick?.(event)}
-                      >
+                      <button className="table-button" onClick={() => actions_edit.onClick?.(item)}>
                         {actions_edit.name}
                       </button>
                     )}
                     {actions_detail && (
-                      <button
-                        className="table-button"
-                        onClick={(event) => actions_detail.onClick?.(event)}
-                      >
+                      <button className="table-button" onClick={() => actions_detail.onClick?.(item.id)}>
                         {actions_detail.name}
                       </button>
                     )}
@@ -209,6 +203,7 @@ export const Table = <T extends Record<string, any>>({
                 <td colSpan={keys.length + 1} className="no-data-message">
                   Không có dữ liệu
                 </td>
+
               </tr>
             )
           ) : (
