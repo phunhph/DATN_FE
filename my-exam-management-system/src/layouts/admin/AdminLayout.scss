@@ -150,7 +150,6 @@
 }
 .content-wrapperr {
   padding-top: 1rem;
-  display: flex;
   flex: 1;
 }
 .user {
@@ -259,12 +258,18 @@
   .layout {
     &__main {
       padding: 1rem 0.5rem 0 0.5rem;
+      &::before{
+        right: 0.5rem;
+      }
       &::-webkit-scrollbar{
         width: 6px;
-
+      }
+      &::-webkit-scrollbar-track{
+        width: 6px;
       }
       &::-webkit-scrollbar-thumb{
-        background-color: #c1c1c1;
+        background-color: #9b9b9b;
+        border-radius: 24px;
       }
     }
   }
