@@ -33,6 +33,7 @@ const ManageSemester = () => {
     setFormMode("add");
     setAnimateOut(true);
     setTimeout(() => {
+      setAnimateOut(false);
       setOpenForm(false);
     }, 300);
   };
@@ -147,7 +148,7 @@ const ManageSemester = () => {
               <Button type="button" className="btn btn-close" onClick={closeSemesterForm}>X</Button>
               <form className="form" onSubmit={handleSubmit(onSubmit)}>
                 <div className="form__group">
-                  <label htmlFor="semesterName" className="form__label">Tên kỳ thi:</label>
+                  <label htmlFor="semesterName" className="form__label">Tên ca thi:</label>
                   <input id="semesterName" type="text" className="form__input"
                     {...register("semesterName", {required: "Tên kỳ thi là bắt buộc"})}
                   />
@@ -157,7 +158,7 @@ const ManageSemester = () => {
                 </div>
 
                 <div className="form__group">
-                  <label htmlFor="semesterCode" className="form__label">Mã kỳ thi:</label>
+                  <label htmlFor="semesterCode" className="form__label">Trạng thái ca thi:</label>
                   <input id="semesterCode" type="text" className="form__input"
                     {...register("semesterCode", {required: "Mã kỳ thi là bắt buộc"})}
                   />
