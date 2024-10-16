@@ -1,6 +1,7 @@
 
 
 
+
 *,
 ::before,
 ::after {
@@ -206,6 +207,7 @@ fieldset {
   padding: 0;
 }
 
+
 legend {
   padding: 0;
 }
@@ -234,6 +236,7 @@ textarea::placeholder {
 
 button,
 [role="button"] {
+
   cursor: pointer;
 }
 
