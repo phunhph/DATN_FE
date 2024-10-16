@@ -1,16 +1,16 @@
+
 import React, { useState, useMemo, useEffect } from "react";
-import { TableSearch } from "@components/TableSearch/TableSearch";
+import { TableSearch } from "../TableSearch/TableSearch";
 import "./Table.scss";
-import { Pagination } from "@components/Pagination/Pagination";
-import { ToggleSwitch } from "@components/ToggleSwitch/ToggleSwitch";
+import { Pagination } from "../Pagination/Pagination";
+import { ToggleSwitch } from "../ToggleSwitch/ToggleSwitch";
 
 interface TableAction {
   name: string;
-  onClick?: (type: "add" | "edit" | "file" | string | undefined) => void;
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
-
-interface TableProps<T extends { [key: string] }> {
+interface TableProps<T extends Record<string, any>> {
   data: T[];
   tableName: string;
   actions_add?: TableAction;
@@ -18,13 +18,11 @@ interface TableProps<T extends { [key: string] }> {
   actions_detail?: TableAction;
   action_dowload?: TableAction;
   action_upload?: TableAction;
-
-
   action_status?: (id: string) => void; // Có thể truyền hoặc không
+  children?: string | React.ReactNode; 
 }
 
-
-export const Table = <T extends { [key: string] }>({
+export const Table = <T extends Record<string, any>>({
   data,
   tableName,
   actions_add,
@@ -40,7 +38,6 @@ export const Table = <T extends { [key: string] }>({
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
-
   const [items, setItems] = useState(data);
 
   const hasData = items.length > 0;
@@ -77,7 +74,7 @@ export const Table = <T extends { [key: string] }>({
       action_status(id);
       setItems((prevItems) =>
         prevItems.map((item) =>
-          item.id === id ? { ...item, Status: item.Status=='true'?'false':'true' } : item
+          item.id === id ? { ...item, status: item.status === 'true' ? 'false' : 'true' } : item
         )
       );
     }
@@ -106,11 +103,13 @@ export const Table = <T extends { [key: string] }>({
         )
       );
   };
+
   useEffect(() => {
-    if (data) { //theo dõi data thay đổi
-      setItems(data)
+    if (data) {
+      setItems(data);
     }
-  }, [data])
+  }, [data]);
+
   return (
     <div className="table-container">
       <div className="table-header">
@@ -128,7 +127,9 @@ export const Table = <T extends { [key: string] }>({
             </button>
           )}
           {actions_add && (
-            <button className="table-button" onClick={actions_add.onClick}>{actions_add.name}</button>
+            <button className="table-button" onClick={actions_add.onClick}>
+              {actions_add.name}
+            </button>
           )}
         </div>
       </div>
@@ -172,11 +173,11 @@ export const Table = <T extends { [key: string] }>({
                 <tr key={index}>
                   {keys.map((key) => (
                     <td key={String(key)}>
-                      {String(key) === "Status" ? (
+                      {String(key) === "status" ? (
                         <ToggleSwitch
                           key={item.id}
                           id={item.id}
-                          toggleState={item.Status}
+                          toggleState={item.status}
                           onToggle={handleToggle}
                         />
                       ) : (
@@ -186,12 +187,18 @@ export const Table = <T extends { [key: string] }>({
                   ))}
                   <td className="table-button-group">
                     {actions_edit && (
-                      <button className="table-button" onClick={() => actions_edit.onClick?.(item)}>
+                      <button
+                        className="table-button"
+                        onClick={(event) => actions_edit.onClick?.(event)}
+                      >
                         {actions_edit.name}
                       </button>
                     )}
                     {actions_detail && (
-                      <button className="table-button" onClick={() => actions_detail.onClick?.(item.id)}>
+                      <button
+                        className="table-button"
+                        onClick={(event) => actions_detail.onClick?.(event)}
+                      >
                         {actions_detail.name}
                       </button>
                     )}
@@ -203,7 +210,6 @@ export const Table = <T extends { [key: string] }>({
                 <td colSpan={keys.length + 1} className="no-data-message">
                   Không có dữ liệu
                 </td>
-
               </tr>
             )
           ) : (
