@@ -21,14 +21,14 @@ const Subject: React.FC = () => {
       Name: "Kỳ thi Bảy viên ngọc rồng",
       TimeStart: "2024-06-01",
       TimeEnd: "2024-06-03",
-      Status: "active",
+      Status: "true",
     },
     {
       id: 2,
       Name: "Kỳ thi Thuỷ thủ mặt trăng",
       TimeStart: "2024-06-01",
       TimeEnd: "2024-06-03",
-      Status: "active",
+      Status: "true",
     },
   ]);
 
@@ -222,8 +222,9 @@ const Subject: React.FC = () => {
         actions_detail={{
           name: "Chi tiết",
           onClick: (exam) => {
-            console.log("Detail", exam);
-            handleDetailClick(exam);
+            if (exam) {
+              handleDetailClick(exam);
+            }
           },
         }}
         action_upload={{
