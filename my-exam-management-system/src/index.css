@@ -1,4 +1,5 @@
 
+
 *,
 ::before,
 ::after {
@@ -194,6 +195,7 @@ hr,
 figure,
 p,
 pre {
+
   margin: 0;
 }
 
@@ -269,6 +271,7 @@ video {
 .h-auto.h-auto{
   height: auto;
 }
+
 .h-content-wrapper {
   height: calc( 100svh - 14rem);
 }
