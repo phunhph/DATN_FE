@@ -1,5 +1,6 @@
 
 
+
 *,
 ::before,
 ::after {
@@ -59,6 +60,7 @@ a {
   color: inherit;
   text-decoration: inherit;
   vertical-align: middle;
+
 }
 
 b,
@@ -220,18 +222,15 @@ dialog {
   padding: 0;
 }
 
-
 textarea {
   resize: vertical;
 }
-
 
 input::placeholder,
 textarea::placeholder {
   opacity: 1;
   color: #9ca3af; 
 }
-
 
 button,
 [role="button"] {
@@ -242,7 +241,6 @@ button,
   cursor: default;
 }
 
-
 img,
 svg,
 video,
@@ -251,10 +249,10 @@ audio,
 iframe,
 embed,
 object {
+
   display: block; 
   vertical-align: middle; 
 }
-
 
 img,
 video {
@@ -265,6 +263,7 @@ video {
 [hidden] {
   display: none;
 }
+
 
 /* Global class */  
 
@@ -277,6 +276,7 @@ video {
 }
 .h-inherit.h-inherit {
   height: inherit;
+
 }
 .h-full.h-full{
   height: 100%;
