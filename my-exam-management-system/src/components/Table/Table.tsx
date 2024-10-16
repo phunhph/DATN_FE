@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo, useEffect } from "react";
 import { TableSearch } from "../TableSearch/TableSearch";
 import "./Table.scss";
@@ -6,7 +7,7 @@ import { ToggleSwitch } from "../ToggleSwitch/ToggleSwitch";
 
 interface TableAction {
   name: string;
-  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void; // Thay đổi kiểu tham số
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 interface TableProps<T extends Record<string, any>> {
@@ -73,7 +74,7 @@ export const Table = <T extends Record<string, any>>({
       action_status(id);
       setItems((prevItems) =>
         prevItems.map((item) =>
-          item.id === id ? { ...item, Status: item.Status === 'true' ? 'false' : 'true' } : item
+          item.id === id ? { ...item, status: item.status === 'true' ? 'false' : 'true' } : item
         )
       );
     }
@@ -172,11 +173,11 @@ export const Table = <T extends Record<string, any>>({
                 <tr key={index}>
                   {keys.map((key) => (
                     <td key={String(key)}>
-                      {String(key) === "Status" ? (
+                      {String(key) === "status" ? (
                         <ToggleSwitch
                           key={item.id}
                           id={item.id}
-                          toggleState={item.Status}
+                          toggleState={item.status}
                           onToggle={handleToggle}
                         />
                       ) : (
