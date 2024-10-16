@@ -1,4 +1,7 @@
 
+
+
+
 *,
 ::before,
 ::after {
@@ -58,6 +61,7 @@ a {
   color: inherit;
   text-decoration: inherit;
   vertical-align: middle;
+
 }
 
 b,
@@ -194,6 +198,7 @@ hr,
 figure,
 p,
 pre {
+
   margin: 0;
 }
 
@@ -201,6 +206,7 @@ fieldset {
   margin: 0;
   padding: 0;
 }
+
 
 legend {
   padding: 0;
@@ -218,11 +224,9 @@ dialog {
   padding: 0;
 }
 
-
 textarea {
   resize: vertical;
 }
-
 
 input::placeholder,
 textarea::placeholder {
@@ -230,16 +234,15 @@ textarea::placeholder {
   color: #9ca3af; 
 }
 
-
 button,
 [role="button"] {
+
   cursor: pointer;
 }
 
 :disabled {
   cursor: default;
 }
-
 
 img,
 svg,
@@ -249,10 +252,10 @@ audio,
 iframe,
 embed,
 object {
+
   display: block; 
   vertical-align: middle; 
 }
-
 
 img,
 video {
@@ -264,16 +267,19 @@ video {
   display: none;
 }
 
+
 /* Global class */  
 
 .h-auto.h-auto{
   height: auto;
 }
+
 .h-content-wrapper {
   height: calc( 100svh - 14rem);
 }
 .h-inherit.h-inherit {
   height: inherit;
+
 }
 .h-full.h-full{
   height: 100%;
