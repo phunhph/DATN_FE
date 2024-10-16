@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./ManageENExamStructure.scss";
 import { Notification } from "../../../components";
 import {
@@ -19,6 +19,7 @@ interface Errors {
 const ManageENExamStructure = () => {
     const [kyThi, setKyThi] = useState("");
     const [monThi, setMonThi] = useState("");
+    const [modules, setModules] = useState<ModuleStructure[]>([]);
     const [tongSoCauHoi, setTongSoCauHoi] = useState<string | number>(0);
     const [thoiGianLamBai, setThoiGianLamBai] = useState<string | number>(0);
     const [notifications, setNotifications] = useState<
@@ -34,6 +35,17 @@ const ManageENExamStructure = () => {
         if (firstErrorElement) {
             firstErrorElement.scrollIntoView({ behavior: "smooth", block: "center" });
         }
+    };
+
+    const handleInputChange = (
+        moduleIndex: number,
+        levelIndex: number,
+        newValue: string
+    ) => {
+        const updatedModules = [...modules];
+        updatedModules[moduleIndex].levels[levelIndex].Quantity =
+            parseInt(newValue, 10) || 0;
+        setModules(updatedModules);
     };
 
     const validateForm = () => {
@@ -53,6 +65,26 @@ const ManageENExamStructure = () => {
 
         return true;
     };
+    const mockData: ModuleStructure[] = [
+        {
+            title: "Module 1",
+            levels: [
+                { title: "Module 1", Level: "Dễ", Quantity: 10, total: 15 },
+                { title: "Module 1", Level: "Trung bình", Quantity: 5, total: 15 },
+            ],
+        },
+        {
+            title: "Module 2",
+            levels: [
+                { title: "Module 2", Level: "Khó", Quantity: 7, total: 10 },
+                { title: "Module 2", Level: "Rất khó", Quantity: 3, total: 10 },
+            ],
+        },
+    ];
+
+    useEffect(() => {
+        setModules(mockData);
+    }, []);
 
     const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
@@ -177,6 +209,41 @@ const ManageENExamStructure = () => {
                 <form onSubmit={handleSubmit}>
                     <div className="module">
                         {/* Phần này sẽ hiển thị các module đã chọn */}
+                        {modules.map((module, moduleIndex) => (
+                            <div className="module__item" key={moduleIndex}>
+                                <h1>{module.title}</h1>
+                                <div className="module__title">
+                                    <h3 className="lever">Mức độ</h3>
+                                    <h3 className="quantity">Số lượng</h3>
+                                    <h3 className="number">Số câu trong đề</h3>
+                                </div>
+                                {module.levels.map((level, levelIndex) => (
+                                    <div className="module__title" key={levelIndex}>
+                                        <h3 className="lever">{level.Level}</h3>
+                                        <h3 className="quantity">{level.total}</h3>
+                                        <div className="number grid_input">
+                                            <input
+                                                type="number"
+                                                className="input__number"
+                                                value={level.Quantity}
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        moduleIndex,
+                                                        levelIndex,
+                                                        e.target.value
+                                                    )
+                                                }
+                                            />
+                                            {errors[`module-${moduleIndex}-level-${levelIndex}`] && (
+                                                <span className="error__number">
+                                                    {errors[`module-${moduleIndex}-level-${levelIndex}`]}
+                                                </span>
+                                            )}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        ))}
                         {/* Bạn có thể thêm code logic render module */}
                     </div>
                     <div className="Button__capnhap">
