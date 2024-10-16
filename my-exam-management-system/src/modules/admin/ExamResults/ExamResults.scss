@@ -1,0 +1,42 @@
+@use "@scss/mixin.scss" as m;
+.examResults{
+    &__filter--group{
+        display: flex;
+        justify-content: space-between;
+        gap:1rem;
+        &> div {
+            flex:1;
+        }
+    }
+    &__total{
+        width: 50%;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        &--pass {
+            color: green;
+            font-weight: bold;
+        }
+        &--not-pass {
+            color:red;
+            font-weight: bold;
+        }
+    }
+}
+
+@include m.responsive-to(md) {
+    .examResults {
+        &__filter--group {
+            display: block;
+            &> div {
+                margin: 1rem 0;
+            }
+        }
+        &__total{
+            margin-top: 1rem;
+            width: 100%;
+            text-wrap: wrap;
+        }
+    }
+}
