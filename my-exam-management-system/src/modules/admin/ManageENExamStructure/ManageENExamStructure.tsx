@@ -57,6 +57,29 @@ const ManageENExamStructure = () => {
         if (!thoiGianLamBai || +thoiGianLamBai <= 0)
             newErrors.thoiGianLamBai = "Thời gian làm bài phải lớn hơn 0.";
 
+        let totalQuestions = 0;
+
+        modules.forEach((module, moduleIndex) => {
+            module.levels.forEach((level, levelIndex) => {
+                const number = +level.Quantity;
+
+                if (number <= 0) {
+                    newErrors[`module-${moduleIndex}-level-${levelIndex}`] =
+                        "Số câu phải lớn hơn 0.";
+                } else if (number > level.total) {
+                    newErrors[
+                        `module-${moduleIndex}-level-${levelIndex}`
+                    ] = `Số câu không được vượt quá ${level.total}.`;
+                }
+
+                totalQuestions += number;
+            });
+        });
+
+        if (totalQuestions > +tongSoCauHoi) {
+            newErrors.tongSoCauHoi = `Tổng số câu hỏi không được lớn hơn ${tongSoCauHoi}.`;
+        }
+
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
             scrollToFirstError();
@@ -71,13 +94,15 @@ const ManageENExamStructure = () => {
             levels: [
                 { title: "Module 1", Level: "Dễ", Quantity: 10, total: 15 },
                 { title: "Module 1", Level: "Trung bình", Quantity: 5, total: 15 },
+                { title: "Module 1", Level: "Khó", Quantity: 5, total: 15 },
             ],
         },
         {
             title: "Module 2",
             levels: [
-                { title: "Module 2", Level: "Khó", Quantity: 7, total: 10 },
-                { title: "Module 2", Level: "Rất khó", Quantity: 3, total: 10 },
+                { title: "Module 2", Level: "Dễ", Quantity: 7, total: 10 },
+                { title: "Module 2", Level: "Trung bình", Quantity: 3, total: 10 },
+                { title: "Module 2", Level: "Khó", Quantity: 3, total: 10 },
             ],
         },
     ];
