@@ -1,8 +1,7 @@
-
+import { MenuLink, DropdownLink } from "@components/index";
 import { useEffect, useRef, useState } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import "./AdminLayout.scss";
-import { DropdownLink,MenuLink } from "../../components";
 
 const AdminLayout = () => {
   // consts & variables
@@ -95,7 +94,7 @@ const AdminLayout = () => {
             </ul>
           </div>
         </aside>
-        <div className="layout__main">
+        <div className="layout__main" onClick={() => displayMenu ? setDisplayMenu(!displayMenu) : ""}>
           <nav className="navbar">
             <div className="navbar__menu-toggle">
               <img src="/dash-line.svg" alt="dash icon" onClick={displayLayoutMenu}></img>
@@ -127,7 +126,7 @@ const AdminLayout = () => {
               </div>
             </div>              
           </nav>
-          <section className="content-wrapper">
+          <section className="content-wrapperr">
             <Outlet/>
           </section>
           <footer className="footer">Own by EasyExam © All right reserved</footer>

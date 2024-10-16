@@ -18,7 +18,7 @@ interface TableProps<T extends Record<string, any>> {
   action_dowload?: TableAction;
   action_upload?: TableAction;
   action_status?: (id: string) => void; // Có thể truyền hoặc không
-  children?: string; 
+  children?: string | React.ReactNode; 
 }
 
 export const Table = <T extends Record<string, any>>({
