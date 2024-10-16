@@ -1,0 +1,176 @@
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #0f9b8e 0%, #96c9f4 100%);
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  font-family: "Poppins", sans-serif;
+  position: relative;
+
+  /* Họa tiết nền mờ */
+  &:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("https://via.placeholder.com/1500");
+    background-size: cover;
+    background-position: center;
+    opacity: 0.15;
+    filter: blur(5px); /* Làm mờ hình nền */
+    z-index: -2;
+  }
+
+  /* Lớp phủ với hiệu ứng gradient */
+  &:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.5),
+      rgba(255, 255, 255, 0.2)
+    );
+    z-index: -1;
+  }
+}
+
+.login-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(15px); /* Hiệu ứng mờ nền */
+  border-radius: 1.5rem;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+  width: 35%;
+  padding: 2.5rem;
+  opacity: 0;
+  transform: translateY(30px);
+  animation: slide-in 1.2s forwards ease-out;
+
+  h1 {
+    font-size: 2.25rem;
+    color: #333;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.1rem;
+  }
+
+  p {
+    color: #666;
+    font-size: 1rem;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+
+  .form-login {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+
+    .input-group {
+      width: 100%;
+
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #555;
+        font-size: 1.125rem;
+        font-weight: 600;
+      }
+
+      input {
+        width: 95%;
+        padding: 0.75rem;
+        border: 1px solid #0288d1;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        background-color: rgba(255, 255, 255, 0.8);
+
+        &:focus {
+          border-color: #0288d1;
+          background-color: #fff;
+          box-shadow: 0 0 10px rgba(0, 136, 209, 0.5);
+        }
+
+        &:hover {
+          transform: scale(1.03); /* Phóng to nhẹ */
+        }
+      }
+
+      .error-message {
+        color: #da1919;
+        margin-top: 0.5rem;
+        font-size: 0.875rem;
+      }
+    }
+
+    .form-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      .remember-me {
+        display: flex;
+        align-items: center;
+        font-size: 0.9rem;
+        color: #333;
+
+        input {
+          margin-right: 0.5rem;
+        }
+      }
+
+      .forgot-password {
+        color: #0288d1;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: color 0.3s ease;
+
+        &:hover {
+          text-decoration: underline;
+          color: #026a9d;
+        }
+      }
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 0.75rem;
+      background: linear-gradient(135deg, #0288d1, #00acc1);
+      border: none;
+      border-radius: 0.75rem;
+      color: #ffffff;
+      font-size: 1.125rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: linear-gradient(135deg, #0277bd, #0097a7);
+        transform: translateY(-4px);
+        box-shadow: 0 8px 15px rgba(0, 136, 209, 0.3);
+      }
+    }
+  }
+}
+
+@keyframes slide-in {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
