@@ -1,23 +1,13 @@
 import { Notification, PageTitle, Table, UploadFile } from "@/components";
-import { ExamContentInterface } from "@/interfaces/ExamContentInterface/ExamContentInterface";
+import { ExamContentCreate, ExamContentInterface } from "@/interfaces/ExamContentInterface/ExamContentInterface";
 import { ErrorSubject } from "@/interfaces/SubjectInterface/ErrorExamSubjectInterface";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 const ExamContent: React.FC = () => {
-  const [examContent, setExamContent] = useState<ExamContentInterface[]>([
-    {
-      id: 1,
-      Name: "Nội dung thi 1",
-      title: "Tiêu đề 1",
-      Status: "active",
-    },
-    {
-      id: 2,
-      Name: "Nội dung thi 2",
-      title: "Tiêu đề 2",
-      Status: "active",
-    },
-  ]);
+  const location = useLocation();
+  const { subject } = location.state || {};
+  console.log("Subject data:", subject);
 
   const downloadSample = () => {
     const link = document.createElement("a");
@@ -28,11 +18,6 @@ const ExamContent: React.FC = () => {
     document.body.removeChild(link);
   };
 
-  const handleStatusChange = (id: string) => {
-    if (confirm("Are you sure you want to change the status?")) {
-      updateStatuContent(id);
-    }
-  };
   const [modalType, setModalType] = useState<"add" | "edit" | "file">("add");
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [errors, setErrors] = useState<ErrorSubject>({});
@@ -40,7 +25,7 @@ const ExamContent: React.FC = () => {
   const [formData, setFormData] = useState<ExamContentInterface>({
     id: "",
     Name: "",
-    Status: "",
+    Status: true,
   });
 
   const openModal = (type: "add" | "edit" | "file") => {
@@ -51,7 +36,7 @@ const ExamContent: React.FC = () => {
       setFormData({
         id: "",
         Name: "",
-        Status: "true",
+        Status: true,
       });
     }
   };
@@ -60,6 +45,7 @@ const ExamContent: React.FC = () => {
     setFormData({
       id: data.id,
       Name: data.Name,
+      Status: data.Status,
     });
     setEditMode(true);
     setModalType("edit");
@@ -72,7 +58,7 @@ const ExamContent: React.FC = () => {
       setFormData({
         id: "",
         Name: "",
-        Status: "",
+        Status: true,
       });
     }
   };
@@ -104,18 +90,42 @@ const ExamContent: React.FC = () => {
     return Object.keys(errors).length === 0;
   };
 
+  const createExamContent = () => {
+    const newContent: ExamContentInterface = {
+      id: formData.id,
+      Name: formData.Name,
+      Status: true,
+    };
+
+    setExamContent([...examContent, newContent]);
+
+    addNotification("Thêm mới môn thi thành công!", true);
+
+    closeModal();
+  };
+
+  const handleUpdateSubject = () => {
+    setExamContent((prevContents) =>
+      prevContents.map((content) =>
+        content.id === formData.id ? { ...formData } : content
+      )
+    );
+    addNotification("Cập nhật môn thi thành công!", true);
+    closeModal();
+  };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (validate()) {
       if (editMode) {
         handleUpdateSubject();
       } else {
-        createExamContent(formData);
+        createExamContent();
       }
       setFormData({
         id: "",
         Name: "",
-        Status: "",
+        Status: true,
       });
       closeModal();
     }
@@ -131,16 +141,46 @@ const ExamContent: React.FC = () => {
     }));
   };
 
+   const handleUpdateStatus = (id: string) => {
+     setExamContent((prevContents) =>
+       prevContents.map((content) =>
+         content.id === id ? { ...content, Status: !content.Status } : content
+       )
+     );
+     addNotification(`Trạng thái của môn thi đã được thay đổi.`, true);
+   };
+
+   const handleStatusChange = (id: string) => {
+     if (confirm("Are you sure you want to change the status?")) {
+       handleUpdateStatus(id);
+     }
+   };
+
+  const [examContent, setExamContent] = useState<ExamContentInterface[]>([]);
+
+  useEffect(() => {
+    if (subject) {
+      const content = [
+        {
+          id: subject.id,
+          Name: subject.Name,
+          Status: subject.Status,
+        },
+      ];
+      setExamContent(content);
+    }
+  }, [subject]);
+
   return (
     <div className="examContent__container">
-      <PageTitle theme="light">Quản lý nội dung thi</PageTitle>
+      <PageTitle theme="light" showBack={true}>Quản lý nội dung thi</PageTitle>
       <Table
-        tableName="Nội dung thi"
+        tableName={`Nội dung thi của môn ${subject?.Name || ""}`}
         data={examContent}
         actions_add={{ name: "Thêm mới", onClick: () => openModal("add") }}
         actions_edit={{
           name: "Chỉnh sửa",
-          onClick: (content) => {
+          onClick: (content: any) => {
             if (content) {
               openEditModal(content);
             }
@@ -152,7 +192,7 @@ const ExamContent: React.FC = () => {
         }}
         action_dowload={{ name: "Tải mẫu", onClick: downloadSample }}
         action_status={handleStatusChange}
-      ></Table>
+      />
 
       {modalIsOpen && (
         <div className="modal">

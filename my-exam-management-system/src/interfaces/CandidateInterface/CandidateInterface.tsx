@@ -7,7 +7,7 @@ export interface Candidate {
     image:string;
     dob:string;
     address:string;
-    status:string
+    status?:boolean
 }
 
 export interface ApiCandidateResponse extends BaseResponse {

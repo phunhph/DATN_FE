@@ -7,7 +7,7 @@ export interface Supervisor {
   image: string;
   dob: string;
   address: string;
-  status: string;
+  status?: boolean;
 }
 
 export interface ApiSupervisorResponse extends BaseResponse {

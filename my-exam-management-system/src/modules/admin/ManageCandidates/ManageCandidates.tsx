@@ -1,4 +1,4 @@
-import { PageTitle, Table, UploadFile } from "@/components";
+import { Notification, PageTitle, UploadFile,Table } from "@/components";
 import { Exam } from "@/interfaces/ExamInterface/ExamInterface";
 import React, { useEffect, useState } from "react";
 import AsyncSelect from "react-select/async";
@@ -14,14 +14,14 @@ const ManageCandidates: React.FC = () => {
       Name: "Kỳ thi Bảy viên ngọc rồng",
       TimeStart: "2024-06-01",
       TimeEnd: "2024-06-03",
-      Status: "active",
+      Status: true,
     },
     {
       id: 2,
       Name: "Kỳ thi Thuỷ thủ mặt trăng",
       TimeStart: "2024-06-01",
       TimeEnd: "2024-06-03",
-      Status: "active",
+      Status: true,
     },
   ]);
   const [rooms, setRooms] = useState<any>([
@@ -43,7 +43,7 @@ const ManageCandidates: React.FC = () => {
       image: "https://picsum.photos/100/100",
       dob: "2004-12-09",
       address: "Hà Nội",
-      status: "active",
+      status: true,
     },
     {
       id: "2",
@@ -52,17 +52,16 @@ const ManageCandidates: React.FC = () => {
       image: "https://picsum.photos/100/100",
       dob: "2004-12-09",
       address: "Hà Nội",
-      status: "inactive",
+      status: true,
     },
   ]);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<Candidate>({
     id: "",
     sbd: "",
     name: "",
     image: "",
     dob: "",
     address: "",
-    status: "",
   });
 
   const loadSemesterOptions = (
@@ -130,7 +129,6 @@ const ManageCandidates: React.FC = () => {
         image: "",
         dob: "",
         address: "",
-        status: "",
       });
     }
   };
@@ -160,12 +158,6 @@ const ManageCandidates: React.FC = () => {
       );
     } else {
       console.error("Candidate not found");
-    }
-  };
-
-  const handleStatusChange = (id: string) => {
-    if (confirm("Are you sure you want to change the status?")) {
-      handleUpdateStatus(id);
     }
   };
 
@@ -200,7 +192,6 @@ const ManageCandidates: React.FC = () => {
         image: "",
         dob: "",
         address: "",
-        status: "",
       });
       closeModal();
     }
@@ -226,13 +217,39 @@ const ManageCandidates: React.FC = () => {
       }));
     }
   };
+  const [notifications, setNotifications] = useState<
+    Array<{ message: string; isSuccess: boolean }>
+  >([]);
+  const addNotification = (message: string, isSuccess: boolean) => {
+    setNotifications((prev) => [...prev, { message, isSuccess }]);
+  };
+
+  const clearNotifications = () => {
+    setNotifications([]);
+  };
+
+    const handleUpdateStatus = (id: string|number) => {
+    setCandidates((prevCandidates) =>
+      prevCandidates.map((candidate) =>
+        candidate.id === id ? { ...candidate, Status: !candidate.status } : candidate
+      )
+    );
+    addNotification(`Trạng thái của môn thi đã được thay đổi.`, true);
+  };
+
+  const handleStatusChange = (id: string | number) => {
+    console.log(`Changing status for candidate with ID: ${id}`);
+    if (confirm("Are you sure you want to change the status?")) {
+      handleUpdateStatus(id);
+    }
+  };
 
   return (
     <div className="candidate__container">
       <PageTitle theme="light">Quản lý thí sinh</PageTitle>
       <div className="candidate__select">
         <div className="candidate__select-semester">
-          {" "}
+         
           <h2>Kỳ thi</h2>
           <AsyncSelect
             cacheOptions
@@ -398,6 +415,10 @@ const ManageCandidates: React.FC = () => {
           </div>
         </div>
       )}
+      <Notification
+        notifications={notifications}
+        clearNotifications={clearNotifications}
+      />
     </div>
   );
 };
