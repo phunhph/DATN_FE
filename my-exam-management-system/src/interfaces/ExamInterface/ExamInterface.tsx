@@ -6,7 +6,7 @@ export interface Exam {
   Name: string;
   TimeStart: string;
   TimeEnd: string;
-  Status?: string;
+  Status?: boolean;
 }
 
 export interface ApiExamResponse extends BaseResponse {

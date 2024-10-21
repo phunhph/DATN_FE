@@ -3,7 +3,7 @@ import { BaseResponse } from "../InterfaceBaseResponse/InterfaceBaseResponse";
 export interface ExamSubject {
   id: number|string;
   Name: string;
-  Status?: string;
+  Status?: boolean;
 }
 
 export interface ApiExamSubjectResponse extends BaseResponse {
@@ -14,5 +14,5 @@ export interface SubjectCreate {
   id: number|string;
   exam_id: number|string;
   Name: string;
-  Status?: string;
+  Status?: boolean;
 }

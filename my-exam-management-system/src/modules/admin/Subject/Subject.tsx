@@ -21,14 +21,14 @@ const Subject: React.FC = () => {
       Name: "Kỳ thi Bảy viên ngọc rồng",
       TimeStart: "2024-06-01",
       TimeEnd: "2024-06-03",
-      Status: "true",
+      Status: true,
     },
     {
       id: 2,
       Name: "Kỳ thi Thuỷ thủ mặt trăng",
       TimeStart: "2024-06-01",
       TimeEnd: "2024-06-03",
-      Status: "true",
+      Status: true,
     },
   ]);
 
@@ -36,12 +36,12 @@ const Subject: React.FC = () => {
     {
       id: 1,
       Name: "Môn thi này khó",
-      Status: "active",
+      Status: true,
     },
     {
       id: 2,
       Name: "Môn thi này khó hơn",
-      Status: "active",
+      Status: true,
     },
   ]);
 
@@ -100,6 +100,29 @@ const Subject: React.FC = () => {
     }, 1000);
   };
 
+  const handleCreateSubject = () => {
+    const newSubject: ExamSubject = {
+      id: formData.id,
+      Name: formData.Name,
+      Status: true,
+    };
+
+    setExamSubject([...examSubjects, newSubject]);
+
+    addNotification("Thêm mới môn thi thành công!", true);
+
+    closeModal();
+  };
+
+  const handleUpdateStatus = (id: string) => {
+    setExamSubject((prevSubjects) =>
+      prevSubjects.map((subject) =>
+        subject.id === id ? { ...subject, Status: !subject.Status } : subject
+      )
+    );
+    addNotification(`Trạng thái của môn thi đã được thay đổi.`, true);
+  };
+
   const handleStatusChange = (id: string) => {
     if (confirm("Are you sure you want to change the status?")) {
       handleUpdateStatus(id);
@@ -147,6 +170,16 @@ const Subject: React.FC = () => {
     return Object.keys(errors).length === 0;
   };
 
+  const handleUpdateSubject = () => {
+    setExamSubject((prevSubjects) =>
+      prevSubjects.map((subject) =>
+        subject.id === formData.id ? { ...formData } : subject
+      )
+    );
+    addNotification("Cập nhật môn thi thành công!", true);
+    closeModal();
+  };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (validate()) {
@@ -155,7 +188,6 @@ const Subject: React.FC = () => {
       } else {
         handleCreateSubject();
       }
-      closeModal();
     }
   };
 
@@ -180,17 +212,19 @@ const Subject: React.FC = () => {
       addNotification(data.warning || data.message || "", data.success);
     }
   };
-
-  const handleDetailClick = (exam:ExamSubject) => {
-    console.log("Dữ liệu môn thi:", exam);
-    console.log("Tên môn:", exam.id);
-    console.log("Tên môn:", exam.Name);
-    console.log("Trạng thái:", exam.Status);
+  const navigate = useNavigate();
+  const handleDetailClick = (id: number | string) => {
+    const subject = examSubjects.find((e) => e.id === id);
+    if (subject) {
+      navigate(`/admin/exam-content`, { state: { subject } });
+    } else {
+      addNotification("Exam not found", false);
+    }
   };
 
   return (
     <div className="subject__container">
-      <PageTitle theme="light">Quản lý phòng thi</PageTitle>
+      <PageTitle theme="light">Quản lý môn thi</PageTitle>
 
       <div className="subject__exam">
         <h2>Quản lý kỳ thi</h2>
@@ -212,8 +246,8 @@ const Subject: React.FC = () => {
         actions_edit={{
           name: "Chỉnh sửa",
           onClick: (exam) => {
-            console.log("Edit",exam);
-            
+            console.log("Edit", exam);
+
             if (exam) {
               openEditModal(exam);
             }
