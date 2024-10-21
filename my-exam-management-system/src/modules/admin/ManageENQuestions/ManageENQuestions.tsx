@@ -28,6 +28,8 @@ interface DataQuestion {
     status: boolean;
 }
 
+const TitleTable = ["Mã câu hỏi", "Câu hỏi", "Trạng thái", "Thao tác"]
+
 const ManageENQuestions = () => {
     const [errors, setErrors] = useState<ErrorQuestions>({});
     const [editMode, setEditMode] = useState(false);
@@ -206,6 +208,7 @@ const ManageENQuestions = () => {
             <div className="subject__subject">
                 <Table
                     tableName="Exam Table"
+                    title={TitleTable}
                     data={dataHardCode}
                     actions_add={{ name: "Add Exam", onClick: () => openModal("add") }}
                     actions_detail={{

@@ -1,31 +1,30 @@
 import React, { useState, useMemo, useEffect } from "react";
-import { TableSearch } from "@components/TableSearch/TableSearch";
+import { TableSearch } from "../TableSearch/TableSearch";
 import "./Table.scss";
-import { Pagination } from "@components/Pagination/Pagination";
-import { ToggleSwitch } from "@components/ToggleSwitch/ToggleSwitch";
+import { Pagination } from "../Pagination/Pagination";
+import { ToggleSwitch } from "../ToggleSwitch/ToggleSwitch";
 
 interface TableAction {
   name: string;
-  onClick?: (type: "add" | "edit" | "file" | string | undefined) => void;
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
-
-interface TableProps<T extends { [key: string] }> {
+interface TableProps<T extends Record<string, any>> {
   data: T[];
+  title: string[]; // Mảng 1 chiều chứa tên tiêu đề
   tableName: string;
   actions_add?: TableAction;
   actions_edit?: TableAction;
   actions_detail?: TableAction;
   action_dowload?: TableAction;
   action_upload?: TableAction;
-
-
-  action_status?: (id: string) => void; // Có thể truyền hoặc không
+  action_status?: (id: string) => void;
+  children?: string | React.ReactNode;
 }
 
-
-export const Table = <T extends { [key: string] }>({
+export const Table = <T extends Record<string, any>>({
   data,
+  title,
   tableName,
   actions_add,
   actions_edit,
@@ -40,11 +39,10 @@ export const Table = <T extends { [key: string] }>({
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
-
   const [items, setItems] = useState(data);
 
   const hasData = items.length > 0;
-  const keys = hasData ? (Object.keys(items[0]) as (keyof T)[]) : [];
+  const dataKeys = hasData ? Object.keys(items[0]) as (keyof T)[] : [];
 
   const searchedData = useMemo(() => {
     if (!searchQuery) return items;
@@ -64,26 +62,23 @@ export const Table = <T extends { [key: string] }>({
     });
   }, [searchedData, sortKey, sortOrder]);
 
-  // Phân trang dữ liệu
   const paginatedData = useMemo(() => {
     const start = (currentPage - 1) * itemsPerPage;
     const end = Math.min(start + itemsPerPage, sortedData.length);
     return sortedData.slice(start, end);
   }, [sortedData, currentPage, itemsPerPage]);
 
-  // Hàm để thay đổi toggle state cho item
   const handleToggle = (id: string) => {
     if (action_status) {
       action_status(id);
       setItems((prevItems) =>
         prevItems.map((item) =>
-          item.id === id ? { ...item, Status: item.Status=='true'?'false':'true' } : item
+          item.id === id ? { ...item, status: item.status === 'true' ? 'false' : 'true' } : item
         )
       );
     }
   };
 
-  // Hàm sắp xếp
   const handleSort = (key: keyof T) => {
     if (sortKey === key) {
       setSortOrder(sortOrder === "asc" ? "desc" : "asc");
@@ -106,11 +101,32 @@ export const Table = <T extends { [key: string] }>({
         )
       );
   };
+
   useEffect(() => {
-    if (data) { //theo dõi data thay đổi
-      setItems(data)
+    if (data) {
+      setItems(data);
     }
-  }, [data])
+  }, [data]);
+
+  const renderCellValue = (key: keyof T, value: any) => {
+    if (key === "status") {
+      console.log(value);
+
+      return (
+        <ToggleSwitch
+          key={value.id}
+          id={value.id}
+          toggleState={value.status}
+          onToggle={handleToggle}
+        />
+      );
+    } else if (key === "image") {
+      return <img src={value} alt="Image" className="table-image" />;
+    } else {
+      return highlightText(String(value[key]));
+    }
+  };
+
   return (
     <div className="table-container">
       <div className="table-header">
@@ -128,7 +144,9 @@ export const Table = <T extends { [key: string] }>({
             </button>
           )}
           {actions_add && (
-            <button className="table-button" onClick={actions_add.onClick}>{actions_add.name}</button>
+            <button className="table-button" onClick={actions_add.onClick}>
+              {actions_add.name}
+            </button>
           )}
         </div>
       </div>
@@ -156,13 +174,12 @@ export const Table = <T extends { [key: string] }>({
       <table id="custom-table" className="custom-table">
         <thead>
           <tr>
-            {keys.map((key) => (
-              <th key={String(key)} onClick={() => handleSort(key)}>
-                {String(key)}{" "}
-                {sortKey === key ? (sortOrder === "asc" ? "▲" : "▼") : ""}
+            {title.map((header, index) => (
+              <th key={index} onClick={() => handleSort(dataKeys[index])}>
+                {header}{" "}
+                {sortKey === dataKeys[index] ? (sortOrder === "asc" ? "▲" : "▼") : ""}
               </th>
             ))}
-            {actions_edit || actions_detail ? <th>Thao tác</th> : <th></th>}
           </tr>
         </thead>
         <tbody>
@@ -170,46 +187,41 @@ export const Table = <T extends { [key: string] }>({
             paginatedData.length > 0 ? (
               paginatedData.map((item, index) => (
                 <tr key={index}>
-                  {keys.map((key) => (
+                  {dataKeys.map((key) => (
                     <td key={String(key)}>
-                      {String(key) === "Status" ? (
-                        <ToggleSwitch
-                          key={item.id}
-                          id={item.id}
-                          toggleState={item.Status}
-                          onToggle={handleToggle}
-                        />
-                      ) : (
-                        highlightText(String(item[key]))
-                      )}
+                      {renderCellValue(key, item)}
                     </td>
                   ))}
-                  <td className="table-button-group">
+                  <td>
                     {actions_edit && (
-                      <button className="table-button" onClick={() => actions_edit.onClick?.(item)}>
+                      <button
+                        className="table-button"
+                        onClick={(event) => actions_edit.onClick?.(event)}
+                      >
                         {actions_edit.name}
                       </button>
                     )}
                     {actions_detail && (
-                      <button className="table-button" onClick={() => actions_detail.onClick?.(item.id)}>
+                      <button
+                        className="table-button"
+                        onClick={(event) => actions_detail.onClick?.(event)}
+                      >
                         {actions_detail.name}
                       </button>
-
                     )}
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan={keys.length + 1} className="no-data-message">
+                <td colSpan={dataKeys.length + 1} className="no-data-message">
                   Không có dữ liệu
                 </td>
-
               </tr>
             )
           ) : (
             <tr>
-              <td colSpan={keys.length + 1} className="no-data-message">
+              <td colSpan={dataKeys.length + 1} className="no-data-message">
                 Không có dữ liệu
               </td>
             </tr>

@@ -67,6 +67,7 @@ const Login: React.FC = () => {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Nhập tài khoản"
             />
+            <br />
             {emailError && <span className="error-message">{emailError}</span>}
           </div>
           <div className="input-group">
@@ -79,6 +80,7 @@ const Login: React.FC = () => {
               placeholder="Nhập mật khẩu"
               autoComplete="current-password"
             />
+            <br />
             {passwordError && (
               <span className="error-message">{passwordError}</span>
             )}
