@@ -4,7 +4,7 @@ export interface ExamContentInterface {
   id: string | number;
   Name?: string;
   title?: string;
-  Status?: string;
+  Status?: boolean;
 }
 
 export interface ApiExamContentResponse extends BaseResponse {
@@ -15,5 +15,5 @@ export interface ExamContentCreate {
   id: string | number;
   exam_subject_id: string;
   title?: string;
-  Status?: string;
+  Status?: boolean;
 }

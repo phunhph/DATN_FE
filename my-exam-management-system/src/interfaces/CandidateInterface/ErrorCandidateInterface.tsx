@@ -5,5 +5,5 @@ export interface ErrorCandidate {
     image?:string;
     dob?:string;
     address?:string;
-    status?:string
+    status?:boolean
 }

@@ -1,29 +1,37 @@
-import { PageTitle, Table } from "@/components";
+import { Notification, PageTitle, Table } from "@/components";
 import { Candidate } from "@/interfaces/CandidateInterface/CandidateInterface";
 import { ErrorCandidate } from "@/interfaces/CandidateInterface/ErrorCandidateInterface";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 const DetailCandidates: React.FC = () => {
-  const [candidates, setCandidates] = useState<Candidate[]>([
-    {
-      id: "1",
-      sbd: "PH111",
-      name: "Nguyễn Văn A",
-      image: "https://picsum.photos/100/100",
-      dob: "2004-12-09",
-      address: "Hà Nội",
-      status: "active",
-    },
-    {
-      id: "2",
-      sbd: "PH112",
-      name: "Nguyễn Văn B",
-      image: "https://picsum.photos/100/100",
-      dob: "2004-12-09",
-      address: "Hà Nội",
-      status: "inactive",
-    },
-  ]);
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const [candidates, setCandidates] = useState<Candidate[]>([]);
+  useEffect(() => {
+    const id = queryParams.get("id");
+    const sbd = queryParams.get("sbd");
+    const name = queryParams.get("name");
+    const image = queryParams.get("image");
+    const dob = queryParams.get("dob");
+    const address = queryParams.get("address");
+    const status = queryParams.get("status");
+    console.log({ id, sbd, name, image, dob, address, status });
+
+    if (id && sbd && name && image && dob && address && status) {
+      const candidate: Candidate = {
+        id,
+        sbd,
+        name,
+        image,
+        dob,
+        address,
+      };
+
+      setCandidates([candidate]);
+      console.log("Candidates:", [candidate]);
+    }
+  }, [location.search]);
 
   const [modalType, setModalType] = useState<"add" | "edit" | "file">("add");
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -36,7 +44,7 @@ const DetailCandidates: React.FC = () => {
     image: "",
     dob: "",
     address: "",
-    status: "",
+    status: true,
   });
 
   const openModal = (type: "add" | "edit" | "file") => {
@@ -52,7 +60,7 @@ const DetailCandidates: React.FC = () => {
         image: "",
         dob: "",
         address: "",
-        status: "",
+        status: true,
       });
     }
   };
@@ -69,17 +77,38 @@ const DetailCandidates: React.FC = () => {
     document.body.removeChild(link);
   };
 
+  const [notifications, setNotifications] = useState<
+    Array<{ message: string; isSuccess: boolean }>
+  >([]);
+  const addNotification = (message: string, isSuccess: boolean) => {
+    setNotifications((prev) => [...prev, { message, isSuccess }]);
+  };
+
+  const clearNotifications = () => {
+    setNotifications([]);
+  };
+
+  const handleUpdateStatus = (id: string) => {
+    setCandidates((prevContents) =>
+      prevContents.map((content) =>
+        content.id === id ? { ...content, status: !content.status } : content
+      )
+    );
+    addNotification(`Trạng thái của môn thi đã được thay đổi.`, true);
+  };
+
   const handleStatusChange = (id: string) => {
     if (confirm("Are you sure you want to change the status?")) {
       handleUpdateStatus(id);
     }
   };
-
   return (
     <div className="detailCandidate__container">
-      <PageTitle theme="light">Thông tin thí sinh</PageTitle>
+      <PageTitle theme="light" showBack={true}>Thông tin thí sinh</PageTitle>
       <Table
-        tableName="Thí sinh"
+        tableName={`Thí sinh ${
+          candidates.length > 0 ? candidates[0].name : ""
+        }`}
         data={candidates}
         action_upload={{
           name: "Upload file",
@@ -87,6 +116,10 @@ const DetailCandidates: React.FC = () => {
         }}
         action_dowload={{ name: "Tải mẫu", onClick: downloadSample }}
         action_status={handleStatusChange}
+      />
+      <Notification
+        notifications={notifications}
+        clearNotifications={clearNotifications}
       />
     </div>
   );
