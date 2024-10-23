@@ -4,7 +4,6 @@ import {
     ManageCandidates,
     ManageENExamStructure,
     ManageENQuestions,
-    ManageEligibility,
     ManageExamRooms,
     ManageExamSessions,
     ManageExamState_Candidates,
@@ -21,6 +20,7 @@ import {
     DetailCandidates,
     QuestionDetail,
     ExamResults,
+    ManageStatus,
   } from "../modules/admin/index";
   
   const adminRoutes = [
@@ -31,7 +31,7 @@ import {
     { path: "exam-results", element: <ExamResults /> },
     { path: "manage-en-exam-structure", element: <ManageENExamStructure /> },
     { path: "manage-en-questions", element: <ManageENQuestions /> },
-    { path: "manage-eligibility", element: <ManageEligibility /> },
+    { path: "manage-status", element: <ManageStatus /> },
     { path: "manage-exam-rooms", element: <ManageExamRooms /> },
     { path: "manage-exam-sessions", element: <ManageExamSessions /> },
     { path: "manage-exam-state-candidates", element: <ManageExamState_Candidates /> },
