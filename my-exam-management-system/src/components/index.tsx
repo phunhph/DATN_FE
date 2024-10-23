@@ -13,6 +13,8 @@ import ContainerTitle from "./ContainerTitle/ContainerTitle";
 import ChildContainer from "./ChildContainer/ChildContainer";
 import { Pagination } from "./Pagination/Pagination";
 import { ToggleSwitch } from "./ToggleSwitch/ToggleSwitch";
+import PieChartComponent from "./Chart/PieChart/PieChart";
+import LineChartComponent from "./Chart/LineChart/LineChart";
 
 export {
   Button,
@@ -30,4 +32,6 @@ export {
   ChildContainer,
   Pagination,
   ToggleSwitch,
+  PieChartComponent,
+  LineChartComponent
 };

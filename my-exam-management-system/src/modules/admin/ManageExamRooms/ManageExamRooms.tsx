@@ -96,16 +96,16 @@ const ManageExamRooms = () => {
     },
   ]
   const examRooms = [
-    { examRoomName: "Room 101", numberOfStudent: 25 },
-    { examRoomName: "Room 102", numberOfStudent: 30 },
-    { examRoomName: "Room 103", numberOfStudent: 20 },
-    { examRoomName: "Room 104", numberOfStudent: 28 },
-    { examRoomName: "Room 105", numberOfStudent: 32 },
-    { examRoomName: "Room 106", numberOfStudent: 18 },
-    { examRoomName: "Room 107", numberOfStudent: 24 },
-    { examRoomName: "Room 108", numberOfStudent: 22 },
-    { examRoomName: "Room 109", numberOfStudent: 26 },
-    { examRoomName: "Room 110", numberOfStudent: 29 },
+    { examRoomID: 0, examRoomName: "Room 101", numberOfStudent: 25 },
+    { examRoomID: 1, examRoomName: "Room 102", numberOfStudent: 30 },
+    { examRoomID: 2, examRoomName: "Room 103", numberOfStudent: 20 },
+    { examRoomID: 3, examRoomName: "Room 104", numberOfStudent: 28 },
+    { examRoomID: 4, examRoomName: "Room 105", numberOfStudent: 32 },
+    { examRoomID: 5, examRoomName: "Room 106", numberOfStudent: 18 },
+    { examRoomID: 6, examRoomName: "Room 107", numberOfStudent: 24 },
+    { examRoomID: 7, examRoomName: "Room 108", numberOfStudent: 22 },
+    { examRoomID: 8, examRoomName: "Room 109", numberOfStudent: 26 },
+    { examRoomID: 9, examRoomName: "Room 110", numberOfStudent: 29 },
   ];
 
   const loadSemester = () => {
