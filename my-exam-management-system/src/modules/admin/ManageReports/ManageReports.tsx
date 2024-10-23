@@ -177,53 +177,15 @@ const ManageReports: React.FC = () => {
     }
 
     const handleExportPDF = () => {
-        generatePDF()
+        const waitAnimation = setTimeout(()=> {
+            generatePDF();
+            clearTimeout(waitAnimation)
+        }, 1000)
     };
     
+
+    //// PDF ////
     const chartRef = useRef<HTMLDivElement | null>(null);
-
-    // const generatePDF = async () => {
-    //     const pdf = new jsPDF({
-    //         orientation: 'portrait',
-    //         unit: 'mm',
-    //         format: 'a4',
-    //     });
-
-        // pdf.setFont('Roboto-Regular', 'normal');
-        // pdf.setFontSize(20);
-        // pdf.text('Báo cáo thống kê', 105, 20, { align: 'center' });
-
-    //     if (chartRef.current) {
-    //         const canvas = await html2canvas(chartRef.current, {scale: 2})
-    //         const chartImg = canvas.toDataURL('image/png');
-
-    //         pdf.addImage(chartImg, 'PNG', 10, 40, 190, 100); // Adjust width (190) and height (100)
-
-    //     }
-
-    //     pdf.setFontSize(20);
-    //     pdf.text('Bảng thống kê số điểm tổng quát', 10, 120);
-
-    //     let y = 130; // initial table position
-    //     const rowHeight = 10; // line height
-    //     const tableData = [
-    //         ['Tổng số lượng sinh viên', APIReturnedReportData.totalStudents],
-    //         ['Số lượng thí sinh tham gia thi', APIReturnedReportData.participated],
-    //         ['Số lượng thí sinh bỏ thi', APIReturnedReportData.notParticipated],
-    //         ['Điểm trung bình', APIReturnedReportData.averageScore],
-    //         ['Điểm cao nhất', APIReturnedReportData.highestScore],
-    //         ['Điểm thấp nhất', APIReturnedReportData.lowestScore],
-    //         ['Số điểm có nhiều thí sinh nhất', APIReturnedReportData.mostAchievedScore],
-    //     ];
-
-    //     tableData.forEach(([label, value]) => {
-    //         pdf.text(`${label}: ${value}`, 10, y);
-    //         y += rowHeight;
-    //     });
-
-    //     pdf.save('report.pdf');
-    // };
-
     const generatePDF = async () => {
         const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
       
@@ -291,7 +253,7 @@ const ManageReports: React.FC = () => {
                     </form>
                 </div>
                 <div className="report__file">
-                    <Button className="report__file-btn" onClick={handleExportPDF}>Xuất file PDF</Button>
+                    <Button className={`report__file-btn ${ !touch && !reportData ? 'btn-disabled' : ''}`} disabled={!touch && !reportData} onClick={handleExportPDF}>Xuất file PDF</Button>
                 </div>
                 {touch && reportData && (
                     <div ref={chartRef}>

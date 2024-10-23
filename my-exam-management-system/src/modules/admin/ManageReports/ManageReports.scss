@@ -129,12 +129,12 @@
             justify-content: start;
 
             &-pie {
-                width: min(90%, max(360px, 100%));
+                width: min(100%, max(360px, 100%));
                 margin: 0 auto;
             }
 
             &-line {
-                width: min(90%, max(360px, 100%));
+                width: min(100%, max(360px, 100%));
                 min-height: 300px;
                 margin: 0 auto;
             }
