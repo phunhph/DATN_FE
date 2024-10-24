@@ -22,7 +22,7 @@ import RedirectButton from "./RedirectButton/RedirectButton";
 import Slideshow from "./Slideshow/Slideshow";
 import validation from "./Form/validation";
 import PieChartComponent from "./Chart/PieChart/PieChart";
-import LineChartComponent from "./Chart/LineChart/LineChart
+import LineChartComponent from "./Chart/LineChart/LineChart";
 
 export {
   Button,
@@ -47,7 +47,7 @@ export {
   RedirectButton,
   Slideshow,
   CVO,
-  validation
+  validation,
   PieChartComponent,
   LineChartComponent
 };
