@@ -131,12 +131,14 @@
             &-pie {
                 width: min(100%, max(360px, 100%));
                 margin: 0 auto;
+                overflow: hidden;
             }
 
             &-line {
                 width: min(100%, max(360px, 100%));
                 min-height: 300px;
                 margin: 0 auto;
+                overflow: hidden;
             }
         }
     }
@@ -152,3 +154,18 @@
         }
     }
 }
+@media print {
+    #piechart {
+      width: 400px !important;
+      height: 400px !important;
+    }
+    #linechart {
+      width: 600px !important;
+      height: 300px !important;
+    }
+    #table-container {
+      width: 600px !important;
+      height: 200px !important;
+    }
+  }
+  

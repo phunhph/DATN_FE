@@ -3,7 +3,7 @@ import './ManageReports.scss'
 import React, { useEffect, useRef, useState } from 'react';
 import { Button, PageTitle } from '@/components';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import {PieChartComponent, LineChartComponent} from '@/components';
+import { PieChartComponent, LineChartComponent } from '@/components';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import '@assets/font/Roboto-Regular-normal.js'
@@ -177,48 +177,83 @@ const ManageReports: React.FC = () => {
     }
 
     const handleExportPDF = () => {
-        const waitAnimation = setTimeout(()=> {
+        const waitAnimation = setTimeout(() => {
             generatePDF();
             clearTimeout(waitAnimation)
         }, 1000)
     };
-    
+
 
     //// PDF ////
     const chartRef = useRef<HTMLDivElement | null>(null);
+
+    const setTemporaryDimensions = (id:string, width:number, height:number) => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.style.width = `${width}px`;
+            element.style.height = `${height}px`;
+        }
+    };
+
+    const resetDimensions = (id:string) => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.style.width = '';
+            element.style.height = '';
+        }
+    };
+
+    const captureElementAsImage = async (element:HTMLElement) => {
+        const canvas = await html2canvas(element, { scale: 2 });
+        return { img: canvas.toDataURL('image/png'), width: canvas.width, height: canvas.height };
+    };
+
     const generatePDF = async () => {
         const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
-      
+
+        const PXtoMMratio = 0.109375; 
+
+        const pieChartElement = document.getElementById('piechart');
+        const lineChartElement = document.getElementById('linechart');
+        setTemporaryDimensions('table-container', 1276, 351);  // Lock table size
+
+        const pieChart = await captureElementAsImage(pieChartElement!);
+        const lineChart = await captureElementAsImage(lineChartElement!);
+        const tableCanvas = await html2canvas(document.getElementById('table-container')!, { scale: 2 });
+        const tableImg = tableCanvas.toDataURL('image/png');
+
+        let pieChartWidthMM = pieChart.width * PXtoMMratio;
+        let pieChartHeightMM = pieChart.height * PXtoMMratio;
+
+
+        let lineChartWidthMM = lineChart.width * PXtoMMratio;
+        let lineChartHeightMM = lineChart.height * PXtoMMratio;
+        if(lineChartWidthMM < 160) {
+            lineChartWidthMM = 160
+            lineChartHeightMM = 80
+        }
+
         doc.setFont('Roboto-Regular', 'normal');
         doc.setFontSize(20);
         doc.text('Báo cáo thống kê', 105, 20, { align: 'center' });
 
-      
-        // Capture chart elements as images
-        const chartCanvas1 = await html2canvas(document.getElementById('piechart')!, { scale: 2 });
-        const chartCanvas2 = await html2canvas(document.getElementById('linechart')!, { scale: 2 });
-        const tableCanvas = await html2canvas(document.getElementById('table-container')!, { scale: 2 });
-      
-        // Convert canvases to images
-        const chartImg1 = chartCanvas1.toDataURL('image/png');
-        const chartImg2 = chartCanvas2.toDataURL('image/png');
-        const tableImg = tableCanvas.toDataURL('image/png');
-      
-        // Add charts side by side
-        doc.addImage(chartImg1, 'PNG', 42, 40, 124, 55); 
-        doc.addImage(chartImg2, 'PNG', 12, 100, 190, 100); 
-      
-        doc.setFontSize(20); // Increase font size for the heading
-        doc.text('Bảng thống kê số điểm tổng quát', 10, 210);
+        //draw charts
+        doc.addImage(pieChart.img, 'PNG', (210 - pieChartWidthMM) / 2, 40, pieChartWidthMM, pieChartHeightMM);
+        doc.addImage(lineChart.img, 'PNG', (210 - lineChartWidthMM) / 2, 40 + pieChartHeightMM + 10, lineChartWidthMM, lineChartHeightMM);
 
-        // Add table below the charts
-        doc.setFontSize(18)
-        doc.addImage(tableImg, 'PNG', 10, 220, 190, 60); 
-      
-        // Save the PDF
+        doc.setFontSize(20);
+        doc.text('Bảng thống kê số điểm tổng quát', 60, 40 + pieChartHeightMM + lineChartHeightMM + 30);
+        
+        //draw table
+        doc.setFontSize(18);
+        doc.addImage(tableImg, 'PNG', 10, 210, 190, 60);
+        resetDimensions('table-container');
+
         doc.save('report.pdf');
-      };
-      
+    };
+
+
+
     useEffect(() => {
         loadSemester()
     }, [])
@@ -253,7 +288,7 @@ const ManageReports: React.FC = () => {
                     </form>
                 </div>
                 <div className="report__file">
-                    <Button className={`report__file-btn ${ !touch && !reportData ? 'btn-disabled' : ''}`} disabled={!touch && !reportData} onClick={handleExportPDF}>Xuất file PDF</Button>
+                    <Button className={`report__file-btn ${!touch && !reportData ? 'btn-disabled' : ''}`} disabled={!touch && !reportData} onClick={handleExportPDF}>Xuất file PDF</Button>
                 </div>
                 {touch && reportData && (
                     <div ref={chartRef}>
@@ -262,7 +297,7 @@ const ManageReports: React.FC = () => {
                                 <PieChartComponent data={APIReturnedReportData.pieChartData} />
                             </div>
                             <div className="report__chart-line">
-                                <LineChartComponent data={APIReturnedReportData.lineChartData}/>
+                                <LineChartComponent data={APIReturnedReportData.lineChartData} />
                             </div>
                         </div>
                         <div className='report__statistic'>
