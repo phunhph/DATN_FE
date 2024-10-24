@@ -3,7 +3,7 @@ import ExamResults from "./ExamResults/ExamResults";
 import ManageCandidates from "./ManageCandidates/ManageCandidates";
 import ManageENExamStructure from "./ManageENExamStructure/ManageENExamStructure";
 import ManageENQuestions from "./ManageENQuestions/ManageENQuestions";
-import ManageEligibility from "./ManageEligibility/ManageEligibility";
+import ManageStatus from "./ManageStatus/ManageStatus";
 import ManageExamRooms from "./ManageExamRooms/ManageExamRooms";
 import ManageExamSessions from "./ManageExamSessions/ManageExamSessions";
 import ManageExamState_Candidates from "./ManageExamState_Candidates/ManageExamState_Candidates";
@@ -27,7 +27,7 @@ export {
   ManageCandidates,
   ManageENExamStructure,
   ManageENQuestions,
-  ManageEligibility,
+  ManageStatus,
   ManageExamRooms,
   ManageExamSessions,
   ManageExamState_Candidates,
