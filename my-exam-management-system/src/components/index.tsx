@@ -21,6 +21,8 @@ import QuestionBoard from "./QuestionBoard/QuestionBoard";
 import RedirectButton from "./RedirectButton/RedirectButton";
 import Slideshow from "./Slideshow/Slideshow";
 import validation from "./Form/validation";
+import PieChartComponent from "./Chart/PieChart/PieChart";
+import LineChartComponent from "./Chart/LineChart/LineChart
 
 export {
   Button,
@@ -46,4 +48,6 @@ export {
   Slideshow,
   CVO,
   validation
+  PieChartComponent,
+  LineChartComponent
 };
