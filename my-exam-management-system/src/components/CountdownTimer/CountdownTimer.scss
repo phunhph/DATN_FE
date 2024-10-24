@@ -1,0 +1,30 @@
+.countdown {
+    &__container {
+      border-radius: 5rem;
+      height: 10rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #cdffcd;
+    }
+    &__timer {
+      border: 3px solid #1EBA1E;
+      border-radius: 5rem;
+      height: 9rem;
+      width: 95%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: white;
+      p {
+        margin: 0;
+        text-align: center;
+        font-size: 1.3rem;
+        font-weight: bold;
+        &:nth-child(2) { 
+          font-size: 2.2rem; 
+        }
+      }
+    }
+  }

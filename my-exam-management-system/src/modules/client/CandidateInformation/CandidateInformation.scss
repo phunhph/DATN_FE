@@ -1,0 +1,81 @@
+.information {
+  &__container {
+    flex-grow: 1;
+  }
+  &__title {
+    border-bottom: 0.0625rem solid black;
+    h1 {
+      font-size: 2rem;
+      font-weight: bold;
+    }
+  }
+}
+.detail {
+  &__item {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    padding: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(221, 221, 221);
+    border-radius: 3rem;
+  }
+
+  &__info {
+    margin-left: 2rem;
+    width: 70%;
+    p {
+      border-bottom: 1px solid rgb(161, 161, 161);
+      height: 3rem;
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-start;
+      font-weight: bold;
+      font-size: 1rem;
+    }
+  }
+}
+
+.detail__avatar {
+  position: relative;
+  display: inline-block;
+
+  img {
+    display: block;
+    width: 20rem;
+    object-fit: cover;
+    border-radius: 3rem;
+  }
+
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 3rem;
+  }
+
+  &:hover .overlay {
+    opacity: 1;
+  }
+
+  .change-image-btn {
+    background-color: #fff;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 1rem;
+    border: none;
+  }
+
+  .change-image-btn:hover {
+    background-color: rgb(221, 221, 221);
+  }
+}
