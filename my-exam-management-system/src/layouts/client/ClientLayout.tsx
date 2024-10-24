@@ -56,10 +56,12 @@ const ClientLayout = () => {
                     <>
                       <ul className="dropdown__menu">
                         <li className="dropdown__item">
-                          <div className="dropdown__user">
-                            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="🗿"></img>
-                            <span>Username</span>
-                          </div>
+                          <NavLink to={'/client/user'}>
+                            <div className="dropdown__user">
+                              <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="🗿"></img>
+                              <span>Username</span>
+                            </div>
+                          </NavLink>
                         </li>
                         <div className="dropdown__divider"></div>
                         <DropdownLink imgSrc="settings.svg" location="settings" onClick={toggleUserMenu} title="Cài đặt"></DropdownLink>

@@ -1,6 +1,6 @@
 // clientRoutes.js
 import { Navigate } from "react-router-dom";
-import { Home, Scores, History, Subject, CandidateInformation, DetailedResult, Exam, Reading, Listening } from "../modules/client/index";
+import { Home, Scores, History, Subject, CandidateInformation, DetailedResult, Exam, Reading, Listening, UserPage } from "../modules/client/index";
 
 const clientRoutes = [
   { path: "", element: <Navigate to="/client/home" replace /> },
@@ -39,6 +39,10 @@ const clientRoutes = [
   {
     path: "listening",
     element: <Listening />
+  },
+  {
+    path: "user",
+    element: <UserPage />
   },
 ];
 
