@@ -13,6 +13,14 @@ import ContainerTitle from "./ContainerTitle/ContainerTitle";
 import ChildContainer from "./ChildContainer/ChildContainer";
 import { Pagination } from "./Pagination/Pagination";
 import { ToggleSwitch } from "./ToggleSwitch/ToggleSwitch";
+import CandidateAvatarName from "./CandidateAvatarName/CandidateAvatarName";
+import CountdownTimer from "./CountdownTimer/CountdownTimer";
+import CVO from "./CVO/CVO";
+import QuestionAnswerImage from "./QuestionAnswerImage/QuestionAnswerImage";
+import QuestionBoard from "./QuestionBoard/QuestionBoard";
+import RedirectButton from "./RedirectButton/RedirectButton";
+import Slideshow from "./Slideshow/Slideshow";
+import validation from "./Form/validation";
 
 export {
   Button,
@@ -30,4 +38,12 @@ export {
   ChildContainer,
   Pagination,
   ToggleSwitch,
+  CandidateAvatarName,
+  CountdownTimer,
+  QuestionAnswerImage,
+  QuestionBoard,
+  RedirectButton,
+  Slideshow,
+  CVO,
+  validation
 };
