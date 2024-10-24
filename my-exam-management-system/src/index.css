@@ -284,6 +284,8 @@ video {
 .h-full.h-full{
   height: 100%;
 }
+.uppercase{
+  text-transform: uppercase;
 .btn-disabled {
   cursor: not-allowed;
   filter: blur(1px) grayscale(100%);

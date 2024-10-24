@@ -20,6 +20,7 @@ import ManageSemester from "./ManageSemester/ManageSemester";
 import DetailSupervisor from "./ManageSupervisors/DetailSupervisor";
 import ExamContent from "./Subject/ExamContent";
 import Welcome from "./Welcome/Welcome";
+import AdminPage from "./AdminPage/AdminPage";
 export {
   ExamResults,
   Home,
@@ -43,4 +44,5 @@ export {
   ManageSemester,
   DetailCandidates,
   QuestionDetail,
+  AdminPage
 };

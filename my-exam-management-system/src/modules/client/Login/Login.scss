@@ -1,0 +1,110 @@
+.login{
+    width:100%;
+    height:100svh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    &__container{
+        width:65rem;
+        height:30rem;
+        border:1px solid black;
+        background-color: #F5F5F5;
+        display: flex;
+        justify-content: center;
+        box-shadow: 
+            0 0 6px 0.25rem rgb(0 0 0 / 0.1),
+            0 0 4px 0.125rem rgb(0 0 0 / 0.1);
+        border-radius: 0.625rem;
+    }
+    &__left {
+        width: calc(60% );
+        height: 100%;
+        padding:2rem;
+        &-inner{
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+    }
+    &__right {
+        width: 40%;
+        height: 100%;
+        padding:2rem;
+    }
+    &__logo{
+        max-width: 10rem;
+    }
+    &__title{
+        font-weight: bold;
+        font-size: 1.75rem;
+        color: #1EBA1E;
+        text-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    &__video {
+        margin-top:1rem;
+        width: 100%;
+        flex-grow: 1;
+    }
+    &__form {
+        margin-top:2rem;
+        &-group{
+            display: flex;
+            flex-direction: column;
+        }
+        &-label{
+            font-weight: bold;
+            font-size: 1.25rem;
+            padding-left: 0.5rem;
+        }
+        &-input{
+            height: 2.75rem;
+            border-radius: 1.25rem;
+            border: 1px solid #cccccc;
+            padding:0 0.5rem;
+            &:hover{
+                border-color: black;
+            }
+            &:focus{
+                outline: none;
+                border-color: #1EBA1E;
+            }
+        }
+        &-error{
+            height:1.5rem;
+            display: flex;
+            align-items: center;
+            padding-left: 0.5rem;
+        }
+        &-message{
+            color:red;
+            font-size: 0.875rem;
+        }
+        &-submit{
+            margin-top: 0.5rem;
+        }
+    }
+    &__findme{
+        display: block;
+        margin-top: 0.5rem;
+        width: 100%;
+        color:#1EBA1E;
+        text-align: center;
+    }
+}
+// x2 class => selector++ thay vì !important
+.login__form-submit.login__form-submit{
+    width: 100%;
+    background-color: #1EBA1E;
+    border: 1px solid #1EBA1E;
+    border-radius: 1.25rem;
+    color:white;
+    font-weight: bold;
+    &:hover{
+        background-color: #279627;
+    }
+}
+.vertical-divider{
+    width: 1px;
+    height:100%;
+    background-color: black;
+}

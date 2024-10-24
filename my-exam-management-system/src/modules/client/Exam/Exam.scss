@@ -1,0 +1,45 @@
+.exam {
+  &__container {
+    flex-grow: 1;
+  }
+  &__title {
+    border-bottom: 0.0625rem solid black;
+    h1 {
+      font-size: 2rem;
+      font-weight: bold;
+      text-align: center;
+    }
+  }
+  &__detail {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    display: flex;
+    &-left {
+      width: 75%;
+    }
+    &-right {
+      width: 25%;
+      position: sticky;
+      top: 1rem;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+  }
+  &__handin {
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    button {
+      padding: 0.3rem;
+      background-color: #1EBA1E;
+      transition: background-color 0.1s linear;
+      color: white;
+      border: none;
+      border-radius: 100px;
+    }
+    button:hover{
+      background-color: #16a516;
+    }
+  }
+}

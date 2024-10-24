@@ -24,4 +24,62 @@
       margin-right: 0.5rem;
     }
   }
+  &__button {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    & img {
+      height: 2.5rem;
+    }
+  }
+  &__menu {
+    position: absolute;
+    z-index: 10;
+    right: 0;
+    top: 147%;
+    z-index: 10;
+    display: block;
+    background: white;
+    list-style: none;
+    border-radius: 4px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    min-width: 14rem;
+    border: 1px solid #dddddd;
+  }
+  &__user {
+    margin: 0.5rem 0;
+    padding-left: 1rem;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    & img {
+      margin-right: 0.5rem;
+    }
+  }
+  &__divider {
+    margin: 3px 0.5rem;
+    border-top: 1px solid #dfdfe1;
+  }
+  &__button {
+    width: 100%;
+  }
+  &__logout {
+    background-color: #ff4c51;
+    border-color: #ff4c51;
+    border-radius: 5px;
+    color: white;
+    transition: background-color 0.3s ease-in-out;
+    display: flex !important;
+    justify-content: center;
+    & small {
+      line-height: 2.5rem;
+    }
+    & img {
+      margin-left: 0.5rem;
+      width: 16px;
+    }
+    &:hover {
+      background-color: rgb(205, 41, 46);
+    }
+  }
 }
