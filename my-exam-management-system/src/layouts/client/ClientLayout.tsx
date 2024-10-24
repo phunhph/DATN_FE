@@ -36,15 +36,15 @@ const ClientLayout = () => {
             <div className="nav__menu-container">
               <ul className="nav__menu">
                 <li className="nav__link">
-                  <NavLink to={"/client/home"} className={({ isActive, isPending }) =>` ${isPending ? "pending" : isActive ? "active" : ""} `}
+                  <NavLink to={"/client/home"} className={({ isActive, isPending }) =>` ${isPending ? "pending" : isActive ? "client-active" : ""} `}
                   >Trang chủ</NavLink>
                 </li>
                 <li className="nav__link">
-                  <NavLink to={"/client/scores"} className={({ isActive, isPending }) => isPending ? "pending" : isActive ? "active" : ""}
+                  <NavLink to={"/client/scores"} className={({ isActive, isPending }) => isPending ? "pending" : isActive ? "client-active" : ""}
                   >Bảng điểm</NavLink>
                 </li>
                 <li className="nav__link">
-                  <NavLink to={"/client/history"} className={({ isActive, isPending }) => isPending ? "pending" : isActive ? "active" : ""}
+                  <NavLink to={"/client/history"} className={({ isActive, isPending }) => isPending ? "pending" : isActive ? "client-active" : ""}
                   >Lịch sử thi</NavLink>
                   </li>
               </ul>
@@ -81,19 +81,19 @@ const ClientLayout = () => {
         <div className="content-wrapper">
           <Outlet />
         </div>
-        <footer className="footer">
-          <div className="footer__info">
+        <footer className="client-footer">
+          <div className="client-footer__info">
             <div className="footer__contact">
-              <img className="footer__logo" src="/logo-black.svg" alt="logo"></img>
-              <ul className="footer__list">
+              <img className="client-footer__logo" src="/logo-black.svg" alt="logo"></img>
+              <ul className="client-footer__list">
                 <li>Email : swift.exam@gmail.com</li>
                 <li>Địa chỉ : số 2 cạnh nhà hàng xóm, Hà Nội, Việt Nam</li>
                 <li>Liên hệ: 091 234 5678</li>
               </ul>
             </div>
-            <div className="footer__link">
+            <div className="client-footer__link">
               <p>Link</p>
-              <ul className="footer__list">
+              <ul className="client-footer__list">
                 <li><Link to="/client/home">Trang chủ</Link></li>
                 <li><Link to="/client/scores">Bảng điểm</Link></li>
                 <li><Link to="/client/history">Lịch sử thi</Link></li>
@@ -102,7 +102,7 @@ const ClientLayout = () => {
               </ul>
             </div>
           </div>
-          <div className="footer__end">
+          <div className="client-footer__end">
             <span>©2024 Swift Exam. All rights reserved.</span>
           </div>
         </footer>

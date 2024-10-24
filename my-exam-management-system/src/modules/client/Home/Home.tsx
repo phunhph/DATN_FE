@@ -31,7 +31,7 @@ const Home = () => {
             <p>Thời gian kết thúc:<span className='item__span'>text</span></p>
             <p>Số lượng môn thi:<span className='item__span'>text</span></p>
             <CVO percentage={50}></CVO>
-            <Button onClick={goToSubject} className='group__buttonn'>Vào kỳ thi</Button>
+            <Button onClick={goToSubject} className='client-group__button'>Vào kỳ thi</Button>
           </div>
           <div className='group__itemm'>
             <p>Tên kì thi: <span className='item__span'>text</span></p>
@@ -40,7 +40,7 @@ const Home = () => {
             <p>Thời gian kết thúc:<span className='item__span'>text</span></p>
             <p>Số lượng môn thi:<span className='item__span'>text</span></p>
             <CVO percentage={85}></CVO>
-            <Button onClick={goToSubject} className='group__buttonn'>Vào kỳ thi</Button>
+            <Button onClick={goToSubject} className='client-group__button'>Vào kỳ thi</Button>
           </div>
           <div className='group__itemm'>
             <p>Tên kì thi: <span className='item__span'>text</span></p>
@@ -49,7 +49,7 @@ const Home = () => {
             <p>Thời gian kết thúc:<span className='item__span'>text</span></p>
             <p>Số lượng môn thi:<span className='item__span'>text</span></p>
             <CVO percentage={35}></CVO>
-            <Button onClick={goToSubject} className='group__buttonn'>Vào kỳ thi</Button>
+            <Button onClick={goToSubject} className='client-group__button'>Vào kỳ thi</Button>
           </div>
           <div className='group__itemm'>
             <p>Tên kì thi: <span className='item__span'>text</span></p>
@@ -59,7 +59,7 @@ const Home = () => {
             <p>Số lượng môn thi:<span className='item__span'>text</span></p>
             <CVO percentage={10}></CVO>
 
-            <Button onClick={goToSubject} className='group__buttonn'>Vào kỳ thi</Button>
+            <Button onClick={goToSubject} className='client-group__button'>Vào kỳ thi</Button>
           </div>
         </div>
       </div>

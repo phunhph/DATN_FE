@@ -10,7 +10,7 @@ type RedirectButtonProps = {
 const RedirectButton: React.FC<RedirectButtonProps> = ({ to, label }) => {
     return (
         <Link to={to}>
-            <button>{label}</button>
+            <button className='redirect-btn'>{label}</button>
         </Link>
     );
 };

@@ -65,7 +65,7 @@ $header-height: 5rem;
     padding: 0.5rem 1.5rem 1rem 1.5rem;
 }
 
-.footer {
+.client-footer {
     min-height: $footer-height;
     padding: 1rem 1.5rem 0 1.5rem;
     display: flex;
@@ -124,7 +124,7 @@ $header-height: 5rem;
     }
 }
 
-.active {
+.client-active {
     background-color: #1EBA1E;
     color: white;
 }

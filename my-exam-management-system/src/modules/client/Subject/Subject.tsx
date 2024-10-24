@@ -35,7 +35,7 @@ const Subject = () => {
                             <div className="cvo-block-title-underline completed"></div>
                             <div className="cvo-block-title-underline remaining"></div>
                         </div>
-                        <button className='group__button' onClick={handleClick}>
+                        <button className='subject-group__button' onClick={handleClick}>
                             Làm bài thi
                         </button>
                     </div>
@@ -51,7 +51,7 @@ const Subject = () => {
                             <div className="cvo-block-title-underline completed"></div>
                             <div className="cvo-block-title-underline remaining"></div>
                         </div>
-                        <button className='group__button' onClick={handleClick}>
+                        <button className='subject-group__button' onClick={handleClick}>
                             Làm bài thi
                         </button>
                     </div>
@@ -67,7 +67,7 @@ const Subject = () => {
                             <div className="cvo-block-title-underline completed"></div>
                             <div className="cvo-block-title-underline remaining"></div>
                         </div>
-                        <button className='group__button' onClick={handleClick}>
+                        <button className='subject-group__button' onClick={handleClick}>
                             Làm bài thi
                         </button>
                     </div>
@@ -84,7 +84,7 @@ const Subject = () => {
                             <div className="cvo-block-title-underline remaining"></div>
                         </div>
 
-                        <button className='group__button' onClick={handleClick}>
+                        <button className='subject-group__button' onClick={handleClick}>
                             Làm bài thi
                         </button>
                     </div>
