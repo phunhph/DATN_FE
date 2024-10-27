@@ -56,7 +56,7 @@ const ClientLayout = () => {
                     <>
                       <ul className="dropdown__menu">
                         <li className="dropdown__item">
-                          <NavLink to={'/client/user'}>
+                          <NavLink to={'/client/candidate-information'}>
                             <div className="dropdown__user">
                               <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="🗿"></img>
                               <span>Username</span>
