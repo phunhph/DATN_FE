@@ -291,3 +291,6 @@ video {
   cursor: not-allowed;
   filter: blur(1px) grayscale(100%);
 }
+.cursor-default {
+  cursor: auto !important;
+}
