@@ -129,14 +129,14 @@ const ManageSemester = () => {
           </div>
         </GridItem>
         {semesterData.map((semester, index) => (
-          <GridItem key={index}>
+          <GridItem key={index} className="cursor-default">
               <h2 className="semester__name">{semester.semesterName}</h2>
               <p className="semester__info">Mã kỳ thi: {semester.semesterCode}</p>
               <p className="semester__info">Thời gian bắt đầu: {semester.semesterStart}</p>
               <p className="semester__info">Thời gian kết thúc: {semester.semesterEnd}</p>
               <div className="btn-group-2">
                 <Button type="button" onClick={() => onDelete(semester.semesterCode)} className="btn btn-del">Xóa</Button>
-                <Button type="button" onClick={() => openSemesterForm("update", semester)} className="btn btn-del">Cập nhật</Button>
+                <Button type="button" onClick={() => openSemesterForm("update", semester)} className="btn btn-update">Cập nhật</Button>
               </div>
           </GridItem>
         ))}

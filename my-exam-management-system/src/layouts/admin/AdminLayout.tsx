@@ -81,16 +81,7 @@ const AdminLayout = () => {
               <MenuLink imgSrc="Quản lý giám thị" title="Quản lý giám thị" location="manage-supervisors"/>
               <MenuLink imgSrc="Kết quả thi" title="Kết quả thi" location="exam-results"/>
               <MenuLink imgSrc="Quản lý báo cáo" title="Quản lý báo cáo" location="manage-reports"/>
-              <li className={`menu__item ${openMenu === 'states' ? "open" : ""} ${isPathExamState ? "activeSM" : ""}`}>
-                <div onClick={toggleOpenExamStates} className="submenu__btn">
-                  <img src="/Câu hỏi thường.svg" alt="menu icon"></img>
-                  <span>Quản lý tình trạng</span>
-                </div>
-                <ul className="submenu__list">
-                  <MenuLink imgSrc="circle" title="Tình trạng thí sinh" location="manage-exam-state-candidates"/>
-                  <MenuLink imgSrc="circle" title="Tình trạng phòng thi" location="manage-exam-state-rooms"/>
-                </ul>
-              </li>
+              <MenuLink imgSrc="circle" title="Quản lý trạng thái" location="manage-status"/>
             </ul>
           </div>
         </aside>
@@ -106,10 +97,12 @@ const AdminLayout = () => {
                   <>
                     <ul className="dropdown__menu">
                       <li className="dropdown__item">
-                        <div className="dropdown__user">
-                          <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="🗿"></img>
-                          <span>Username</span>
-                        </div>
+                        <NavLink to={"/admin/user"}>
+                          <div className="dropdown__user">
+                            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="🗿"></img>
+                            <span>Username</span>
+                          </div>
+                        </NavLink>
                       </li>
                       <div className="dropdown__divider"></div>
                       <DropdownLink imgSrc="settings.svg" location="settings" onClick={toggleUserMenu} title="Cài đặt"></DropdownLink>

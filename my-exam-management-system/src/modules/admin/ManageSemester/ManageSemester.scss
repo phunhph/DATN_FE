@@ -145,14 +145,21 @@ button.submit-btn.btn {
     }
   }
   &-del{
-    // position:absolute;
-    // bottom:1.5rem;
-    // right:1rem;
     transition: background-color 0.3s ease;
     color: black;
     border: 1px solid black;
     &:hover {
       background-color: #f3f4f6;
+    }
+  }
+  &-update {
+    color: #fff;
+    background-color: #7367f0;
+    border-color: #7367f0;
+    transition: background-color 0.3s ease;
+    &:hover {
+      background-color: #5c61e6;
+      border-color: #5c61e6;
     }
   }
 }
