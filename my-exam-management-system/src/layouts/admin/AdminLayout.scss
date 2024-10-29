@@ -174,28 +174,7 @@
     }
     cursor: pointer;
   }
-  &__menu {
-    position: absolute;
-    right: 0;
-    top: 147%;
-    display: block;
-    background: white;
-    list-style: none;
-    border-radius: 4px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-    min-width: 14rem;
-    border: 1px solid #dddddd;
-  }
-  &__user {
-    margin: 0.5rem 0;
-    padding-left: 1rem;
-    height: 3rem;
-    display: flex;
-    align-items: center;
-    & img {
-      margin-right: 0.5rem;
-    }
-  }
+
   &__divider {
     margin: 3px 0.5rem;
     border-top: 1px solid #dfdfe1;

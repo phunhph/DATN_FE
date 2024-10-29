@@ -34,12 +34,12 @@
   }
   &__menu {
     position: absolute;
-    z-index: 10;
     right: 0;
     top: 147%;
-    z-index: 10;
+    z-index: 40;
     display: block;
-    background: white;
+    background: var(--secondary);
+    color: var(--text);
     list-style: none;
     border-radius: 4px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
@@ -58,7 +58,7 @@
   }
   &__divider {
     margin: 3px 0.5rem;
-    border-top: 1px solid #dfdfe1;
+    border-top: 1px solid var(--text15);
   }
   &__button {
     width: 100%;

@@ -1,24 +1,26 @@
+@use "@scss/variables" as v;
+@use "@scss/mixin.scss" as m;
 $footer-height: 18rem;
-$header-height: 5rem;
+$header-height: 4rem;
 
 .page-content {
     display: flex;
     flex-direction: column;
     position: relative;
-    background-color: #ebffeb;
+    background-color: var(--bg);
 }
 
-.header {
-    padding: 1rem 1.5rem;
+.client-header {
+    padding: 0.5rem 1.5rem;
     min-height: $header-height;
-    background-color: white;
+    background-color: var(--bg);
 }
 
 .divider {
     height: 1px;
-    width: calc(100% - 3rem);
+    width: 100%;
     margin: 0 auto;
-    background-color: rgb(201, 201, 201);
+    background-color: var(--text15);
 }
 
 .nav {
@@ -31,12 +33,12 @@ $header-height: 5rem;
 
         &-img {
             height: 2rem;
+            filter: var(--theme-filter);
         }
     }
 
     &__menu {
         display: flex;
-        font-size: 1.5rem;
     }
 
     &__link {
@@ -44,25 +46,23 @@ $header-height: 5rem;
 
         & a {
             display: block;
-            padding: 0.25rem 0.5rem;
+            padding: 0.5rem 1rem;
             border-radius: 50px;
+            color: var(--text);
         }
     }
 
-    &__menu {
-        display: flex;
-        font-size: 1.5rem;
-    }
-
-    &__link {
-        margin: 0 3rem;
+    &__toggle {
+        margin: 0 1rem;
+        position: relative;
+        transform: none;
     }
 }
 
 .content-wrapper {
     display: flex;
     flex-grow: 1;
-    padding: 0.5rem 1.5rem 1rem 1.5rem;
+    padding: 1rem 1.5rem 3rem 1.5rem;
 }
 
 .client-footer {
@@ -70,9 +70,8 @@ $header-height: 5rem;
     padding: 1rem 1.5rem 0 1.5rem;
     display: flex;
     flex-direction: column;
-    // background-color: #BA621E;
-    background-color: #1C1C1C;
-    color: white;
+    background-color: var(--text10);
+    color: var(--text);
 
     &__info {
         display: flex;
@@ -80,7 +79,7 @@ $header-height: 5rem;
     }
 
     &__logo {
-        filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(7500%) hue-rotate(197deg) brightness(112%) contrast(107%);
+        filter: var(--theme-filter);
     }
 
     &__list {
@@ -108,32 +107,72 @@ $header-height: 5rem;
         & p {
             margin-top: 1.125rem;
             padding-left: 0.5rem;
-            font-size: 1.25rem;
+            font-size: 1rem;
             font-weight: 600;
             text-align: left;
         }
     }
 
     &__end {
-        border-top: 1px solid white;
+        border-top: 1px solid var(--text15);
         display: flex;
         justify-content: center;
         align-items: center;
-        padding: 0.5rem 0;
         flex-grow: 1;
     }
 }
 
 .client-active {
-    background-color: #1EBA1E;
-    color: white;
+    background-color: var(--secondary30);
+    color: var(--text);
 }
 
-.cover {
-    opacity: 0;
-    transition: opacity 0.3s linear;
+.show-responsive-nav {
+    display: none;
 }
 
-.cover-deactivate {
-    opacity: 1;
+@include m.responsive-to(xl) {
+    .client-header {
+        padding: 0.5rem 1rem;
+    }
+    .content-wrapper {
+        padding: 1rem 1rem 3rem 1rem;
+    }
+    .client-footer {
+        padding: 1rem 1rem 0 1rem;
+    }
+}
+
+
+@include m.responsive-to(lg) {
+    .nav {
+        &__menu {
+            display: none;
+        }
+    }
+
+    .show-responsive-nav {
+        display: block;
+    }
+}
+
+@include m.responsive-to(md) {
+    .client-header {
+        padding: 0.5rem 0.5rem;
+    }
+    .content-wrapper {
+        padding: 1rem 0.5rem 3rem 0.5rem;
+    }
+    .client-footer {
+        padding: 1rem 0.5rem 0 0.5rem;
+    }
+}
+
+@include m.responsive-to(sm) {
+    .client-footer {
+        &__info {
+            flex-direction: column;
+            gap:0;
+        }
+    }
 }

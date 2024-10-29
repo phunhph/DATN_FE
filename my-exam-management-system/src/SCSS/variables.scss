@@ -7,11 +7,13 @@ $text-theme-dark: #cfcde4;
 // #30334e
 $bgc: #7367f0;
 
-
+$app-light-filter: brightness(0) saturate(100%) invert(5%) sepia(27%) saturate(2787%) hue-rotate(57deg) brightness(97%) contrast(96%);
+$app-dark-filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(7500%) hue-rotate(197deg) brightness(112%) contrast(107%);
 
 
 // https://www.realtimecolors.com/?colors=0d1505-f5fcee-7ad42b-95e9aa-5ede91&fonts=Inter-Inter
 .app-light {
+    --theme-filter: #{$app-light-filter};
     --text: #0d1505;
     --bg: #f5fcee;
     --primary: #7ad42b;
@@ -101,8 +103,9 @@ $bgc: #7367f0;
 }
 
 .app-dark {
+    --theme-filter: #{$app-dark-filter};
     --text: #f2faea;
-    --bg: #0a1103;
+    --bg: #101d03;
     --primary: #7ad42b;
     --secondary: #166a2b;
     --accent: #21a154;

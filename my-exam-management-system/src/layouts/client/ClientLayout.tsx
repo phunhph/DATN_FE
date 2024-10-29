@@ -1,9 +1,11 @@
-import { DropdownLink } from "@components/index";
+import { DropdownLink, ToggleSwitch } from "@components/index";
 import { useEffect, useRef, useState } from "react";
 import { Link, NavLink, Outlet } from "react-router-dom";
 import "./CLientLayout.scss";
+import { useTheme } from "@/contexts";
 
 const ClientLayout = () => {
+  const {theme, toggleTheme} = useTheme()
   const [isUserMenuOpen, setUserMenuOpen] = useState<boolean>(false);
   const dropDownRef = useRef<HTMLDivElement | null>(null);
 
@@ -28,10 +30,10 @@ const ClientLayout = () => {
   return (
     <>
       <div className="page-content">
-        <header className="header">
+        <header className="client-header">
           <nav className="nav">
             <div className="nav__logo">
-              <NavLink to={"/client/home"} ><img className="nav__logo-img" src="/logo-black.svg" alt="logo"></img></NavLink>
+              <a href={"/client/home"} ><img className="nav__logo-img" src="/logo-black.svg" alt="logo"></img></a>
             </div>
             <div className="nav__menu-container">
               <ul className="nav__menu">
@@ -64,7 +66,14 @@ const ClientLayout = () => {
                           </NavLink>
                         </li>
                         <div className="dropdown__divider"></div>
-                        <DropdownLink imgSrc="settings.svg" location="settings" onClick={toggleUserMenu} title="Cài đặt"></DropdownLink>
+                        <div className="show-responsive-nav">
+                          <DropdownLink location="client/scores" onClick={toggleUserMenu} title="Bảng điểm"></DropdownLink>
+                          <DropdownLink location="client/history" onClick={toggleUserMenu} title="Lịch sử thi"></DropdownLink>
+                        </div>
+                        <DropdownLink location="settings" onClick={toggleUserMenu} title="Cài đặt"></DropdownLink>
+                        <li className="dropdown__item">
+                          <ToggleSwitch className="nav__toggle" id="" toggleState={theme == "light" ? false : true} onToggle={toggleTheme}></ToggleSwitch><span>Nền {theme == 'light' ? "Sáng" : "Tối"}</span>
+                        </li>
                         <div className="dropdown__divider"></div>
                         <li className="dropdown__button" onClick={toggleUserMenu}>
                           <NavLink  to="/" className="dropdown__logout">

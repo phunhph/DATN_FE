@@ -105,7 +105,7 @@ const AdminLayout = () => {
                         </NavLink>
                       </li>
                       <div className="dropdown__divider"></div>
-                      <DropdownLink imgSrc="settings.svg" location="settings" onClick={toggleUserMenu} title="Cài đặt"></DropdownLink>
+                      <DropdownLink location="settings" onClick={toggleUserMenu} title="Cài đặt"></DropdownLink>
                       <div className="dropdown__divider"></div>
                       <li className="dropdown__button" onClick={toggleUserMenu}>
                         <NavLink  to="/" className="dropdown__logout">

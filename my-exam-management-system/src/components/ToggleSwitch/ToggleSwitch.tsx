@@ -4,11 +4,12 @@ interface ToggleSwitchProps {
     id: string;
     toggleState: boolean;
     onToggle: (id: string) => void;
+    className?:string;
 }
 
-export const ToggleSwitch = ({ id, toggleState, onToggle }: ToggleSwitchProps) => (
+export const ToggleSwitch = ({ id, toggleState, onToggle, className }: ToggleSwitchProps) => (
     <div
-        className={`toggle-switch ${toggleState == true ? "active_" : "inactive"}`}
+        className={`toggle-switch ${className} ${toggleState == true ? "active_" : "inactive"}`}
         onClick={() => onToggle(id)}
     >
         <div className="toggle-switch-circle" />
