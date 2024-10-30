@@ -2,7 +2,7 @@ import{SubjectCreate,ApiExamSubjectResponse,ExamSubject} from "@interfaces/Subje
 import { instance } from "@/services/api/api";
 import { AxiosResponse, AxiosError } from "axios";
 
-export const getAllExamSubjectByIdExam = async (
+export const getAllExamSubjectByIdSemester = async (
   id: string
 ): Promise<ApiExamSubjectResponse> => {
   try {

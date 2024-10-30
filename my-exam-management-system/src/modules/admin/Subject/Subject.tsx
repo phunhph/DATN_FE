@@ -6,30 +6,19 @@ import {
   Table,
   UploadFile,
 } from "../../../components";
-import { Exam } from "../../../interfaces/ExamInterface/ExamInterface";
 import { ExamSubject } from "../../../interfaces/SubjectInterface/ExamSubjectInterface";
 import { useNavigate } from "react-router-dom";
 import AsyncSelect from "react-select/async";
 import { ErrorSubject } from "@/interfaces/SubjectInterface/ErrorExamSubjectInterface";
+import { getAllSemester } from "@/services/repositories/SemesterServices/SemesterServices";
+import { SemesterType } from "../ManageSemester/Semester.type";
+import { importFileExcel } from "@/services/repositories/ExamSubjectService/ExamSubjectService";
+import { Semester } from "@/interfaces/SemesterInterface/SemestertInterface";
 
 const Subject: React.FC = () => {
   const [selectedExamId, setSelectedExamId] = useState<string>("");
 
-  const [exams, setExams] = useState<Exam[]>([
-    {
-      id: 1,
-      Name: "Kỳ thi Bảy viên ngọc rồng",
-      TimeStart: "2024-06-01",
-      TimeEnd: "2024-06-03",
-      Status: true,
-    },
-    {
-      id: 2,
-      Name: "Kỳ thi Thuỷ thủ mặt trăng",
-      TimeStart: "2024-06-01",
-      TimeEnd: "2024-06-03",
-      Status: true,
-    },
+  const [semesters, setSemesters] = useState<SemesterType[]>([
   ]);
 
   const [examSubjects, setExamSubject] = useState<ExamSubject[]>([
@@ -45,9 +34,9 @@ const Subject: React.FC = () => {
     },
   ]);
 
-  const examOptions = exams.map((exam) => ({
-    label: exam.Name,
-    value: exam.id,
+  const examOptions = semesters.map((semester) => ({
+    label: semester.semesterName,
+    value: semester.semesterCode,
   }));
   const firstOption = examOptions[0];
 
@@ -209,7 +198,7 @@ const Subject: React.FC = () => {
       } else {
         console.error("Failed to create subject:", data.message);
       }
-      addNotification(data.warning || data.message || "", data.success);
+      addNotification(data.message || "", data.success);
     }
   };
   const navigate = useNavigate();
@@ -221,6 +210,47 @@ const Subject: React.FC = () => {
       addNotification("Exam not found", false);
     }
   };
+
+  const formatData = (data: Semester[] | Semester) => {
+    if (Array.isArray(data)) {
+      return data.map((e) => ({
+        semesterName: e.name,
+        semesterCode: e.id,
+        semesterStart: e.time_start,
+        semesterEnd: e.time_end,
+        semesterStatus: e.status,
+      }));
+    } else if (data && typeof data === "object") {
+      return [
+        {
+          semesterName: data.name,
+          semesterCode: data.id,
+          semesterStart: data.time_end,
+          semesterEnd: data.time_start,
+          semesterStatus: data.status,
+        },
+      ];
+    }
+
+    return [];
+  };
+
+  const getSemester = async () => {
+    const data = await getAllSemester();
+    if (data.success) {
+      const listSemester = formatData(data.data)
+      setSemesters(listSemester)
+    } else {
+      addNotification(data.message ?? 'Đã có lỗi xảy ra', data.success);
+    }
+  };
+  const onLoad = () => {
+    getSemester()
+  }
+
+  useEffect(() => {
+    onLoad()
+  }, [])
 
   return (
     <div className="subject__container">
