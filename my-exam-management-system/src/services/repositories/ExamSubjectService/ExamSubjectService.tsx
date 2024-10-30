@@ -4,7 +4,7 @@ import { AxiosResponse, AxiosError } from "axios";
 
 export const getAllExamSubjectByIdSemester = async (
   id: string
-): Promise<ApiExamSubjectResponse> => {
+) => {
   try {
     const token = localStorage.getItem("token");
 
@@ -12,7 +12,7 @@ export const getAllExamSubjectByIdSemester = async (
       Authorization: `Bearer ${token}`,
     };
 
-    const response: AxiosResponse<ExamSubject[]> = await instance.get(
+    const response: AxiosResponse<ApiExamSubjectResponse> = await instance.get(
       `/api/admin/exam-subjects/exam/${id}`,
       {
         headers: headers,
@@ -20,15 +20,15 @@ export const getAllExamSubjectByIdSemester = async (
     );
 
     return  {
-        success: true,
+        success: response.data.success,
         message: "Subject fetched successfully",
-        data: response.data,
+        data: response.data.data,
         status: 200
       }; 
   } catch (error) {
     if (error instanceof AxiosError && error.response) {
       const { data } = error.response;
-      const errorMessage = formatWarningMessage(data.warning);
+      const errorMessage = formatWarningMessage(data.message);
 
       return {
         success: false,

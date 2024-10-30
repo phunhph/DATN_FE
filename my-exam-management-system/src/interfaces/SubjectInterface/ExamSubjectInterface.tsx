@@ -2,8 +2,8 @@ import { BaseResponse } from "../InterfaceBaseResponse/InterfaceBaseResponse";
 
 export interface ExamSubject {
   id: number|string;
-  Name: string;
-  Status?: boolean;
+  name: string;
+  status?: boolean;
 }
 
 export interface ApiExamSubjectResponse extends BaseResponse {
