@@ -1,8 +1,8 @@
-import { ApiExamResponse, Exam } from "@interfaces/index";
+import { ApiSemesterResponse, Semester } from "@/interfaces/SemesterInterface/SemestertInterface";
 import { instance } from "@/services/api/api";
 import { AxiosResponse, AxiosError } from "axios";
 
-export const getAllExam = async (): Promise<ApiExamResponse> => {
+export const getAllSemester = async (): Promise<ApiSemesterResponse> => {
   try {
     const token = localStorage.getItem("token");
 
@@ -10,7 +10,7 @@ export const getAllExam = async (): Promise<ApiExamResponse> => {
       Authorization: `Bearer ${token}`,
     };
 
-    const response: AxiosResponse<Exam[]> = await instance.get(
+    const response: AxiosResponse<Semester[]> = await instance.get(
       "/api/admin/exams-management",
       {
         headers: headers,
@@ -21,6 +21,7 @@ export const getAllExam = async (): Promise<ApiExamResponse> => {
       success: true,
       message: "Exams fetched successfully",
       data: response.data,
+      status: 200
     };
   } catch (error) {
     if (error instanceof AxiosError && error.response) {
@@ -30,6 +31,8 @@ export const getAllExam = async (): Promise<ApiExamResponse> => {
       return {
         success: false,
         message: errorMessage,
+        data: [],
+        status: 500
       };
     } else {
       const generalError = "An unknown error occurred while fetching exams.";
@@ -37,12 +40,14 @@ export const getAllExam = async (): Promise<ApiExamResponse> => {
       return {
         success: false,
         message: generalError,
+        data: [],
+        status: 500
       };
     }
   }
 };
 
-export const addExam = async (data:Exam ) => {
+export const addSemester = async (data: Semester) => {
   try {
     const token = localStorage.getItem("token");
 
@@ -50,7 +55,7 @@ export const addExam = async (data:Exam ) => {
       Authorization: `Bearer ${token}`,
     };
 
-    const response: AxiosResponse<ApiExamResponse> = await instance.post(
+    const response: AxiosResponse<ApiSemesterResponse> = await instance.post(
       `/api/admin/exams-management`,
       data,
       {
@@ -58,7 +63,12 @@ export const addExam = async (data:Exam ) => {
       }
     );
 
-    return response.data;
+    return {
+      success: response.data.success,
+      message: response.data.message || response.data.warning,
+      data: response.data.data,
+      status: 201
+    };;
   } catch (error) {
     if (error instanceof AxiosError && error.response) {
       const { data } = error.response;
@@ -79,7 +89,7 @@ export const addExam = async (data:Exam ) => {
   }
 };
 
-export const updateExam = async (data:Exam ) => {
+export const updateSemester = async (data: Semester) => {
   try {
     const token = localStorage.getItem("token");
 
@@ -87,7 +97,7 @@ export const updateExam = async (data:Exam ) => {
       Authorization: `Bearer ${token}`,
     };
 
-    const response: AxiosResponse<ApiExamResponse> = await instance.put(
+    const response: AxiosResponse<ApiSemesterResponse> = await instance.put(
       `/api/admin/exams-management/${data.id}`,
       data,
       {
@@ -115,7 +125,7 @@ export const updateExam = async (data:Exam ) => {
   }
 };
 
-export const removeExam = async (id:string) => { 
+export const removeSemester = async (id: string) => {
   try {
     const token = localStorage.getItem("token");
 
@@ -123,7 +133,7 @@ export const removeExam = async (id:string) => {
       Authorization: `Bearer ${token}`,
     };
 
-    const response: AxiosResponse<ApiExamResponse> = await instance.delete(
+    const response: AxiosResponse<ApiSemesterResponse> = await instance.delete(
       `/api/admin/exams-management/${id}`,
       {
         headers: headers,

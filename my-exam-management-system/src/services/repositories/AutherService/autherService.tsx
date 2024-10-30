@@ -14,6 +14,8 @@ export const login = async (username: string, password: string): Promise<LoginRe
       const response: AxiosResponse<LoginResponse> = await instance.post('api/admin/login', { username, password });
       return response.data;
     } catch (error) {
+      console.log(error);
+          
         if (error instanceof AxiosError) {
           return {
             success: false,
@@ -25,7 +27,6 @@ export const login = async (username: string, password: string): Promise<LoginRe
           };
         } else {
           console.error("Login error:", (error as Error).message || error);
-    
           return {
             success: false,
             token: '',
