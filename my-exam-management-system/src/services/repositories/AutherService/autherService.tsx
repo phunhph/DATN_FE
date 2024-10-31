@@ -13,7 +13,7 @@ interface LoginResponse {
 export const login = async (
   username: string,
   password: string,
-  retry = 1
+  retry = 5
 ): Promise<LoginResponse> => {
   try {
     const response: AxiosResponse<LoginResponse> = await instance.post('api/admin/login', { username, password });

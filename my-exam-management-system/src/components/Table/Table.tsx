@@ -7,7 +7,7 @@ import { ToggleSwitch } from "../ToggleSwitch/ToggleSwitch";
 interface TableAction {
   name: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onClick?: (type: "add" | "edit" | "file" | string | any) => void;
+  onClick?: (type: "add" | "edit" | "file" | string | any| null) => void;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -74,13 +74,13 @@ export const Table = <T extends Record<string, any>>({
   const handleToggle = (id: string) => {
     if (action_status) {
       action_status(id);
-      setItems((prevItems) =>
-        prevItems.map((item) =>
-          item.id === id
-            ? { ...item, status: item.status === "true" ? "false" : "true" }
-            : item
-        )
-      );
+      // setItems((prevItems) =>
+      //   prevItems.map((item) =>
+      //     item.id === id
+      //       ? { ...item, status: item.status === "true" ? "false" : "true" }
+      //       : item
+      //   )
+      // );
     }
   };
 
@@ -116,8 +116,6 @@ export const Table = <T extends Record<string, any>>({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const renderCellValue = (key: keyof T, value: any) => {
     if (key === "status") {
-      console.log(value);
-
       return (
         <ToggleSwitch
           key={value.id}
@@ -139,18 +137,18 @@ export const Table = <T extends Record<string, any>>({
         <h1>{tableName}</h1>
         <div className="table-button-group">
           {action_upload && (
-            <button className="table-button" onClick={() => action_upload.onClick}>
+            <button className="table-button" onClick={() => action_upload.onClick?.('file')}>
               <img src="/Lấy file.svg" alt="Upload file" />
             </button>
           )}
           {action_dowload && (
-            <button className="table-button" onClick={() => action_dowload.onClick}>
+            <button className="table-button" onClick={() => action_dowload.onClick?.('')}>
               <img src="/Tải xuống.svg" alt="Tải xuống" />
               Tải xuống
             </button>
           )}
           {actions_add && (
-            <button className="table-button" onClick={() => actions_add.onClick}>
+            <button className="table-button" onClick={() => actions_add.onClick?.('add')}>
               {actions_add.name}
             </button>
           )}

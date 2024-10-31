@@ -6,13 +6,13 @@ import {
   Table,
   UploadFile,
 } from "../../../components";
-import { ExamSubject } from "../../../interfaces/SubjectInterface/ExamSubjectInterface";
+import { ExamSubject, SubjectCreate } from "../../../interfaces/SubjectInterface/ExamSubjectInterface";
 import { useNavigate } from "react-router-dom";
 import AsyncSelect from "react-select/async";
 import { ErrorSubject } from "@/interfaces/SubjectInterface/ErrorExamSubjectInterface";
 import { getAllSemester } from "@/services/repositories/SemesterServices/SemesterServices";
 import { SemesterType } from "../ManageSemester/Semester.type";
-import { getAllExamSubjectByIdSemester, importFileExcel } from "@/services/repositories/ExamSubjectService/ExamSubjectService";
+import { addExamSubject, getAllExamSubjectByIdSemester, importFileExcel } from "@/services/repositories/ExamSubjectService/ExamSubjectService";
 import { Semester } from "@/interfaces/SemesterInterface/SemestertInterface";
 
 const Subject: React.FC = () => {
@@ -76,16 +76,24 @@ const Subject: React.FC = () => {
     }, 1000);
   };
 
-  const handleCreateSubject = () => {
-    const newSubject: ExamSubject = {
-      id: formData.id,
-      name: formData.name,
-      status: true,
+  const handleCreateSubject = async () => {
+    const newSubject: SubjectCreate = {
+     id: formData.id,
+     exam_id: selectedExamId,
+     name: formData.name,
+     status: true,
     };
+    
+    const result = await addExamSubject(newSubject);
+    console.log(result);
+    if(result.success === true) {
+      setExamSubject([...examSubjects, newSubject]);
 
-    setExamSubject([...examSubjects, newSubject]);
-
-    addNotification("Thêm mới môn thi thành công!", true);
+      addNotification("Thêm mới môn thi thành công!", true);
+    } else {
+      addNotification(result.message??'Thêm mới môn thi thất bại', result.success);
+    }
+   
 
     closeModal();
   };
@@ -93,7 +101,7 @@ const Subject: React.FC = () => {
   const handleUpdateStatus = (id: string) => {
     setExamSubject((prevSubjects) =>
       prevSubjects.map((subject) =>
-        subject.id === id ? { ...subject, Status: !subject.status } : subject
+        subject.id === id ? { ...subject, status: !subject.status } : subject
       )
     );
     addNotification(`Trạng thái của môn thi đã được thay đổi.`, true);
@@ -147,6 +155,8 @@ const Subject: React.FC = () => {
   };
 
   const handleUpdateSubject = () => {
+    console.log(formData);
+    
     setExamSubject((prevSubjects) =>
       prevSubjects.map((subject) =>
         subject.id === formData.id ? { ...formData } : subject
@@ -171,6 +181,7 @@ const Subject: React.FC = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
+   
     setFormData((prevFormData) => ({
       ...prevFormData,
       [name]: value,
@@ -306,8 +317,6 @@ const Subject: React.FC = () => {
         actions_edit={{
           name: "Chỉnh sửa",
           onClick: (exam) => {
-            console.log("Edit", exam);
-
             if (exam) {
               openEditModal(exam);
             }
@@ -365,7 +374,7 @@ const Subject: React.FC = () => {
                       Tên môn thi: <br />
                       <input
                         type="text"
-                        name="Name"
+                        name="name"
                         className="modal__input"
                         value={formData.name}
                         onChange={handleChange}

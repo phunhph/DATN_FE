@@ -1,4 +1,4 @@
-import{SubjectCreate,ApiExamSubjectResponse,ExamSubject} from "@interfaces/SubjectInterface/ExamSubjectInterface";
+import{SubjectCreate,ApiExamSubjectResponse} from "@interfaces/SubjectInterface/ExamSubjectInterface";
 import { instance } from "@/services/api/api";
 import { AxiosResponse, AxiosError } from "axios";
 
