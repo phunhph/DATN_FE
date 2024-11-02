@@ -1,15 +1,14 @@
 import { Notification, PageTitle, Table, UploadFile } from "@/components";
 import { ExamContentCreate, ExamContentInterface } from "@/interfaces/ExamContentInterface/ExamContentInterface";
 import { ErrorSubject } from "@/interfaces/SubjectInterface/ErrorExamSubjectInterface";
-import { getAllExamContentByIdSubject, importFileExcelContent } from "@/services/repositories/ExamContentService/ExamContentService";
+import { addExamContent, getAllExamContentByIdSubject, importFileExcelContent, updateExamContent } from "@/services/repositories/ExamContentService/ExamContentService";
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
 const ExamContent: React.FC = () => {
   const location = useLocation();
   const { subject } = location.state || {};
-  console.log("Subject data:", subject);
-
+  
   const downloadSample = () => {
     const link = document.createElement("a");
     link.href = `public/excel/Exam-Content.xlsx`;
@@ -33,6 +32,9 @@ const ExamContent: React.FC = () => {
     setModalType(type);
     setModalIsOpen(true);
     setErrors({});
+    if (type === "add") {
+      setEditMode(false)
+    }
     if (!editMode) {
       setFormData({
         id: "",
@@ -57,6 +59,7 @@ const ExamContent: React.FC = () => {
 
   const closeModal = () => {
     setModalIsOpen(false);
+    setEditMode(false)
     if (!editMode) {
       setFormData({
         id: "",
@@ -93,27 +96,35 @@ const ExamContent: React.FC = () => {
     return Object.keys(errors).length === 0;
   };
 
-  const createExamContent = () => {
-    const newContent: ExamContentInterface = {
+  const createExamContent =  async() => {
+    const newContent: ExamContentCreate = {
+      exam_subject_id: subject.id,
       id: formData.id,
       title: formData.title,
       status: true,
     };
 
-    setExamContent([...examContent, newContent]);
+    const result = await addExamContent(newContent)
+    if(result.success) {
+      setExamContent([...examContent, newContent]);
+    }
 
-    addNotification("Thêm mới môn thi thành công!", true);
+    addNotification(result.message, result.success);
 
     closeModal();
   };
 
-  const handleUpdateSubject = () => {
-    setExamContent((prevContents) =>
-      prevContents.map((content) =>
-        content.id === formData.id ? { ...formData } : content
-      )
-    );
-    addNotification("Cập nhật môn thi thành công!", true);
+  const handleUpdateSubject = async () => {
+    console.log(formData);
+    const result = await updateExamContent(formData)
+    if(result.success){
+      setExamContent((prevContents) =>
+        prevContents.map((content) =>
+          content.id === formData.id ? { ...formData } : content
+        )
+      );
+    }
+    addNotification(result.message, result.success);
     closeModal();
   };
 
@@ -182,7 +193,6 @@ const ExamContent: React.FC = () => {
   };
    const onload = async () => {
     const result = await getAllExamContentByIdSubject(subject.id);
-      console.log(result);
       if(result.success){
         const data = formatDataSubject(result.data)
         setExamContent(data)
@@ -190,9 +200,7 @@ const ExamContent: React.FC = () => {
    }
   useEffect(() => {
     if (subject) {
-      
       onload()
-     
     }
   }, [subject]);
 

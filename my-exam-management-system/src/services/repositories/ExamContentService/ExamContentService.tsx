@@ -1,6 +1,6 @@
 
 import { instance } from "@/services/api/api";
-import { ApiExamContentResponse, ExamContentCreate } from "@/interfaces/ExamContentInterface/ExamContentInterface";
+import { ApiExamContentResponse, ExamContentCreate, ExamContentInterface } from "@/interfaces/ExamContentInterface/ExamContentInterface";
 import { AxiosResponse, AxiosError } from "axios";
 
 export const getAllExamContentByIdSubject = async (
@@ -65,7 +65,12 @@ export const addExamContent = async (data: ExamContentCreate) => {
       }
     );
 
-    return response.data;
+    return  {
+      success: response.data.success,
+      message: response.data.message,
+      data: response.data.data,
+      status: 201
+    };
   } catch (error) {
     if (error instanceof AxiosError && error.response) {
       const { data } = error.response;
@@ -89,14 +94,15 @@ export const addExamContent = async (data: ExamContentCreate) => {
   }
 };
 
-export const updateExamContent = async (data: ExamContentCreate) => {
+export const updateExamContent = async (data: ExamContentInterface) => {
   try {
     const token = localStorage.getItem("token");
 
     const headers = {
       Authorization: `Bearer ${token}`,
     };
-
+    console.log(data);
+    
     const response: AxiosResponse<ApiExamContentResponse> = await instance.put(
       `/api/admin/exam-content/${data.id}`,
       data,
@@ -105,8 +111,14 @@ export const updateExamContent = async (data: ExamContentCreate) => {
       }
     );
 
-    return response.data;
+    return  {
+      success: response.data.success,
+      message: response.data.message,
+      data: response.data.data,
+      status: 200
+    };
   } catch (error) {
+    
     if (error instanceof AxiosError && error.response) {
       const { data } = error.response;
       const errorMessage = formatWarningMessage(data.warning);

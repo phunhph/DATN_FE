@@ -65,7 +65,7 @@ export const addSemester = async (data: Semester) => {
 
     return {
       success: response.data.success,
-      message: response.data.message || response.data.warning,
+      message: response.data.message,
       data: response.data.data,
       status: 201
     };;
@@ -160,3 +160,47 @@ export const removeSemester = async (id: string) => {
   }
 };
 
+export const getAllSemesterWithExamSubject = async (): Promise<ApiSemesterResponse> => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+
+    const response: AxiosResponse<Semester[]> = await instance.get(
+      "/api/admin/exam/exam-with-exam-subject",
+      {
+        headers: headers,
+      }
+    );
+
+    return {
+      success: true,
+      message: "Exams fetched successfully",
+      data: response.data,
+      status: 200
+    };
+  } catch (error) {
+    if (error instanceof AxiosError && error.response) {
+      const { data } = error.response;
+      const errorMessage = `${data.message || "Error occurred"}`;
+
+      return {
+        success: false,
+        message: errorMessage,
+        data: [],
+        status: 500
+      };
+    } else {
+      const generalError = "An unknown error occurred while fetching exams.";
+
+      return {
+        success: false,
+        message: generalError,
+        data: [],
+        status: 500
+      };
+    }
+  }
+};

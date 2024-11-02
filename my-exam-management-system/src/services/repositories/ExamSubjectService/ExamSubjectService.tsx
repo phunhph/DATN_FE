@@ -264,3 +264,50 @@ export const formatWarningMessage_ = (warning: WarningType): string => {
   }
 };
 
+export const getAllExamSubjectByIdSemesterWithContent = async (
+  id: string
+) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+
+    const response: AxiosResponse<ApiExamSubjectResponse> = await instance.get(
+      `/api/admin/exam/exam-subjects-with-content/${id}`,
+      {
+        headers: headers,
+      }
+    );
+
+    return  {
+        success: response.data.success,
+        message: "Subject fetched successfully",
+        data: response.data.data,
+        status: 200
+      }; 
+  } catch (error) {
+    if (error instanceof AxiosError && error.response) {
+      const { data } = error.response;
+      const errorMessage = formatWarningMessage(data.message);
+
+      return {
+        success: false,
+        message: errorMessage,
+        data: [],
+        status: 500
+      };
+    } else {
+      const generalError =
+        "An unknown error occurred while fetching exam subjects.";
+
+      return {
+        success: false,
+        message: generalError,
+        data: [],
+        status: 500
+      };
+    }
+  }
+};
