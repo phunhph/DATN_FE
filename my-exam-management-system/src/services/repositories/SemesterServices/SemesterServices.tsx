@@ -68,7 +68,7 @@ export const addSemester = async (data: Semester) => {
       message: response.data.message,
       data: response.data.data,
       status: 201
-    };;
+    };
   } catch (error) {
     if (error instanceof AxiosError && error.response) {
       const { data } = error.response;
@@ -160,7 +160,7 @@ export const removeSemester = async (id: string) => {
   }
 };
 
-export const getAllSemesterWithExamSubject = async (): Promise<ApiSemesterResponse> => {
+export const getAllSemesterWithExamSubject = async () => {
   try {
     const token = localStorage.getItem("token");
 
@@ -168,19 +168,15 @@ export const getAllSemesterWithExamSubject = async (): Promise<ApiSemesterRespon
       Authorization: `Bearer ${token}`,
     };
 
-    const response: AxiosResponse<Semester[]> = await instance.get(
+    const response: AxiosResponse<ApiSemesterResponse[]> = await instance.get(
       "/api/admin/exam/exam-with-exam-subject",
       {
         headers: headers,
       }
     );
 
-    return {
-      success: true,
-      message: "Exams fetched successfully",
-      data: response.data,
-      status: 200
-    };
+    return response.data;
+     
   } catch (error) {
     if (error instanceof AxiosError && error.response) {
       const { data } = error.response;

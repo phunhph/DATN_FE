@@ -11,7 +11,7 @@ const ManageExamRooms = () => {
   const [roomList, setRoomList] = useState<any>([]);
 
 
-  // mock data
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const semesterOptions: any[] = [
     {
       semesterName: "Fall 2024",
@@ -56,6 +56,7 @@ const ManageExamRooms = () => {
       semesterEnd: "2023-08-31",
     },
   ];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const subjectOptions: any[] = [
     { id: 1, subjectName: "Kỳ thi Toán học", subjectType: "mon1", startDate: "2024-09-01", endDate: "2024-09-15", status: "Scheduled" },
     { id: 2, subjectName: "Kỳ thi Vật lý", subjectType: "mon2", startDate: "2024-09-05", endDate: "2024-09-18", status: "Scheduled" },
@@ -63,6 +64,7 @@ const ManageExamRooms = () => {
     { id: 4, subjectName: "Kỳ thi Lập trình", subjectType: "mon4", startDate: "2024-09-12", endDate: "2024-09-25", status: "Scheduled" },
     { id: 5, subjectName: "Kỳ thi Văn học", subjectType: "mon5", startDate: "2024-09-08", endDate: "2024-09-22", status: "Scheduled" },
   ];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const sessionOptions: any[] = [
     {
       sessionCode: "CT2024-01",
@@ -96,17 +98,19 @@ const ManageExamRooms = () => {
     },
   ]
   const examRooms = [
-    { examRoomID: 0, examRoomName: "Room 101", numberOfStudent: 25 },
-    { examRoomID: 1, examRoomName: "Room 102", numberOfStudent: 30 },
-    { examRoomID: 2, examRoomName: "Room 103", numberOfStudent: 20 },
-    { examRoomID: 3, examRoomName: "Room 104", numberOfStudent: 28 },
-    { examRoomID: 4, examRoomName: "Room 105", numberOfStudent: 32 },
-    { examRoomID: 5, examRoomName: "Room 106", numberOfStudent: 18 },
-    { examRoomID: 6, examRoomName: "Room 107", numberOfStudent: 24 },
-    { examRoomID: 7, examRoomName: "Room 108", numberOfStudent: 22 },
-    { examRoomID: 8, examRoomName: "Room 109", numberOfStudent: 26 },
-    { examRoomID: 9, examRoomName: "Room 110", numberOfStudent: 29 },
+    { examRoomName: "Room 101", numberOfStudent: 25 },
+    {  examRoomName: "Room 102", numberOfStudent: 30 },
+    { examRoomName: "Room 103", numberOfStudent: 20 },
+    { examRoomName: "Room 104", numberOfStudent: 28 },
+    {  examRoomName: "Room 105", numberOfStudent: 32 },
+    {  examRoomName: "Room 106", numberOfStudent: 18 },
+    {examRoomName: "Room 107", numberOfStudent: 24 },
+    {  examRoomName: "Room 108", numberOfStudent: 22 },
+    {  examRoomName: "Room 109", numberOfStudent: 26 },
+    {  examRoomName: "Room 110", numberOfStudent: 29 },
   ];
+
+  const title =['Tên phòng thi', 'Số lượng']
 
   const loadSemester = () => {
     //api semester list
@@ -138,21 +142,24 @@ const ManageExamRooms = () => {
       setSessionList(formattedSessionOpions)
     }
   }
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
   const loadSemesterOptions = (inputValue: string, callback: (options: any[]) => void) => {
     setTimeout(() => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       callback(semesterList.filter((i:any) => i.label.toLowerCase().includes(inputValue.toLowerCase())));
     }, 1000);
   };
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
   const loadSubjectOptions = (inputValue: string, callback: (options: any[]) => void) => {
     setTimeout(() => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       callback(subjectList.filter((i:any) => i.label.toLowerCase().includes(inputValue.toLowerCase())));
     }, 1000);
   };
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
   const loadSessionOptions = (inputValue: string, callback: (options: any[]) => void) => {
     setTimeout(() => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       callback(sessionList.filter((i:any) => i.label.toLowerCase().includes(inputValue.toLowerCase())));
     }, 1000);
   };
@@ -161,6 +168,7 @@ const ManageExamRooms = () => {
     handleSubmit,
     setValue
   } = useForm({})
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onSubmit:SubmitHandler<any> = (data:any) => {
     console.log(data)
     if (data.semester) {
@@ -211,6 +219,7 @@ const ManageExamRooms = () => {
         </div>
           { roomList && (
             <Table
+            title={title}
               data={roomList}
               tableName="Phòng thi"
             />
