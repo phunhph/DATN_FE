@@ -1,4 +1,3 @@
-import React from 'react';
 import './ToggleSwitch.scss'
 interface ToggleSwitchProps {
     id: string;

@@ -74,7 +74,7 @@
       hue-rotate(228deg) brightness(98%) contrast(91%);
   }
   &__outer {
-    visibility: hidden;
+    visibility: visible;
     overflow-y: auto;
     height: calc(100svh - 4rem);
     scrollbar-gutter: stable both-edges;

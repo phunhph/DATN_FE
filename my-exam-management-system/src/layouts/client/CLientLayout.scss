@@ -1,4 +1,4 @@
-@use "@scss/variables" as v;
+@use "@scss/variables.scss" as v;
 @use "@scss/mixin.scss" as m;
 $footer-height: 18rem;
 $header-height: 4rem;
@@ -123,7 +123,7 @@ $header-height: 4rem;
 }
 
 .client-active {
-    background-color: var(--secondary30);
+    background-color: var(--secondary50);
     color: var(--text);
 }
 
