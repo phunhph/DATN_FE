@@ -1,11 +1,11 @@
 import axios from "axios";
 
 export const instance = axios.create({
-  baseURL: "http://datn_be.com",
+  baseURL: "http://localhost/DATN_BE/public",
   headers: {
     "Content-Type": "application/json",
   },
-  timeout: 3000,
+  timeout: 10000,
 });
 
 instance.interceptors.request.use(
