@@ -1,4 +1,4 @@
-import { Button, PageTitle, Table } from "@components/index"
+import { Button, Notification, PageTitle, Table } from "@components/index"
 import "./ManageExamSessions.scss"
 import { useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
@@ -9,16 +9,26 @@ import AsyncSelect from "react-select/async";
 const ManageExamSessions = () => {
     const [openForm, setOpenForm] = useState<boolean>(false);
     const [animateOut, setAnimateOut] = useState<boolean>(false);
+    const [notifications, setNotifications] = useState<
+    Array<{ message: string; isSuccess: boolean }>
+  >([]);
+  const addNotification = (message: string, isSuccess: boolean) => {
+    setNotifications((prev) => [...prev, { message, isSuccess }]);
+  };
 
+  const clearNotifications = () => {
+    setNotifications([]);
+  };
+    const title = ['Mã ca thi', 'Ca thi', 'Trạng thái','Thao tác']
     //mock data
-    const sessionList = [
-        { id: 1, sessionCode: "CT2024-01", sessionName: "Ca thi buổi sáng - Toán học", status: "Đang diễn ra" },
-        { id: 2, sessionCode: "CT2024-02", sessionName: "Ca thi buổi chiều - Vật lý", status: "Chưa bắt đầu" },
-        { id: 3, sessionCode: "CT2024-03", sessionName: "Ca thi buổi tối - Hóa học", status: "Đã kết thúc" },
-        { id: 4, sessionCode: "CT2024-04", sessionName: "Ca thi buổi sáng - Lịch sử", status: "Chưa bắt đầu" },
-        { id: 5, sessionCode: "CT2024-05", sessionName: "Ca thi buổi chiều - Sinh học", status: "Đang diễn ra" },
-        { id: 6, sessionCode: "CT2024-06", sessionName: "Ca thi buổi tối - Địa lý", status: "Đã kết thúc" }
-    ];
+    const [sessionList, setSessionList] = useState<any>([
+        {  id: "CT2024-01", sessionName: "Ca thi buổi sáng - Toán học", status: true },
+        {  id: "CT2024-02", sessionName: "Ca thi buổi chiều - Vật lý", status: true },
+        { id: "CT2024-03", sessionName: "Ca thi buổi tối - Hóa học", status: true },
+        { id: "CT2024-04", sessionName: "Ca thi buổi sáng - Lịch sử", status: true },
+        {  id: "CT2024-05", sessionName: "Ca thi buổi chiều - Sinh học", status: true },
+        {  id: "CT2024-06", sessionName: "Ca thi buổi tối - Địa lý", status: true }
+    ]);
     const statusOptions = [
         { value: 0, label: "Chưa bắt đầu" },
         { value: 1, label: "Đang diễn ra" },
@@ -30,9 +40,21 @@ const ManageExamSessions = () => {
         sessionStart: "",
         sessionEnd: "",
     };
-    const handleStatusChange = (id: string) => {
-        alert("Status id " + id);
-    }
+    const handleUpdateStatus = (id: string) => {
+        setSessionList((prevContents) =>
+          prevContents.map((content) =>
+            content.id === id ? { ...content, status: !content.status } : content
+          )
+        );
+        addNotification(`Trạng thái của môn thi đã được thay đổi.`, true);
+      };
+   
+      const handleStatusChange = (id: string) => {
+        if (confirm("Are you sure you want to change the status?")) {
+          handleUpdateStatus(id);
+        }
+      };
+   
 
     const {
         register,
@@ -64,6 +86,7 @@ const ManageExamSessions = () => {
             <div className="examSessions__container">
                 <PageTitle theme="light">Quản lý ca thi</PageTitle>
                 <Table
+                    title={title}
                     data={sessionList}
                     tableName="Ca thi"
                     actions_add={{ name: "Thêm ca thi", onClick: openAddExamSessionForm }}
@@ -133,6 +156,10 @@ const ManageExamSessions = () => {
                     </div>
                     )}
                 </div>
+                <Notification
+        notifications={notifications}
+        clearNotifications={clearNotifications}
+      />
             </div>
         </>
     )
