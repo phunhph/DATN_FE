@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import './Exam.scss';
 import { Question } from '@interfaces/QuestionInterface/QuestionInterface';
 import { CandidatesInformation } from '@interfaces/CandidateInfoInterface/CandidateInfoInterface';
-import { CandidateAvatarName, QuestionBoard, QuestionAnswerImage, CountdownTimer } from '@components/index';
+import { CandidateAvatarName, QuestionBoard, QuestionAnswerImage, CountdownTimer, Button } from '@components/index';
 
 
 type Props = {};
@@ -121,6 +121,96 @@ const Exam: React.FC<Props> = () => {
                 { id: 4, text: "Sydney", isCorrect: false },
             ]
         },
+        {
+            questionNumber: 12,
+            questionText: "Which of the following is known as the 'City of Light'?",
+            answers: [
+                { id: 1, text: "Paris", isCorrect: true },
+                { id: 2, text: "New York", isCorrect: false },
+                { id: 3, text: "Tokyo", isCorrect: false },
+                { id: 4, text: "Sydney", isCorrect: false },
+            ]
+        },
+        {
+            questionNumber: 13,
+            questionText: "Which of the following is known as the 'City of Light'?",
+            answers: [
+                { id: 1, text: "Paris", isCorrect: true },
+                { id: 2, text: "New York", isCorrect: false },
+                { id: 3, text: "Tokyo", isCorrect: false },
+                { id: 4, text: "Sydney", isCorrect: false },
+            ]
+        },
+        {
+            questionNumber: 14,
+            questionText: "Which of the following is known as the 'City of Light'?",
+            answers: [
+                { id: 1, text: "Paris", isCorrect: true },
+                { id: 2, text: "New York", isCorrect: false },
+                { id: 3, text: "Tokyo", isCorrect: false },
+                { id: 4, text: "Sydney", isCorrect: false },
+            ]
+        },
+        {
+            questionNumber: 15,
+            questionText: "Which of the following is known as the 'City of Light'?",
+            answers: [
+                { id: 1, text: "Paris", isCorrect: true },
+                { id: 2, text: "New York", isCorrect: false },
+                { id: 3, text: "Tokyo", isCorrect: false },
+                { id: 4, text: "Sydney", isCorrect: false },
+            ]
+        },
+        {
+            questionNumber: 16,
+            questionText: "Which of the following is known as the 'City of Light'?",
+            answers: [
+                { id: 1, text: "Paris", isCorrect: true },
+                { id: 2, text: "New York", isCorrect: false },
+                { id: 3, text: "Tokyo", isCorrect: false },
+                { id: 4, text: "Sydney", isCorrect: false },
+            ]
+        },
+        {
+            questionNumber: 17,
+            questionText: "Which of the following is known as the 'City of Light'?",
+            answers: [
+                { id: 1, text: "Paris", isCorrect: true },
+                { id: 2, text: "New York", isCorrect: false },
+                { id: 3, text: "Tokyo", isCorrect: false },
+                { id: 4, text: "Sydney", isCorrect: false },
+            ]
+        },
+        {
+            questionNumber: 18,
+            questionText: "Which of the following is known as the 'City of Light'?",
+            answers: [
+                { id: 1, text: "Paris", isCorrect: true },
+                { id: 2, text: "New York", isCorrect: false },
+                { id: 3, text: "Tokyo", isCorrect: false },
+                { id: 4, text: "Sydney", isCorrect: false },
+            ]
+        },
+        {
+            questionNumber: 19,
+            questionText: "Which of the following is known as the 'City of Light'?",
+            answers: [
+                { id: 1, text: "Paris", isCorrect: true },
+                { id: 2, text: "New York", isCorrect: false },
+                { id: 3, text: "Tokyo", isCorrect: false },
+                { id: 4, text: "Sydney", isCorrect: false },
+            ]
+        },
+        {
+            questionNumber: 20,
+            questionText: "Which of the following is known as the 'City of Light'?",
+            answers: [
+                { id: 1, text: "Paris", isCorrect: true },
+                { id: 2, text: "New York", isCorrect: false },
+                { id: 3, text: "Tokyo", isCorrect: false },
+                { id: 4, text: "Sydney", isCorrect: false },
+            ]
+        },
     ]);
 
     const questionRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -193,7 +283,7 @@ const Exam: React.FC<Props> = () => {
                     />
                     <CandidateAvatarName candidate={candidate} />
                     <div className="exam__handin">
-                        <button onClick={handleSubmit}>Nộp bài</button>
+                        <Button onClick={handleSubmit}>Nộp bài</Button>
                     </div>
                 </div>
             </div>

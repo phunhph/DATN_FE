@@ -44,7 +44,7 @@
     border-radius: 4px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
     min-width: 14rem;
-    border: 1px solid #dddddd;
+    border: 1px solid var(--text);
   }
   &__user {
     margin: 0.5rem 0;
@@ -58,7 +58,7 @@
   }
   &__divider {
     margin: 3px 0.5rem;
-    border-top: 1px solid var(--text15);
+    border-top: 1px solid var(--text);
   }
   &__button {
     width: 100%;
