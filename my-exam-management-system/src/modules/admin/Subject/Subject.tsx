@@ -64,7 +64,6 @@ const Subject: React.FC = () => {
 
   const loadSemesterOptions = (
     inputValue: string,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     callback: (options: any[]) => void
   ) => {
     setTimeout(() => {
