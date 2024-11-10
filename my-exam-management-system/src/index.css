@@ -294,7 +294,9 @@ video {
 .cursor-default {
   cursor: auto !important;
 }
-
+.display-none {
+  display: none;
+}
 ::-webkit-scrollbar {
   width: 8px;
 }

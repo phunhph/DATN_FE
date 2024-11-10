@@ -17,6 +17,16 @@
           color: var(--text);
         }
       }
+      &-buttons {
+        width: inherit;
+        display: flex;
+        gap:0.5rem;
+        justify-content: space-between;
+        button {
+          font-size: 12px;
+          flex: 1;
+        }
+      }
   
       &-selection {
         padding: 1rem;
@@ -33,11 +43,12 @@
       width: 2.5rem;
       height: 3rem;
       margin: 0.5rem;
-      border: 1px solid black;
+      border: 1px solid var(--text);
       border-radius: 0.5rem;
       cursor: pointer;
+      background-color: var(--bg);
       &-number {
-        border-bottom: 1px solid black;
+        border-bottom: 1px solid var(--text);
         height: 60%;
         display: flex;
         justify-content: center;
@@ -57,6 +68,9 @@
     }
   }
   
+  .off-color.off-color.off-color{
+    background-color: var(--primary60);
+  }
   @include m.responsive-to(xl){
     .question{
       &__board{

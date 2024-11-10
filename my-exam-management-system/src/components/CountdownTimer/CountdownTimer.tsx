@@ -1,12 +1,12 @@
-
 import { useState, useEffect } from 'react';
-import "./CountdownTimer.scss"
+import "./CountdownTimer.scss";
 
 type CountdownTimerProps = {
     initialTime: number;
+    onTimeChange: (timeLeft: number) => void; // Callback function to send updated time
 };
 
-const CountdownTimer = ({ initialTime }: CountdownTimerProps) => {
+const CountdownTimer = ({ initialTime, onTimeChange }: CountdownTimerProps) => {
     const [timeLeft, setTimeLeft] = useState(initialTime);
 
     useEffect(() => {
@@ -18,6 +18,11 @@ const CountdownTimer = ({ initialTime }: CountdownTimerProps) => {
 
         return () => clearInterval(intervalId);
     }, [timeLeft]);
+
+    // Call onTimeChange to send the current timeLeft value to the parent component
+    useEffect(() => {
+        onTimeChange(timeLeft);
+    }, [timeLeft, onTimeChange]);
 
     const formatTime = (seconds: number) => {
         const hours = Math.floor(seconds / 3600);
