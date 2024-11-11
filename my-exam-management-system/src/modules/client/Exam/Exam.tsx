@@ -353,35 +353,32 @@ const Exam: React.FC<Props> = () => {
     const [selectedListeningAnswers, setSelectedListeningAnswers] = useState<{ [key: number]: number | null }>({});
 
     const handleAnswerSelect = (questionNumber: number, answerId: number) => {
-        console.log(`Câu hỏi trắc nghiệm ${questionNumber}, đã chọn đáp án: ${answerId}`);
+        // console.log(`Câu hỏi trắc nghiệm ${questionNumber}, đã chọn đáp án: ${answerId}`);
         setSelectedMultiChoiceAnswers((prev) => {
             const newSelectedMultiChoiceAnswers = {
                 ...prev,
                 [questionNumber]: answerId
             };
-            console.log('Mảng kết quả trắc nghiệm:', newSelectedMultiChoiceAnswers);
             return newSelectedMultiChoiceAnswers;
         });
     };
     const handleReadingAnswerSelect = (questionNumber: number, answerId: number) => {
-        console.log(`Câu hỏi bài đọc: ${questionNumber}, đã chọn đáp án: ${answerId}`);
+        // console.log(`Câu hỏi bài đọc: ${questionNumber}, đã chọn đáp án: ${answerId}`);
         setSelectedReadingAnswers((prev) => {
             const newSelectedReadingAnswers = {
                 ...prev,
                 [questionNumber]: answerId
             };
-            console.log('Mảng kết quả bài đọc:', newSelectedReadingAnswers);
             return newSelectedReadingAnswers;
         });
     };
     const handleListeningAnswerSelect = (questionNumber: number, answerId: number) => {
-        console.log(`Câu hỏi bài nghe ${questionNumber}, đã chọn đáp án: ${answerId}`);
+        // console.log(`Câu hỏi bài nghe ${questionNumber}, đã chọn đáp án: ${answerId}`);
         setSelectedListeningAnswers((prev) => {
             const newSelectedMultiChoiceAnswers = {
                 ...prev,
                 [questionNumber]: answerId
             };
-            console.log('Mảng kết quả bài nghe:', newSelectedMultiChoiceAnswers);
             return newSelectedMultiChoiceAnswers;
         });
     };
@@ -491,10 +488,10 @@ const Exam: React.FC<Props> = () => {
             selectedListeningAnswers[question.questionNumber] !== undefined
         );
 
-        // if (!allMultiChoiceAnswered || !allReadingAnswered || !allListeningAnswered) {
-        //     addNotification('Hãy kiểm tra lại và chọn tất cả đáp án.', false);
-        //     return;
-        // }
+        if (!allMultiChoiceAnswered || !allReadingAnswered || !allListeningAnswered) {
+            addNotification('Hãy kiểm tra lại và chọn tất cả đáp án.', false);
+            return;
+        }
 
 
         // addNotification('Đã nộp bài thành công.', true);
