@@ -101,24 +101,6 @@ const ManageENExamStructure = () => {
 
     return true;
   };
-  const mockData: ModuleStructure[] = [
-    {
-      title: "Module 1",
-      levels: [
-        { title: "Module 1", level: "Dễ", quantity: 10, total: 15 },
-        { title: "Module 1", level: "Trung bình", quantity: 5, total: 15 },
-        { title: "Module 1", level: "Khó", quantity: 5, total: 15 },
-      ],
-    },
-    {
-      title: "Module 2",
-      levels: [
-        { title: "Module 2", level: "Dễ", quantity: 7, total: 10 },
-        { title: "Module 2", level: "Trung bình", quantity: 3, total: 10 },
-        { title: "Module 2", level: "Khó", quantity: 3, total: 10 },
-      ],
-    },
-  ];
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
