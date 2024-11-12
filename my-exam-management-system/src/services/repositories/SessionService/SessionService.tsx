@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ApiSessionResponse, SessionCreate } from "@/interfaces/SessionInterface/SessionInterface";
 import { instance } from "@/services/api/api";
 import axios, { AxiosError, AxiosResponse } from "axios";

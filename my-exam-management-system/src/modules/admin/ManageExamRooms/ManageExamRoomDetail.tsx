@@ -11,9 +11,8 @@ import { editExamRoom, getExamRoomDetail } from "@/services/repositories/ExamRoo
 
 const ManageExamRoomDetail = () => {
   useAuth();
-  const { id } = useParams();
   const location = useLocation();
-  const roomName = location.state?.roomName;
+  const room = location.state?.room;
   const [roomDetail, setRoomDetail] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
@@ -24,7 +23,9 @@ const ManageExamRoomDetail = () => {
   const loadExamRoomDetail = async () => {
     setLoading(true);
     try {
-      const result = await getExamRoomDetail(id);
+      console.log(room);
+      
+      const result = await getExamRoomDetail(room.id);
       console.log("Room Detail", result);
       if (result.success) {
         const {
@@ -68,7 +69,7 @@ const ManageExamRoomDetail = () => {
 
   useEffect(() => {
     loadExamRoomDetail();
-  }, [id]);
+  }, [room]);
 
   const addNotification = (message: string, isSuccess: boolean) => {
     setNotifications((prev) => [...prev, { message, isSuccess }]);

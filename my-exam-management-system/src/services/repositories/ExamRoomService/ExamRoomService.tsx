@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { AxiosResponse, AxiosError } from "axios";
 
 import {
@@ -52,7 +53,7 @@ export const getAllExamRooms = async (): Promise<ApiExamRoomResponse> => {
   }
 };
 
-export const getExamRoomDetail = async (id: any) => {
+export const getExamRoom = async (id: any) => {
   const token = localStorage.getItem("token");
 
   if (!token) {
@@ -67,17 +68,15 @@ export const getExamRoomDetail = async (id: any) => {
       Authorization: `Bearer ${token}`,
     };
 
-    const response: AxiosResponse<ExamRoom[]> = await instance.get(
+    const response: AxiosResponse<ApiExamRoomResponse> = await instance.get(
       `/api/admin/exam-room/${id}`,
       {
         headers: headers,
       }
     );
 
-    return {
-      success: true,
-      data: response.data,
-    };
+    return response.data;
+    
   } catch (error: any) {
     console.error("Error fetching exam room detail:", error);
     return {
@@ -98,9 +97,6 @@ export const editExamRoom = async (id: any, updatedData: ExamRoom) => {
       message: "Token không tồn tại. Vui lòng đăng nhập.",
     };
   }
-
-  console.log("Updating exam room with ID:", id);
-  console.log("Data to update:", updatedData);
 
   try {
     const headers = {
@@ -128,6 +124,42 @@ export const editExamRoom = async (id: any, updatedData: ExamRoom) => {
       message: error.response
         ? error.response.data.message
         : "Lỗi không xác định khi cập nhật phòng thi.",
+    };
+  }
+};
+
+
+export const getExamRoomDetail = async (id: any) => {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    return {
+      success: false,
+      message: "Token không tồn tại. Vui lòng đăng nhập.",
+    };
+  }
+
+  try {
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+
+    const response: AxiosResponse<ExamRoom[]> = await instance.get(
+      `/api/admin/exam-room/detail/${id}`,
+      {
+        headers: headers,
+      }
+    );
+
+    return response.data;
+    
+  } catch (error: any) {
+    console.error("Error fetching exam room detail:", error);
+    return {
+      success: false,
+      message: error.response
+        ? error.response.data.message
+        : "Lỗi không xác định",
     };
   }
 };
