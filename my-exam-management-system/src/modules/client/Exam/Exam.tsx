@@ -327,6 +327,30 @@ const Exam: React.FC<Props> = () => {
             ]
         }
     ])
+    const paragraphs:{id:number, text:string}[] = [
+          {
+            id: 1,
+            text: "While eating at a restaurant is an enjoyable and convenient occasional treat, most individuals and families prepare their meals at home. To make breakfast, lunch, and dinner daily, these persons must have the required foods and ingredients on hand and ready to go; foods and ingredients are typically purchased from a grocery store, or an establishment that distributes foods, drinks, household products, and other items that're used by the typical consumer."
+          },
+          {
+            id: 2,
+            text: "Produce, or the term used to describe fresh fruits and vegetables, is commonly purchased by grocery store shoppers. In terms of fruit, most grocery stores offer bananas, apples, oranges, blackberries, raspberries, grapes, pineapples, cantaloupes, watermelons, and more; other grocery stores with larger produce selections might offer the listed fruits in addition to less common fruits, including mangoes, honeydews, starfruits, coconuts, and more."
+          },
+          {
+            id: 3,
+            text: "Depending on the grocery store, customers can purchase fruits in a few different ways. Some stores will charge a set amount per pound of fruit, and will weigh customers' fruit purchases and bill them accordingly; other stores will charge customers for each piece of fruit they buy, or for bundles of fruit (a bag of bananas, a bag of apples, etc.); other stores yet will simply charge by the container."
+          },
+          {
+            id: 4,
+            text: "Vegetables, including lettuce, corn, tomatoes, onions, celery, cucumbers, mushrooms, and more are also sold at many grocery stores, and are purchased similarly to the way that fruits are. Grocery stores typically stock more vegetables than fruit at any given time, as vegetables remain fresh longer than fruits do, generally speaking."
+          },
+          {
+            id: 5,
+            text: "It'd take quite a while to list everything else that today's massive grocery stores sell, but most customers take the opportunity to shop for staples, or foods that play a prominent role in the average diet, at the establishments. Staples include pasta, rice, flour, sugar, milk, meat, and eggs, and bread. All the listed staples are available in prepackaged containers, but can be purchased 'fresh' in some grocery stores, wherein employees will measure and weigh fresh products and then provide them to customers."
+          }
+        ]
+      
+
 
     //lăn câu hỏi
     const multiChoiceRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -539,11 +563,9 @@ const Exam: React.FC<Props> = () => {
 
                         <div className={`exam__detail-left ${currentView === "Bài đọc" ? '' : 'display-none'}`}>
                             <div className='exam__reading'>
-                                <p>While eating at a restaurant is an enjoyable and convenient occasional treat, most individuals and families prepare their meals at home. To make breakfast, lunch, and dinner daily, these persons must have the required foods and ingredients on hand and ready to go; foods and ingredients are typically purchased from a grocery store, or an establishment that distributes foods, drinks, household products, and other items that're used by the typical consumer.</p>
-                                <p>Produce, or the term used to describe fresh fruits and vegetables, is commonly purchased by grocery store shoppers. In terms of fruit, most grocery stores offer bananas, apples, oranges, blackberries, raspberries, grapes, pineapples, cantaloupes, watermelons, and more; other grocery stores with larger produce selections might offer the listed fruits in addition to less common fruits, including mangoes, honeydews, starfruits, coconuts, and more.</p>
-                                <p>Depending on the grocery store, customers can purchase fruits in a few different ways. Some stores will charge a set amount per pound of fruit, and will weigh customers' fruit purchases and bill them accordingly; other stores will charge customers for each piece of fruit they buy, or for bundles of fruit (a bag of bananas, a bag of apples, etc.); other stores yet will simply charge by the container.</p>
-                                <p>Vegetables, including lettuce, corn, tomatoes, onions, celery, cucumbers, mushrooms, and more are also sold at many grocery stores, and are purchased similarly to the way that fruits are. Grocery stores typically stock more vegetables than fruit at any given time, as vegetables remain fresh longer than fruits do, generally speaking.</p>
-                                <p>It'd take quite a while to list everything else that today's massive grocery stores sell, but most customers take the opportunity to shop for staples, or foods that play a prominent role in the average diet, at the establishments. Staples include pasta, rice, flour, sugar, milk, meat, and eggs, and bread. All the listed staples are available in prepackaged containers, but can be purchased "fresh" in some grocery stores, wherein employees will measure and weigh fresh products and then provide them to customers.</p>
+                                {paragraphs.map((p) => (
+                                    <p key={p.id}>{p.text}</p>
+                                ))}
                             </div>
                             <div className='exam__reading-answer'>
                                 <div>Questions</div>
@@ -585,7 +607,7 @@ const Exam: React.FC<Props> = () => {
 
 
                         <div className="exam__detail-right">
-                            <CountdownTimer initialTime={timeLeft} onTimeChange={handleTimeChange} />
+                            <CountdownTimer title='Thời gian còn lại' initialTime={timeLeft} onTimeChange={handleTimeChange} />
                             <div className={currentView !== "Trắc nghiệm" ? 'display-none' : ''}>
                                 <QuestionBoard
                                     questions={questions}

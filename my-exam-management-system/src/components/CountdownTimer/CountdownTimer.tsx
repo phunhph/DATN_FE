@@ -3,25 +3,28 @@ import "./CountdownTimer.scss";
 
 type CountdownTimerProps = {
     initialTime: number;
-    onTimeChange: (timeLeft: number) => void; // Callback function to send updated time
+    onTimeChange?: (timeLeft: number) => void;
+    freezeTime?: boolean;
+    title:string;
 };
 
-const CountdownTimer = ({ initialTime, onTimeChange }: CountdownTimerProps) => {
+const CountdownTimer = ({ initialTime, onTimeChange, freezeTime = false, title }: CountdownTimerProps) => {
     const [timeLeft, setTimeLeft] = useState(initialTime);
 
+    //timer
     useEffect(() => {
-        if (timeLeft <= 0) return;
-
+        if (timeLeft <= 0 || freezeTime) return;
+    
         const intervalId = setInterval(() => {
             setTimeLeft(prevTime => prevTime - 1);
         }, 1000);
-
+    
         return () => clearInterval(intervalId);
     }, [timeLeft]);
-
+    
     // Call onTimeChange to send the current timeLeft value to the parent component
     useEffect(() => {
-        onTimeChange(timeLeft);
+        onTimeChange?.(timeLeft);
     }, [timeLeft, onTimeChange]);
 
     const formatTime = (seconds: number) => {
@@ -39,7 +42,7 @@ const CountdownTimer = ({ initialTime, onTimeChange }: CountdownTimerProps) => {
     return (
         <div className="countdown__container">
             <div className="countdown__timer">
-                <p>Thời gian còn lại</p>
+                <p>{title}</p>
                 <p>{formatTime(timeLeft)}</p>
             </div>
         </div>

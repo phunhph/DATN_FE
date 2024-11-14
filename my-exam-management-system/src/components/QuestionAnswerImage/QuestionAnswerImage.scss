@@ -65,7 +65,7 @@
     
       /* When the radio button is checked, add a blue background */
       .radioinput:checked ~ .radiomark {
-        background-color: #2196F3;
+        background-color: var(--accent);
       }
     
       /* Create the indicator (the dot/circle - hidden when not checked) */

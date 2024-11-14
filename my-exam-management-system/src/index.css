@@ -297,6 +297,11 @@ video {
 .display-none {
   display: none;
 }
+.no-interact{
+  user-select: none;
+  pointer-events: none;
+}
+
 ::-webkit-scrollbar {
   width: 8px;
 }
