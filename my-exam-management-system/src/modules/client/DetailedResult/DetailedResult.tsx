@@ -401,6 +401,7 @@ const DetailedResult: React.FC<Props> = () => {
 
     const handleViewChange = (view: string) => {
         setCurrentView(view);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
 

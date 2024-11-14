@@ -17,6 +17,7 @@ const QuestionBoard: React.FC<QuestionBoardProps> = ({ questions, selectedAnswer
     const handleViewChange = (view: string) => {
         setCurrentView(view);
         onViewChange(view);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     const chunkQuestions = (questions: Question[], size: number) => {
