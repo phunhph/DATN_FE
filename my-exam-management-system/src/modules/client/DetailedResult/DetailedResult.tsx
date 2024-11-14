@@ -565,7 +565,7 @@ const DetailedResult: React.FC<Props> = () => {
 
 
                 <div className="exam__detail-right">
-                    <CountdownTimer title='Thời gian làm bài' initialTime={resultOfCandidate.timeSpent} onTimeChange={() => {}} freezeTime />
+                    <CountdownTimer title='Thời gian đã làm bài' initialTime={resultOfCandidate.timeSpent} onTimeChange={() => {}} freezeTime />
                     <div className={currentView !== "Trắc nghiệm" ? 'display-none' : ''}>
                         <div className="question__board">
                             <div className="question__board-heading">

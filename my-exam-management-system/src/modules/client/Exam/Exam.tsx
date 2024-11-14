@@ -1,10 +1,9 @@
-import React, { useState, useRef, useEffect } from 'react';
-import './Exam.scss';
-import { Question } from '@interfaces/QuestionInterface/QuestionInterface';
+import { Button, CandidateAvatarName, CountdownTimer, Notification, QuestionAnswerImage, QuestionBoard } from '@components/index';
 import { CandidatesInformation } from '@interfaces/CandidateInfoInterface/CandidateInfoInterface';
-import { CandidateAvatarName, QuestionBoard, QuestionAnswerImage, CountdownTimer, Button, Notification } from '@components/index';
-import { count } from 'console';
+import { Question } from '@interfaces/QuestionInterface/QuestionInterface';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import './Exam.scss';
 
 
 type Props = {};
