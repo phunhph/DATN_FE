@@ -52,6 +52,7 @@ export const getAllSession = async (): Promise<ApiSessionResponse> => {
 
 export const addSession = async (data: SessionCreate) => {
   const formattedData = {
+    id:data.id,
     name: data.name, 
     time_start: data.time_start, 
     time_end: data.time_end,

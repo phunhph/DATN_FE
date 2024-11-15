@@ -1,7 +1,7 @@
 export type SessionType = {
   id: string | number;
   name: string;
-  status?: boolean | undefined;
+  status?: boolean;
   time_start: string;
   time_end: string;
 };
