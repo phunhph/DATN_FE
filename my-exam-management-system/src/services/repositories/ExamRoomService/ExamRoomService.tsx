@@ -2,10 +2,12 @@
 import { AxiosResponse, AxiosError } from "axios";
 
 import {
+  ApiExamRoomDetail,
   ApiExamRoomResponse,
   ExamRoom,
 } from "@interfaces/ExamRoomInterfaces/ExamRoomInterfaces";
 import { instance } from "@/services/api/api";
+
 
 export const getAllExamRooms = async (): Promise<ApiExamRoomResponse> => {
   try {
@@ -104,7 +106,7 @@ export const editExamRoom = async (id: any, updatedData: ExamRoom) => {
     };
 
     const response: AxiosResponse<ExamRoom> = await instance.put(
-      `/api/admin/exam-room/${id},data`,
+      `/api/admin/exam-room/${id}`,
 
       updatedData,
       {
@@ -144,17 +146,25 @@ export const getExamRoomDetail = async (id: any) => {
       Authorization: `Bearer ${token}`,
     };
 
-    const response: AxiosResponse<ExamRoom[]> = await instance.get(
+    const response: AxiosResponse<ApiExamRoomDetail> = await instance.get(
       `/api/admin/exam-room/detail/${id}`,
       {
         headers: headers,
       }
     );
 
-    return response.data;
+    return {
+      success: response.data.success,
+      message: response.data.message,
+      data: {
+        examRoom: response.data.data.examRoom,
+        exam_room_details: response.data.data.exam_room_details,
+        exam_sessions: response.data.data.exam_sessions,
+        exam_subjects: response.data.data.exam_subjects,
+      },
+    };
     
   } catch (error: any) {
-    console.error("Error fetching exam room detail:", error);
     return {
       success: false,
       message: error.response

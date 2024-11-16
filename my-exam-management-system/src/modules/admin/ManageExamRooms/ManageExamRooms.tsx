@@ -9,7 +9,6 @@ import { SemesterType } from "../ManageSemester/Semester.type";
 import { getAllSemester } from "@/services/repositories/SemesterServices/SemesterServices";
 import { Semester } from "@/interfaces/SemesterInterface/SemestertInterface";
 import { getExamRoom } from "@/services/repositories/ExamRoomService/ExamRoomService";
-import { getAllSession } from "@/services/repositories/SessionService/SessionService";
 import { useNavigate } from "react-router-dom";
 
 const ManageExamRooms = () => {
