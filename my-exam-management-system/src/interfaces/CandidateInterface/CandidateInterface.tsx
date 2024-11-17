@@ -7,6 +7,7 @@ export interface Candidate {
   name: string;
   image: string;
   dob: string;
+
   address: string;
   email: string;
   status: number | string;
