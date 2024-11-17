@@ -131,3 +131,49 @@ export const editExamRoom = async (id: any, updatedData: ExamRoom) => {
     };
   }
 };
+export const getExamRoomsInExams = async (
+  id: string
+): Promise<ApiExamRoomResponse> => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+
+    const response: AxiosResponse<ExamRoom[]> = await instance.get(
+      `/api/admin/exam/exam-rooms-in-exams/${id}`,
+      {
+        headers: headers,
+      }
+    );
+
+    return {
+      success: true,
+      message: "Exams fetched successfully",
+      data: response.data,
+      status: 200,
+    };
+  } catch (error) {
+    if (error instanceof AxiosError && error.response) {
+      const { data } = error.response;
+      const errorMessage = `${data.message || "Error occurred"}`;
+
+      return {
+        success: false,
+        message: errorMessage,
+        data: [],
+        status: 500,
+      };
+    } else {
+      const generalError = "An unknown error occurred while fetching exams.";
+
+      return {
+        success: false,
+        message: generalError,
+        data: [],
+        status: 500,
+      };
+    }
+  }
+};
