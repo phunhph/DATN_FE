@@ -1,4 +1,4 @@
-import { Button, PageTitle, Table } from "@/components";
+import { Button, Notification, PageTitle, Table } from "@/components";
 import { SessionCreate } from "@/interfaces/SessionInterface/SessionInterface";
 import {
   addSession,
@@ -8,7 +8,6 @@ import {
 import { SessionType } from "./ManageExamSessions.type";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 const ManageExamSessions = () => {
   const [openForm, setOpenForm] = useState<boolean>(false);
@@ -38,8 +37,10 @@ const ManageExamSessions = () => {
   ];
 
   const sortedData = sessionList
-    .filter((item) => item.id && item.name && item.time_start && item.time_end)
-    .map((item) => ({
+    .filter(
+      (item: any) => item.id && item.name && item.time_start && item.time_end
+    )
+    .map((item: any) => ({
       id: item.id,
       name: item.name,
       timeStart: item.time_start,
@@ -64,23 +65,17 @@ const ManageExamSessions = () => {
     fetchSessions();
   }, []);
 
-  const statusOptions = [
-    { value: 0, label: "Chưa bắt đầu" },
-    { value: 1, label: "Đang diễn ra" },
-    { value: 2, label: "Đã kết thúc" },
-  ];
-
   const emptyFormValue: SessionType = {
-    sessionName: "",
-    status: 0,
-    sessionStart: "",
-    sessionEnd: "",
+    id: "", 
+    name: "",
+    time_start: "",
+    time_end: "",
   };
 
   const handleUpdateStatus = (id: string) => {
-    setSessionList((prevContents) =>
-      prevContents.map((content) =>
-        content.id === id ? { ...content, status: !content.status } : content
+    setSessionList((prevContents: any) =>
+      prevContents.map((content: any) =>
+        content.id === id ? { ...content } : content
       )
     );
     addNotification(`Trạng thái của môn thi đã được thay đổi.`, true);
@@ -97,7 +92,6 @@ const ManageExamSessions = () => {
     handleSubmit,
     setValue,
     reset,
-    control,
     getValues,
     formState: { errors },
   } = useForm<SessionType>();
@@ -105,16 +99,19 @@ const ManageExamSessions = () => {
   const handleCreateSession = async () => {
     const formData = getValues();
     const newSession: SessionCreate = {
+      id: formData.id || "auto-generated-id", 
       name: formData.name,
       time_start: formData.time_start,
       time_end: formData.time_end,
-      status: formData.status ?? 0,
     };
 
     const result = await addSession(newSession);
-    if (result.success === true) {
-      setSessionList((prevList) => [...prevList, newSession]);
+    console.log(result);
+
+    if (result.success == true) {
+      setSessionList((prevList: any) => [...prevList, newSession]);
       addNotification("Thêm mới môn thi thành công!", true);
+      closeAddExamSessionForm();
     } else {
       addNotification(
         result.message ?? "Thêm mới môn thi thất bại",
@@ -136,18 +133,18 @@ const ManageExamSessions = () => {
       name: formData.name,
       time_start: formData.time_start,
       time_end: formData.time_end,
-      status: formData.status ?? 0,
     };
 
     const result = await updateSession(updatedSession);
 
     if (result.success) {
-      setSessionList((prevList) =>
-        prevList.map((session) =>
+      setSessionList((prevList: any) =>
+        prevList.map((session: any) =>
           session.id === updatedSession.id ? updatedSession : session
         )
       );
       addNotification("Cập nhật ca thi thành công!", true);
+      closeAddExamSessionForm();
     } else {
       addNotification(
         result.message ?? "Cập nhật ca thi thất bại",
@@ -160,10 +157,10 @@ const ManageExamSessions = () => {
     setIsEditing(true);
     setEditSession(session);
     setOpenForm(true);
+    setValue("id", session.id); 
     setValue("name", session.name);
     setValue("time_start", session.time_start);
     setValue("time_end", session.time_end);
-    setValue("status", session.status);
   };
 
   const openAddExamSessionForm = () => {
@@ -190,8 +187,6 @@ const ManageExamSessions = () => {
     document.body.removeChild(link);
   };
 
- 
-
   return (
     <div className="examSessions__container">
       <PageTitle theme="light">Quản lý ca thi</PageTitle>
@@ -203,11 +198,14 @@ const ManageExamSessions = () => {
         actions_edit={{
           name: "Sửa",
           onClick: (id) => {
-            const sessionToEdit = sessionList.find(
-              (session:any) => session.id === id
-            );
-            if (sessionToEdit) {
-              openEditForm(sessionToEdit);
+            console.log("ID ca thi được chọn:", id);
+            // const sessionToEdit = sessionList.find(
+            //   (session:any) => session.id === id
+            // );
+            // console.log("SessionToEdit",sessionToEdit);
+            
+            if (id) {
+              openEditForm(id);
             }
           },
         }}
@@ -237,6 +235,24 @@ const ManageExamSessions = () => {
               >
                 <h4>{isEditing ? "Sửa ca thi" : "Thêm ca thi"}</h4>
                 <div className="form__group">
+                  <label htmlFor="sessionId" className="form__label">
+                    Mã ca thi:
+                  </label>
+                  <input
+                    id="id"
+                    type="text"
+                    className="form__input"
+                    {...register("id", {
+                      required: "Mã ca thi là bắt buộc",
+                    })}
+                    defaultValue={isEditing ? editSession?.id : ""}
+                    disabled={isEditing} 
+                  />
+                  <div className="form__error">
+                    {errors.id && <span>{errors.id.message}</span>}
+                  </div>
+                </div>
+                <div className="form__group">
                   <label htmlFor="sessionName" className="form__label">
                     Tên ca thi:
                   </label>
@@ -247,16 +263,13 @@ const ManageExamSessions = () => {
                     {...register("name", {
                       required: "Tên ca thi là bắt buộc",
                     })}
-                    defaultValue={isEditing ? editSession?.name : ""}
                   />
                   <div className="form__error">
-                    {errors.name && (
-                      <span>{errors.name.message}</span>
-                    )}
+                    {errors.name && <span>{errors.name.message}</span>}
                   </div>
                 </div>
                 <div className="form__group">
-                  <label htmlFor="sessionStart" className="form__label">
+                  <label htmlFor="startTime" className="form__label">
                     Thời gian bắt đầu:
                   </label>
                   <input
@@ -266,7 +279,6 @@ const ManageExamSessions = () => {
                     {...register("time_start", {
                       required: "Thời gian bắt đầu là bắt buộc",
                     })}
-                    defaultValue={isEditing ? editSession?.time_start : ""}
                   />
                   <div className="form__error">
                     {errors.time_start && (
@@ -275,7 +287,7 @@ const ManageExamSessions = () => {
                   </div>
                 </div>
                 <div className="form__group">
-                  <label htmlFor="sessionEnd" className="form__label">
+                  <label htmlFor="endTime" className="form__label">
                     Thời gian kết thúc:
                   </label>
                   <input
@@ -285,24 +297,14 @@ const ManageExamSessions = () => {
                     {...register("time_end", {
                       required: "Thời gian kết thúc là bắt buộc",
                     })}
-                    defaultValue={isEditing ? editSession?.time_end : ""}
                   />
                   <div className="form__error">
-                    {errors.time_end && (
-                      <span>{errors.time_end.message}</span>
-                    )}
+                    {errors.time_end && <span>{errors.time_end.message}</span>}
                   </div>
                 </div>
-                <div className="btn-group">
-                  <Button
-                    type="reset"
-                    className="btn btn-reset"
-                    onClick={() => reset(emptyFormValue)}
-                  >
-                    Đặt lại
-                  </Button>
-                  <Button type="submit" className="btn btn-submit">
-                    {isEditing ? "Cập nhật" : "Tạo mới"}
+                <div className="form__group">
+                  <Button type="submit" className="btn">
+                    {isEditing ? "Cập nhật" : "Thêm mới"}
                   </Button>
                 </div>
               </form>
@@ -310,6 +312,10 @@ const ManageExamSessions = () => {
           </div>
         )}
       </div>
+      <Notification
+        notifications={notifications}
+        clearNotifications={clearNotifications}
+      />
     </div>
   );
 };

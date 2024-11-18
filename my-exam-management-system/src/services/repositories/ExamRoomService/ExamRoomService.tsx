@@ -1,10 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { AxiosResponse, AxiosError } from "axios";
 
 import {
+  ApiExamRoomDetail,
   ApiExamRoomResponse,
   ExamRoom,
 } from "@interfaces/ExamRoomInterfaces/ExamRoomInterfaces";
 import { instance } from "@/services/api/api";
+
 
 export const getAllExamRooms = async (): Promise<ApiExamRoomResponse> => {
   try {
@@ -52,7 +55,7 @@ export const getAllExamRooms = async (): Promise<ApiExamRoomResponse> => {
   }
 };
 
-export const getExamRoomDetail = async (id: any) => {
+export const getExamRoom = async (id: any) => {
   const token = localStorage.getItem("token");
 
   if (!token) {
@@ -67,17 +70,15 @@ export const getExamRoomDetail = async (id: any) => {
       Authorization: `Bearer ${token}`,
     };
 
-    const response: AxiosResponse<ExamRoom[]> = await instance.get(
+    const response: AxiosResponse<ApiExamRoomResponse> = await instance.get(
       `/api/admin/exam-room/${id}`,
       {
         headers: headers,
       }
     );
 
-    return {
-      success: true,
-      data: response.data,
-    };
+    return response.data;
+    
   } catch (error: any) {
     console.error("Error fetching exam room detail:", error);
     return {
@@ -99,16 +100,13 @@ export const editExamRoom = async (id: any, updatedData: ExamRoom) => {
     };
   }
 
-  console.log("Updating exam room with ID:", id);
-  console.log("Data to update:", updatedData);
-
   try {
     const headers = {
       Authorization: `Bearer ${token}`,
     };
 
     const response: AxiosResponse<ExamRoom> = await instance.put(
-      `/api/admin/exam-room/${id},data`,
+      `/api/admin/exam-room/${id}`,
 
       updatedData,
       {
@@ -137,6 +135,15 @@ export const getExamRoomsInExams = async (
   try {
     const token = localStorage.getItem("token");
 
+
+  if (!token) {
+    return {
+      success: false,
+      message: "Token không tồn tại. Vui lòng đăng nhập.",
+    };
+  }
+
+  try {
     const headers = {
       Authorization: `Bearer ${token}`,
     };
@@ -177,3 +184,4 @@ export const getExamRoomsInExams = async (
     }
   }
 };
+

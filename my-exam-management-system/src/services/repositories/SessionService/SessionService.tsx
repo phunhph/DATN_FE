@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ApiSessionResponse, SessionCreate } from "@/interfaces/SessionInterface/SessionInterface";
 import { instance } from "@/services/api/api";
 import axios, { AxiosError, AxiosResponse } from "axios";
@@ -51,6 +52,7 @@ export const getAllSession = async (): Promise<ApiSessionResponse> => {
 
 export const addSession = async (data: SessionCreate) => {
   const formattedData = {
+    id:data.id,
     name: data.name, 
     time_start: data.time_start, 
     time_end: data.time_end,

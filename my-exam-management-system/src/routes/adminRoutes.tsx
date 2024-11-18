@@ -1,4 +1,5 @@
 // adminRoutes.js
+import ManageExamRoomDetail from "@/modules/admin/ManageExamRooms/ManageExamRoomDetail";
 import {
     Welcome,
     ManageCandidates,
@@ -34,6 +35,7 @@ import {
     { path: "manage-en-questions", element: <ManageENQuestions /> },
     { path: "manage-status", element: <ManageStatus /> },
     { path: "manage-exam-rooms", element: <ManageExamRooms /> },
+    { path: "detail-exam-rooms", element: <ManageExamRoomDetail /> },
     { path: "manage-exam-sessions", element: <ManageExamSessions /> },
     { path: "manage-exam-state-candidates", element: <ManageExamState_Candidates /> },
     { path: "manage-exam-state-rooms", element: <ManageExamState_Rooms /> },
