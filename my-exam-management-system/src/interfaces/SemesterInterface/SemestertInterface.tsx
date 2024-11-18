@@ -1,13 +1,13 @@
 import { BaseResponse } from "../InterfaceBaseResponse/InterfaceBaseResponse";
 
-export interface Exam {
-  id: number | string;
+export type Semester = {
+  id: string;
   name: string;
   time_start: string;
   time_end: string;
-  status?: boolean;
+  status: boolean;
 }
 
-export interface ApiExamResponse extends BaseResponse {
-  data?: Exam[];
+export interface ApiSemesterResponse extends BaseResponse {
+  data: Semester[];
 }

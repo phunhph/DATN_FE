@@ -503,7 +503,7 @@ const DetailedResult: React.FC<Props> = () => {
                         <div>Answers</div>
                     </div>
                     {readingQuestions.map((question) => (
-                        <div className='exam__question-radio' ref={el => readingRefs.current[question.questionNumber - 1] = el}>
+                        <div key={question.questionNumber} className='exam__question-radio' ref={el => readingRefs.current[question.questionNumber - 1] = el}>
                             <div>{question.questionText}</div>
                             <div>
                                 {question.answers.map((answer, index) => {
@@ -518,6 +518,7 @@ const DetailedResult: React.FC<Props> = () => {
                                                 name={`radioSelect-${question.questionNumber}`}
                                                 id={`radioSelect-${question.questionNumber}-${index}`}
                                                 checked={resultOfCandidate.answers.reading[question.questionNumber] === answer.id}
+                                                onChange={() => {}} // chống lỗi
                                             />
                                             <span className={`radiomark ${isSelected ? (answer.isCorrect ? "" : "wrong-answer") : ""} `}></span>
                                         </label>

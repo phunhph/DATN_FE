@@ -2,261 +2,345 @@ import React, { useEffect, useState } from "react";
 import "./ManageENExamStructure.scss";
 import { Notification } from "../../../components";
 import {
-    ModuleStructure,
-    reqStructure,
-    TopicStructure,
-    totalStructure,
-} from "../../../interface/ManageStructureInterfaces";
+  ModuleStructure,
+  totalStructure,
+} from "@/interfaces/ManageStructureInterfaces/ManageStructureInterfaces";
+import {  getAllSemesterWithExamSubject } from "@/services/repositories/SemesterServices/SemesterServices";
+import { Semester } from "@/interfaces/SemesterInterface/SemestertInterface";
+import {  getAllExamSubjectByIdSemesterWithContent } from "@/services/repositories/ExamSubjectService/ExamSubjectService";
+import { ExamSubject } from "@/interfaces/SubjectInterface/ExamSubjectInterface";
+import {
+  getAllStrutureByIdSubject,
+  getFinalStructure,
+} from "@/services/repositories/StructureServices/StructureDetailServices";
 
 interface Errors {
-    kyThi?: string;
-    monThi?: string;
-    tongSoCauHoi?: string;
-    thoiGianLamBai?: string;
-    [key: string]: string | undefined; // Cho phép các key khác động
+  kyThi?: string;
+  monThi?: string;
+  tongSoCauHoi?: string;
+  thoiGianLamBai?: string;
+  [key: string]: string | undefined; // Cho phép các key khác động
 }
 
 const ManageENExamStructure = () => {
-    const [kyThi, setKyThi] = useState("");
-    const [monThi, setMonThi] = useState("");
-    const [modules, setModules] = useState<ModuleStructure[]>([]);
-    const [tongSoCauHoi, setTongSoCauHoi] = useState<string | number>(0);
-    const [thoiGianLamBai, setThoiGianLamBai] = useState<string | number>(0);
-    const [notifications, setNotifications] = useState<
-        Array<{ message: string; isSuccess: boolean }>
-    >([]);
-    const clearNotifications = () => {
-        setNotifications([]);
-    };
-    const [errors, setErrors] = useState<Errors>({});
+  const [kyThi, setKyThi] = useState("");
+  const [semester, setSemester] = useState<Semester[]>([]);
+  const [monThi, setMonThi] = useState("");
+  const [examSubjects, setExamSubject] = useState<ExamSubject[]>([]);
+  const [modules, setModules] = useState<ModuleStructure[]>([]);
+  const [checkCreateStruct, setCheckCreateStruct] = useState(true);
+  const [tongSoCauHoi, setTongSoCauHoi] = useState<string | number>(0);
+  const [thoiGianLamBai, setThoiGianLamBai] = useState<string | number>(0);
+  const [notifications, setNotifications] = useState<
+    Array<{ message: string; isSuccess: boolean }>
+  >([]);
+  const addNotification = (message: string, isSuccess: boolean) => {
+    setNotifications((prev) => [...prev, { message, isSuccess }]);
+  };
 
-    const scrollToFirstError = () => {
-        const firstErrorElement = document.querySelector(".error__number");
-        if (firstErrorElement) {
-            firstErrorElement.scrollIntoView({ behavior: "smooth", block: "center" });
+  const clearNotifications = () => {
+    setNotifications([]);
+  };
+  const [errors, setErrors] = useState<Errors>({});
+
+  const scrollToFirstError = () => {
+    const firstErrorElement = document.querySelector(".error__number");
+    if (firstErrorElement) {
+      firstErrorElement.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  };
+
+  const handleInputChange = (
+    moduleIndex: number,
+    levelIndex: number,
+    newValue: string
+  ) => {
+    const updatedModules = [...modules];
+    updatedModules[moduleIndex].levels[levelIndex].quantity =
+      parseInt(newValue, 10) || 0;
+    setModules(updatedModules);
+  };
+
+  const validateForm = () => {
+    const newErrors: Errors = {};
+    if (!kyThi) newErrors.kyThi = "Bạn phải chọn kỳ thi.";
+    if (!monThi) newErrors.monThi = "Bạn phải chọn môn thi.";
+    if (!tongSoCauHoi || +tongSoCauHoi <= 0)
+      newErrors.tongSoCauHoi = "Số câu hỏi phải lớn hơn 0.";
+    if (!thoiGianLamBai || +thoiGianLamBai <= 0)
+      newErrors.thoiGianLamBai = "Thời gian làm bài phải lớn hơn 0.";
+
+    let totalQuestions = 0;
+
+    modules.forEach((module, moduleIndex) => {
+      module.levels.forEach((level, levelIndex) => {
+        const number = +level.quantity;
+
+        if (number <= 0) {
+          newErrors[`module-${moduleIndex}-level-${levelIndex}`] =
+            "Số câu phải lớn hơn 0.";
+        } else if (number > level.total) {
+          newErrors[
+            `module-${moduleIndex}-level-${levelIndex}`
+          ] = `Số câu không được vượt quá ${level.total}.`;
         }
-    };
 
-    const handleInputChange = (
-        moduleIndex: number,
-        levelIndex: number,
-        newValue: string
-    ) => {
-        const updatedModules = [...modules];
-        updatedModules[moduleIndex].levels[levelIndex].Quantity =
-            parseInt(newValue, 10) || 0;
-        setModules(updatedModules);
-    };
+        totalQuestions += number;
+      });
+    });
 
-    const validateForm = () => {
-        const newErrors: Errors = {};
-        if (!kyThi) newErrors.kyThi = "Bạn phải chọn kỳ thi.";
-        if (!monThi) newErrors.monThi = "Bạn phải chọn môn thi.";
-        if (!tongSoCauHoi || +tongSoCauHoi <= 0)
-            newErrors.tongSoCauHoi = "Số câu hỏi phải lớn hơn 0.";
-        if (!thoiGianLamBai || +thoiGianLamBai <= 0)
-            newErrors.thoiGianLamBai = "Thời gian làm bài phải lớn hơn 0.";
+    if (totalQuestions > +tongSoCauHoi) {
+      newErrors.tongSoCauHoi = `Tổng số câu hỏi không được lớn hơn ${tongSoCauHoi}.`;
+    }
 
-        if (Object.keys(newErrors).length > 0) {
-            setErrors(newErrors);
-            scrollToFirstError();
-            return false;
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      scrollToFirstError();
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    if (validateForm()) {
+      setErrors({}); // Reset errors
+    }
+  };
+
+  const groupByTitle = (data: totalStructure[]): ModuleStructure[] => {
+    const result: ModuleStructure[] = [];
+    const groupedData: Record<string, totalStructure[]> = {};
+    data.forEach((e) => {
+      if (e.title) {
+        if (!groupedData[e.title]) {
+          groupedData[e.title] = [];
         }
+        groupedData[e.title].push(e);
+      }
+    });
 
-        return true;
-    };
-    const mockData: ModuleStructure[] = [
-        {
-            title: "Module 1",
-            levels: [
-                { title: "Module 1", Level: "Dễ", Quantity: 10, total: 15 },
-                { title: "Module 1", Level: "Trung bình", Quantity: 5, total: 15 },
-            ],
-        },
-        {
-            title: "Module 2",
-            levels: [
-                { title: "Module 2", Level: "Khó", Quantity: 7, total: 10 },
-                { title: "Module 2", Level: "Rất khó", Quantity: 3, total: 10 },
-            ],
-        },
-    ];
+    for (const title in groupedData) {
+      const levels: totalStructure[] = groupedData[title].map((item) => ({
+        title: item.title,
+        level: item.level,
+        quantity: item.quantity,
+        total: item.total,
+      }));
+      const moduleStructure: ModuleStructure = {
+        title: title,
+        levels: levels,
+      };
+      result.push(moduleStructure);
+    }
+    return result;
+  };
 
-    useEffect(() => {
-        setModules(mockData);
-    }, []);
+  const getSubjectsByIdExam = async (id: string) => {
+    const dataSubject = await getAllExamSubjectByIdSemesterWithContent(id);
+    if (dataSubject.success) {
+      const subjectsWithoutId: ExamSubject[] = dataSubject.data;
+      const subjectId = String(subjectsWithoutId[0].id);
+      setMonThi(subjectId);
+      await getStructureSubjiect(subjectId)
+      setExamSubject(subjectsWithoutId);
+    } else {
+      setExamSubject([]);
+      addNotification(dataSubject.message, dataSubject.success);
+    }
+    return dataSubject;
+  };
 
-    const handleSubmit = (event: React.FormEvent) => {
-        event.preventDefault();
-        if (validateForm()) {
-            setErrors({}); // Reset errors
-        }
-    };
+  const getStructureSubjiect = async (id: string) => {
+    const data = await getAllStrutureByIdSubject(id);
+   
+    if (data.success) {
+      setTongSoCauHoi(data.data[0].quantity);
+      setThoiGianLamBai(data.data[0].time);
+      setCheckCreateStruct(true);
 
-    const groupByTitle = (data: totalStructure[]): ModuleStructure[] => {
-        const result: ModuleStructure[] = [];
-        const groupedData: Record<string, totalStructure[]> = {};
-        data.forEach((e) => {
-            if (e.title) {
-                if (!groupedData[e.title]) {
-                    groupedData[e.title] = [];
-                }
-                groupedData[e.title].push(e);
-            }
-        });
+    } else {
+      setCheckCreateStruct(false);
+      setTongSoCauHoi(0);
+      setThoiGianLamBai(0);
+    }
+    
+    const subjectDetail = await getFinalStructure(id);
+    console.log(subjectDetail);
+    
+      if (subjectDetail.success) {
+        const data = groupByTitle(subjectDetail.data);
+        setModules(data);
+      }
+  };
 
-        for (const title in groupedData) {
-            const levels: totalStructure[] = groupedData[title].map((item) => ({
-                title: item.title,
-                Level: item.Level,
-                Quantity: item.Quantity,
-                total: item.total,
-            }));
-            const moduleStructure: ModuleStructure = {
-                title: title,
-                levels: levels,
-            };
-            result.push(moduleStructure);
-        }
-        return result;
-    };
+  const onLoad = async () => {
+    try {
+      const data = await getAllSemesterWithExamSubject();
 
-    const handleOnChange_Exam = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setKyThi(e.target.value);
-    };
+      if (!data.success || !data.data) {
+        addNotification(data.message, data.success);
+        throw new Error("Failed to get exams.");
+      }
+      console.log(data);
+      
+      setSemester(data.data);
+      if (data.data.length === 0 || !data.data[0].id) {
+        throw new Error("No valid exams found.");
+      }
 
-    const handleOnChange_Subject = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setMonThi(e.target.value);
-    };
+      const examId = String(data.data[0].id);
+      setKyThi(examId);
+      const subjects = await getSubjectsByIdExam(examId);
 
-    // Dummy Data để render các tùy chọn kỳ thi và môn thi
-    const examOptions = [
-        { value: "exam1", label: "Kỳ thi 1" },
-        { value: "exam2", label: "Kỳ thi 2" },
-    ];
+      const subjectId = String(subjects.data[0].id);
+      await getStructureSubjiect(subjectId);
 
-    const subjectOptions = [
-        { value: "subject1", label: "Môn thi 1" },
-        { value: "subject2", label: "Môn thi 2" },
-    ];
+      
+    } catch (error) {
+      console.error("Error in dataStart:", error);
+    }
+  };
+  const handleOnChange_Exam = async (
+    e: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    setKyThi(e.target.value);
+    await getSubjectsByIdExam(e.target.value);
+  };
 
-    return (
-        <div className="Structure">
-            <div className="Structure__title">
-                <h1>Soạn cấu trúc đề</h1>
-            </div>
-            <div className="Structure__content">
-                <div className="form-group">
-                    <label htmlFor="kyThi">Chọn kỳ thi:</label>
-                    <select id="kyThi" value={kyThi} onChange={handleOnChange_Exam}>
-                        <option value="">Chọn kỳ thi</option>
-                        {examOptions.map((exam) => (
-                            <option key={exam.value} value={exam.value}>
-                                {exam.label}
-                            </option>
-                        ))}
-                    </select>
-                    {errors.kyThi && (
-                        <span className="error__number">{errors.kyThi}</span>
-                    )}
-                </div>
-                <div className="form-group">
-                    <label htmlFor="monThi">Chọn môn thi:</label>
-                    <select id="monThi" value={monThi} onChange={handleOnChange_Subject}>
-                        <option value="">Chọn môn thi</option>
-                        {subjectOptions.map((subject) => (
-                            <option key={subject.value} value={subject.value}>
-                                {subject.label}
-                            </option>
-                        ))}
-                    </select>
-                    {errors.monThi && (
-                        <span className="error__number">{errors.monThi}</span>
-                    )}
-                </div>
-                <div className="form-row">
-                    <div className="form-group1">
-                        <label htmlFor="tongSoCauHoi">Tổng số câu hỏi:</label>
-                        <input
-                            type="number"
-                            id="tongSoCauHoi"
-                            value={tongSoCauHoi}
-                            onChange={(e) => setTongSoCauHoi(e.target.value)}
-                        />
-                        {errors.tongSoCauHoi && (
-                            <span className="error__number">{errors.tongSoCauHoi}</span>
-                        )}
-                    </div>
-                    <div className="form-group1">
-                        <label htmlFor="thoiGianLamBai">Thời gian làm bài:</label>
-                        <input
-                            type="number"
-                            id="thoiGianLamBai"
-                            value={thoiGianLamBai}
-                            onChange={(e) => setThoiGianLamBai(e.target.value)}
-                        />
-                        <span>(phút)</span>
-                        {errors.thoiGianLamBai && (
-                            <span className="error__number">{errors.thoiGianLamBai}</span>
-                        )}
-                    </div>
-                </div>
-            </div>
+  const handleOnChange_Subject = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setMonThi(e.target.value);
+    console.log(e.target.value);
+    const subjectDetail = await getFinalStructure(e.target.value);
+    console.log(subjectDetail);
+    
+      if (subjectDetail.success) {
+        const data = groupByTitle(subjectDetail.data);
+        setModules(data);
+      }
+  };
 
-            <hr />
-            <div className="Structure__item">
-                <h3>Danh sách module</h3>
-                <form onSubmit={handleSubmit}>
-                    <div className="module">
-                        {/* Phần này sẽ hiển thị các module đã chọn */}
-                        {modules.map((module, moduleIndex) => (
-                            <div className="module__item" key={moduleIndex}>
-                                <h1>{module.title}</h1>
-                                <div className="module__title">
-                                    <h3 className="lever">Mức độ</h3>
-                                    <h3 className="quantity">Số lượng</h3>
-                                    <h3 className="number">Số câu trong đề</h3>
-                                </div>
-                                {module.levels.map((level, levelIndex) => (
-                                    <div className="module__title" key={levelIndex}>
-                                        <h3 className="lever">{level.Level}</h3>
-                                        <h3 className="quantity">{level.total}</h3>
-                                        <div className="number grid_input">
-                                            <input
-                                                type="number"
-                                                className="input__number"
-                                                value={level.Quantity}
-                                                onChange={(e) =>
-                                                    handleInputChange(
-                                                        moduleIndex,
-                                                        levelIndex,
-                                                        e.target.value
-                                                    )
-                                                }
-                                            />
-                                            {errors[`module-${moduleIndex}-level-${levelIndex}`] && (
-                                                <span className="error__number">
-                                                    {errors[`module-${moduleIndex}-level-${levelIndex}`]}
-                                                </span>
-                                            )}
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        ))}
-                        {/* Bạn có thể thêm code logic render module */}
-                    </div>
-                    <div className="Button__capnhap">
-                        <button type="submit">Submit</button>
-                    </div>
-                </form>
-            </div>
-            <Notification
-                notifications={notifications}
-                clearNotifications={clearNotifications}
-            />
+  useEffect(() => {
+    onLoad();
+  }, []);
+  return (
+    <div className="Structure">
+      <div className="Structure__title">
+        <h1>Soạn cấu trúc đề</h1>
+      </div>
+      <div className="Structure__content">
+        <div className="form-group">
+          <label htmlFor="kyThi">Chọn kỳ thi:</label>
+          <select id="kyThi" value={kyThi} onChange={handleOnChange_Exam}>
+            <option value="">Chọn kỳ thi</option>
+            {semester.map((exam) => (
+              <option key={exam.id} value={exam.id}>
+                {exam.name}
+              </option>
+            ))}
+          </select>
+          {errors.kyThi && (
+            <span className="error__number">{errors.kyThi}</span>
+          )}
         </div>
-    );
+        <div className="form-group">
+          <label htmlFor="monThi">Chọn môn thi:</label>
+          <select id="monThi" value={monThi} onChange={handleOnChange_Subject}>
+            <option value="">Chọn môn thi</option>
+            {examSubjects.map((subject) => (
+              <option key={subject.id} value={subject.id}>
+                {subject.name}
+              </option>
+            ))}
+          </select>
+          {errors.monThi && (
+            <span className="error__number">{errors.monThi}</span>
+          )}
+        </div>
+        <div className="form-row">
+          <div className="form-group1">
+            <label htmlFor="tongSoCauHoi">Tổng số câu hỏi:</label>
+            <input
+              type="number"
+              id="tongSoCauHoi"
+              value={tongSoCauHoi}
+              onChange={(e) => setTongSoCauHoi(e.target.value)}
+            />
+            {errors.tongSoCauHoi && (
+              <span className="error__number">{errors.tongSoCauHoi}</span>
+            )}
+          </div>
+          <div className="form-group1">
+            <label htmlFor="thoiGianLamBai">Thời gian làm bài:</label>
+            <input
+              type="number"
+              id="thoiGianLamBai"
+              value={thoiGianLamBai}
+              onChange={(e) => setThoiGianLamBai(e.target.value)}
+            />
+            <span>(phút)</span>
+            {errors.thoiGianLamBai && (
+              <span className="error__number">{errors.thoiGianLamBai}</span>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <hr />
+      <div className="Structure__item">
+        <h3>Danh sách module</h3>
+        <form onSubmit={handleSubmit}>
+          <div className="module">
+            {/* Phần này sẽ hiển thị các module đã chọn */}
+            {modules.map((module, moduleIndex) => (
+              <div className="module__item" key={moduleIndex}>
+                <h1>{module.title}</h1>
+                <div className="module__title">
+                  <h3 className="lever">Mức độ</h3>
+                  <h3 className="quantity">Số lượng</h3>
+                  <h3 className="number">Số câu trong đề</h3>
+                </div>
+                {module.levels.map((level, levelIndex) => (
+                  <div className="module__title" key={levelIndex}>
+                    <h3 className="lever">{level.level}</h3>
+                    <h3 className="quantity">{level.total}</h3>
+                    <div className="number grid_input">
+                      <input
+                        type="number"
+                        className="input__number"
+                        value={level.quantity}
+                        onChange={(e) =>
+                          handleInputChange(
+                            moduleIndex,
+                            levelIndex,
+                            e.target.value
+                          )
+                        }
+                      />
+                      {errors[`module-${moduleIndex}-level-${levelIndex}`] && (
+                        <span className="error__number">
+                          {errors[`module-${moduleIndex}-level-${levelIndex}`]}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ))}
+            {/* Bạn có thể thêm code logic render module */}
+          </div>
+          <div className="Button__capnhap">
+            <button type="submit">Submit</button>
+          </div>
+        </form>
+      </div>
+      <Notification
+        notifications={notifications}
+        clearNotifications={clearNotifications}
+      />
+    </div>
+  );
 };
 
 export default ManageENExamStructure;

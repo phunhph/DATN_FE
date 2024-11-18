@@ -1,7 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Notification } from "../../components";
 import "./login.scss";
+import { login } from "@/services/repositories/AutherService/autherService";
+import { useToken } from "@/contexts";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -9,9 +12,11 @@ const Login: React.FC = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [emailError, setEmailError] = useState<string | null>(null);
   const [passwordError, setPasswordError] = useState<string | null>(null);
+  const { tokenRep, expiresAt, setToken } = useToken();
   const [notifications, setNotifications] = useState<
     Array<{ message: string; isSuccess: boolean }>
   >([]);
+  const [loading, setLoading] = useState(false); // New loading state
 
   const navigate = useNavigate();
   const addNotification = (message: string, isSuccess: boolean) => {
@@ -22,7 +27,29 @@ const Login: React.FC = () => {
     setNotifications([]);
   };
 
-
+  const loginServices = async (email: string, password: string) => {
+    setLoading(true);
+    try {
+      const user = await login(email, password);
+      if (user.status !== 200) {
+        addNotification(user.warning, user.success);
+      } else {
+        const { token, data, expires_at } = user;
+        setToken(token, data, new Date(expires_at * 1000));
+        const data_ = {
+          token: user.token,
+          expires_at: user.expires_at,
+        };
+        localStorage.setItem("token", JSON.stringify(data_));
+        localStorage.setItem("data", JSON.stringify(user.data));
+        navigate("/admin");
+      }
+    } catch (error) {
+      addNotification("Đăng nhập thất bại, vui lòng thử lại.", false);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -40,7 +67,7 @@ const Login: React.FC = () => {
     }
 
     if (valid) {
-      addNotification('login success', true);
+      loginServices(email, password);
     }
   };
 
@@ -48,9 +75,20 @@ const Login: React.FC = () => {
     alert("Redirect to forgot password page");
   };
 
+  const checkToken = () => {
+    if (tokenRep && expiresAt) {
+      const now = new Date();
+      if (now < expiresAt) {
+        navigate("/admin");
+      } else {
+        setToken(null, null, null);
+      }
+    }
+  };
 
   useEffect(() => {
-  }, []);
+    checkToken();
+  }, [navigate, tokenRep, expiresAt, setToken]);
 
   return (
     <div className="login-container">
@@ -97,18 +135,16 @@ const Login: React.FC = () => {
               Quên mật khẩu?
             </div>
           </div>
-          <button type="submit" className="submit-btn">
-            Đăng nhập
+          <button type="submit" className="submit-btn" disabled={loading}>
+            {loading ? "Đang đăng nhập..." : "Đăng nhập"}
           </button>
         </form>
-
       </div>
       <Notification
         notifications={notifications}
         clearNotifications={clearNotifications}
       />
     </div>
-
   );
 };
 

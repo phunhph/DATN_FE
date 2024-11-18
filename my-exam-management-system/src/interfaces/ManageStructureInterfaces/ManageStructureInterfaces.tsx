@@ -1,24 +1,20 @@
+import { BaseResponse } from "../InterfaceBaseResponse/InterfaceBaseResponse";
+
 export interface TopicStructure {
     id: number;
     exam_subject_id: string;
-    Quantity: number;
-    Time: number;
-    created_at: string | null;
-    updated_at: string | null;
+    quantity: number;
+    time: number;
 }
 export interface totalStructure {
     title?: string;
-    Level: string;
+    level: string;
     total: number;
-    Quantity: number;
+    quantity: number;
 }
 
-export interface StructureResponse {
-    success: boolean;
-    status?: string;
+export interface StructureResponse extends BaseResponse {
     data: TopicStructure[];
-    warning?: string;
-    message?: string;
 }
 
 export interface ModuleStructure {
@@ -34,10 +30,6 @@ export interface reqStructure {
     exam: string
 }
 
-export interface StructureTotalResponse {
-    success: boolean;
-    status?: string;
+export interface StructureTotalResponse extends BaseResponse {
     data: totalStructure[];
-    warning?: string;
-    message?: string;
 }

@@ -1,7 +1,8 @@
 export type SessionType = {
-    sessionName: string;
-    status: number | null;
-    sessionStart: string;
-    sessionEnd: string;
-}
+  id: string | number;
+  name: string;
+  status?: boolean;
+  time_start: string;
+  time_end: string;
+};
 export type SessionFormMode = "add" | "update";

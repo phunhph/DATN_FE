@@ -70,7 +70,7 @@ const ClientLayout = () => {
                           <DropdownLink location="client/scores" onClick={toggleUserMenu} title="Bảng điểm"></DropdownLink>
                           <DropdownLink location="client/history" onClick={toggleUserMenu} title="Lịch sử thi"></DropdownLink>
                         </div>
-                        <DropdownLink location="settings" onClick={toggleUserMenu} title="Cài đặt"></DropdownLink>
+                        {/* <DropdownLink location="settings" onClick={toggleUserMenu} title="Cài đặt"></DropdownLink> */}
                         <li className="dropdown__item">
                           <ToggleSwitch className="nav__toggle" id="" toggleState={theme == "light" ? false : true} onToggle={toggleTheme}></ToggleSwitch><span>Nền {theme == 'light' ? "Sáng" : "Tối"}</span>
                         </li>
