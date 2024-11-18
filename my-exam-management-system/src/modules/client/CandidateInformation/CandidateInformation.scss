@@ -132,6 +132,10 @@
     }
 
     &__information-wrapper {
+      & h1 {
+        text-align: center;
+      }
+
       & form {
         flex-direction: column;
       }

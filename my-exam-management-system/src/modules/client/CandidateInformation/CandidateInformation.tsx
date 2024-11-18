@@ -87,10 +87,10 @@ const CandidateInformation = () => {
                 <form>
                     <div>
                         <label>Họ và tên:
-                            <input type='text' defaultValue={candidate?.name}></input>
+                            <input type='text' readOnly defaultValue={candidate?.name}></input>
                         </label>
                         <label>Email:
-                            <input type='text' defaultValue={candidate?.email}></input>
+                            <input type='text' readOnly defaultValue={candidate?.email}></input>
                         </label>
                     </div>
                     <div>
@@ -98,11 +98,12 @@ const CandidateInformation = () => {
                             <input
                                 id="date"
                                 type="date"
+                                readOnly
                                 defaultValue={candidate?.dob}
                             />
                         </label>
                         <label>Địa chỉ:
-                            <input type='text' defaultValue={candidate?.address}></input>
+                            <input type='text' readOnly defaultValue={candidate?.address}></input>
                         </label>
                     </div>
                 </form>
