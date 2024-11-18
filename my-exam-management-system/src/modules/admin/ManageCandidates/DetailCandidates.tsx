@@ -3,36 +3,45 @@ import { Candidate } from "@/interfaces/CandidateInterface/CandidateInterface";
 import { ErrorCandidate } from "@/interfaces/CandidateInterface/ErrorCandidateInterface";
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import "./DetailCandidates.scss";
+import { DetailCandidate } from "@/services/repositories/CandidatesService/CandidatesService";
 
 const DetailCandidates: React.FC = () => {
+  const title = ["Phòng thi", "Môn thi", "Trạng thái"];
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const [candidates, setCandidates] = useState<Candidate[]>([]);
+  const [dataTable, setDataTable] = useState([]);
   useEffect(() => {
-    const id = queryParams.get("id");
-    const sbd = queryParams.get("sbd");
-    const name = queryParams.get("name");
-    const image = queryParams.get("image");
-    const dob = queryParams.get("dob");
-    const address = queryParams.get("address");
-    const status = queryParams.get("status");
-    console.log({ id, sbd, name, image, dob, address, status });
+    const idcode = queryParams.get("idcode");
 
-    if (id && sbd && name && image && dob && address && status) {
-      const candidate: Candidate = {
-        id,
-        sbd,
-        name,
-        image,
-        dob,
-        address,
-      };
+    const callAPI = async (id: string) => {
+      try {
+        const result = await DetailCandidate(id);
+        if (result.success) {
+          const data = result.data.data;
+          setCandidates(data.candidate);
 
-      setCandidates([candidate]);
-      console.log("Candidates:", [candidate]);
+          const datakey = data.actives.map((active) => ({
+            exam_room_name: data.candidate.exam_room.name,
+            subject_name: active.exam_subject.name,
+            status: active.status,
+          }));
+          console.log(datakey);
+
+          setDataTable(datakey);
+        } else {
+          console.error("Failed to fetch data:", result.message);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    if (idcode) {
+      callAPI(idcode);
     }
   }, [location.search]);
-
   const [modalType, setModalType] = useState<"add" | "edit" | "file">("add");
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [errors, setErrors] = useState<ErrorCandidate>({});
@@ -102,14 +111,46 @@ const DetailCandidates: React.FC = () => {
       handleUpdateStatus(id);
     }
   };
+  const CandidateInfo: React.FC<{ candidate: Candidate }> = ({ candidate }) => {
+    return (
+      <div className="candidate-info">
+        <div className="candidate-info__image">
+          <img src={candidate.image} alt={candidate.name} />
+        </div>
+        <div className="candidate-info__details">
+          <h2>{candidate.name}</h2>
+          <p>
+            <strong>Mã sinh viên:</strong> {candidate.idcode}
+          </p>
+          <p>
+            <strong>Ngày sinh:</strong> {candidate.dob}
+          </p>
+          <p>
+            <strong>Nơi sinh:</strong> {candidate.address}
+          </p>
+          <p>
+            <strong>Email:</strong> {candidate.email}
+          </p>
+          <p>
+            <strong>Trạng thái:</strong>{" "}
+            {candidate.status ? "Đang hoạt động" : "Ngừng hoạt động"}
+          </p>
+        </div>
+      </div>
+    );
+  };
   return (
     <div className="detailCandidate__container">
-      <PageTitle theme="light" showBack={true}>Thông tin thí sinh</PageTitle>
+      <PageTitle theme="light" showBack={true}>
+        Thông tin thí sinh
+      </PageTitle>
+      {candidates && <CandidateInfo candidate={candidates} />}
       <Table
+        title={title}
         tableName={`Thí sinh ${
           candidates.length > 0 ? candidates[0].name : ""
         }`}
-        data={candidates}
+        data={dataTable}
         action_upload={{
           name: "Upload file",
           onClick: () => openModal("file"),

@@ -129,10 +129,12 @@ export const editExamRoom = async (id: any, updatedData: ExamRoom) => {
     };
   }
 };
+export const getExamRoomsInExams = async (
+  id: string
+): Promise<ApiExamRoomResponse> => {
+  try {
+    const token = localStorage.getItem("token");
 
-
-export const getExamRoomDetail = async (id: any) => {
-  const token = localStorage.getItem("token");
 
   if (!token) {
     return {
@@ -146,30 +148,40 @@ export const getExamRoomDetail = async (id: any) => {
       Authorization: `Bearer ${token}`,
     };
 
-    const response: AxiosResponse<ApiExamRoomDetail> = await instance.get(
-      `/api/admin/exam-room/detail/${id}`,
+    const response: AxiosResponse<ExamRoom[]> = await instance.get(
+      `/api/admin/exam/exam-rooms-in-exams/${id}`,
       {
         headers: headers,
       }
     );
 
     return {
-      success: response.data.success,
-      message: response.data.message,
-      data: {
-        examRoom: response.data.data.examRoom,
-        exam_room_details: response.data.data.exam_room_details,
-        exam_sessions: response.data.data.exam_sessions,
-        exam_subjects: response.data.data.exam_subjects,
-      },
+      success: true,
+      message: "Exams fetched successfully",
+      data: response.data,
+      status: 200,
     };
-    
-  } catch (error: any) {
-    return {
-      success: false,
-      message: error.response
-        ? error.response.data.message
-        : "Lỗi không xác định",
-    };
+  } catch (error) {
+    if (error instanceof AxiosError && error.response) {
+      const { data } = error.response;
+      const errorMessage = `${data.message || "Error occurred"}`;
+
+      return {
+        success: false,
+        message: errorMessage,
+        data: [],
+        status: 500,
+      };
+    } else {
+      const generalError = "An unknown error occurred while fetching exams.";
+
+      return {
+        success: false,
+        message: generalError,
+        data: [],
+        status: 500,
+      };
+    }
   }
 };
+
