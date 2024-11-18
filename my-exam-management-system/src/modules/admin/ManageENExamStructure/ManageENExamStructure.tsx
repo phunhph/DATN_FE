@@ -28,7 +28,7 @@ const ManageENExamStructure = () => {
   const [monThi, setMonThi] = useState("");
   const [examSubjects, setExamSubject] = useState<ExamSubject[]>([]);
   const [modules, setModules] = useState<ModuleStructure[]>([]);
-  const [checkCreateStruct, setCheckCreateStruct] = useState(true);
+  // const [checkCreateStruct, setCheckCreateStruct] = useState(true);
   const [tongSoCauHoi, setTongSoCauHoi] = useState<string | number>(0);
   const [thoiGianLamBai, setThoiGianLamBai] = useState<string | number>(0);
   const [notifications, setNotifications] = useState<
@@ -158,10 +158,10 @@ const ManageENExamStructure = () => {
     if (data.success) {
       setTongSoCauHoi(data.data[0].quantity);
       setThoiGianLamBai(data.data[0].time);
-      setCheckCreateStruct(true);
+      // setCheckCreateStruct(true);
 
     } else {
-      setCheckCreateStruct(false);
+      // setCheckCreateStruct(false);
       setTongSoCauHoi(0);
       setThoiGianLamBai(0);
     }

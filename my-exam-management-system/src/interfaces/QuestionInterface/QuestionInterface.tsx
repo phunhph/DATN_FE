@@ -1,3 +1,5 @@
+import { BaseResponse } from "../InterfaceBaseResponse/InterfaceBaseResponse";
+
 export interface Question {
     questionNumber: number;
     questionText: string;
@@ -10,9 +12,6 @@ export interface Question {
     }[];
 }
 
-export interface ApiQuestionResponse {
+export interface ApiQuestionResponse extends BaseResponse {
     data: Question[];
-    status: string;
-    success: boolean;
-    warning?: string;
 }
