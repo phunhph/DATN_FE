@@ -13,7 +13,6 @@ const Exam: React.FC<Props> = () => {
 
     //Đổi màn loại bài thi
     const [currentView, setCurrentView] = useState<string>('')
-    const [notifications, setNotifications] = useState<Array<{ message: string; isSuccess: boolean }>>([]);
 
     const handleViewChange = (view: string) => {
         setCurrentView(view);
@@ -424,6 +423,8 @@ const Exam: React.FC<Props> = () => {
 
 
     //thông bóa
+    const [notifications, setNotifications] = useState<Array<{ message: string; isSuccess: boolean }>>([]);
+
     const addNotification = (message: string, isSuccess: boolean) => {
         setNotifications((prev) => [...prev, { message, isSuccess }]);
     };
