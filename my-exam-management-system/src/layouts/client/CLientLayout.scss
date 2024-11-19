@@ -86,19 +86,20 @@ $header-height: 4rem;
         margin: 2rem 0;
         width: 15rem;
         text-align: left;
+        color: var(--text);
         & li {
             margin: 0.5rem 0;
 
             & a {
                 display: block;
                 padding-left: 0.5rem;
-                border-radius: 20px;
+                border-radius: 10px;
                 width: 6rem;
-                transition: background-color 0.2s linear;
+                transition: background-color 0.1s linear;
             }
 
             & a:hover {
-                background-color: #2b2a2a;
+                background-color: var(--secondary);
             }
         }
     }
@@ -123,7 +124,7 @@ $header-height: 4rem;
 }
 
 .client-active {
-    background-color: var(--secondary50);
+    background-color: var(--secondary);
     color: var(--text);
 }
 
