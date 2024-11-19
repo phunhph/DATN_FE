@@ -56,6 +56,7 @@ export const formatWarningMessage = (warning: WarningType): string => {
     return String(warning) || "An error occurred";
   }
 };
+
 export const updateStatusQuestion = async (id: string) => {
   try {
     const token = localStorage.getItem("token");
@@ -94,3 +95,7 @@ export const updateStatusQuestion = async (id: string) => {
     }
   }
 };
+
+export const createQuestion = () =>{
+  
+}

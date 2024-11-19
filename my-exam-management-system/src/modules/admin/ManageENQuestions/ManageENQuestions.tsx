@@ -9,6 +9,7 @@ import { getAllExamSubjectByIdSemesterWithContent } from "@/services/repositorie
 import { getAllQuestionByIdContent } from "@/services/repositories/QuestionServices/QuestionServices";
 import { getAllExamContentByIdSubject } from "@/services/repositories/ExamContentService/ExamContentService";
 import { ExamContentInterface } from "@/interfaces/ExamContentInterface/ExamContentInterface";
+import { Question } from "@/interfaces/QuestionInterface/QuestionInterface";
 
 interface ErrorQuestions {
   [key: string]: string;
@@ -22,6 +23,7 @@ interface DataQuestion {
 }
 
 const ManageENQuestions = () => {
+  const [editMode, setEditMode] = useState(false);
   const [kyThi, setKyThi] = useState("");
   const [semester, setSemester] = useState<Semester[]>([]);
   const [monThi, setMonThi] = useState("");
@@ -45,6 +47,21 @@ const ManageENQuestions = () => {
   };
   const title = ["Mã câu hỏi", "Nội dung", "Trạng thái", "Thao tác"];
 
+  const [formData, setFormData] = useState<Question>({
+    id: "",
+    exam_content_id: content,
+    title: "",
+    answer_P: "",
+    answer_F1: "",
+    answer_F2: "",
+    answer_F3: "",
+    level: "Dễ",
+    image_title: null,
+    Image_P: null,
+    Image_F1: null,
+    Image_F2: null,
+    image_F3: null,
+  });
   const [fileName, setFileName] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -62,6 +79,68 @@ const ManageENQuestions = () => {
     setModalType(type);
     setModalIsOpen(true);
     setErrors({});
+  };
+
+  const closeModal = () => {
+    setModalIsOpen(false);
+  };
+
+  const validate = (): boolean => {
+    const errors: ErrorQuestions = {};
+    if (!formData.id) errors.id = "Mã câu hỏi không được để trống.";
+    if (!formData.level)
+      errors.questionLevel = "Mức độ câu hỏi không được để trống.";
+    if (!formData.title)
+      errors.questionContent = "Nội dung câu hỏi không được để trống.";
+    if (!formData.answer_P)
+      errors.correctAnswer = "Đáp án đúng không được để trống.";
+    if (!formData.answer_F1)
+      errors.wrongAnswer1 = "Đáp án sai 1 không được để trống.";
+    if (!formData.answer_F2)
+      errors.wrongAnswer2 = "Đáp án sai 2 không được để trống.";
+    if (!formData.answer_F3)
+      errors.wrongAnswer3 = "Đáp án sai 3 không được để trống.";
+    setErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (validate()) {
+      console.log(formData);
+      
+      if (editMode) {
+        alert("Cập nhật câu hỏi thành công!");
+      } else {
+        addNotification("Thêm câu hỏi thành công!", true);
+      }
+      setFormData({
+        id: "",
+        exam_content_id: content,
+        title: "",
+        answer_P: "",
+        answer_F1: "",
+        answer_F2: "",
+        answer_F3: "",
+        level: "Dễ",
+        image_title: null,
+        Image_P: null,
+        Image_F1: null,
+        Image_F2: null,
+        image_F3: null,
+      });
+      closeModal();
+    }
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
+    }));
   };
 
   const download = () => {
@@ -218,6 +297,7 @@ const ManageENQuestions = () => {
     e: React.ChangeEvent<HTMLSelectElement>
   ) => {
     setContent(e.target.value);
+    getQuestionByIdContent(e.target.value);
     console.log(e.target.value);
   };
 
@@ -312,6 +392,254 @@ const ManageENQuestions = () => {
         style={{ display: "none" }}
         onChange={handleFileChange}
       />
+      {modalIsOpen && (
+        <div className="modal1">
+          <div className="modal1__overlay">
+            <div className="modal1__content">
+              <button className="modal1__close" onClick={closeModal}>
+                X
+              </button>
+              <h2 className="modal__title">
+                {modalType === "edit"
+                  ? "Chỉnh sửa câu hỏi"
+                  : modalType === "file"
+                  ? "Tải lên file"
+                  : "Thêm mới câu hỏi"}
+              </h2>
+              {modalType === "file" ? (
+                <div className="modal__file-content">
+                  <p>Hãy chọn file từ máy tính của bạn.</p>
+                  <div className="file-upload-container">
+                    <input
+                      type="text"
+                      className="file-input"
+                      value={fileName || "Chưa chọn file"}
+                      readOnly
+                      placeholder="Chưa chọn file"
+                    />
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      style={{ display: "none" }}
+                      onChange={handleFileChange}
+                    />
+                    <button
+                      onClick={() => fileInputRef.current?.click()}
+                      className="file-select-button"
+                    >
+                      Chọn file
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <form className="modal1__form" onSubmit={handleSubmit}>
+                  <div className="modal1__firstline">
+                    <label className="modal1__label">
+                      Mã câu hỏi: <br />
+                      <input
+                        type="text"
+                        name="id"
+                        value={formData.id}
+                        onChange={handleChange}
+                        className="modal1__input"
+                        placeholder="Nhập mã câu hỏi"
+                      />
+                      {errors.id && (
+                        <span className="error_question">{errors.id}</span>
+                      )}
+                    </label>
+
+                    <label className="modal1__label">
+                      Mức độ câu hỏi: <br />
+                      <select
+                        name="level"
+                        value={formData.level}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            level: e.target.value,
+                          })
+                        }
+                        className="subject__select1"
+                      >
+                        <option value="Dễ">Dễ</option>
+                        <option value="Trung bình">Trung Bình</option>
+                        <option value="Khó">Khó</option>
+                      </select>
+                      {errors.questionLevel && (
+                        <span className="error_question">
+                          {errors.questionLevel}
+                        </span>
+                      )}
+                    </label>
+                  </div>
+                  <div className="model1__question">
+                    <label className="modal1__label">
+                      Nội dung câu hỏi: <br />
+                      <textarea
+                        name="title"
+                        value={formData.title}
+                        onChange={handleChange}
+                        className="modal1__input"
+                        placeholder="Nhập nội dung"
+                      />
+                    </label>
+
+                    {errors.questionContent && (
+                      <span className="error_question">
+                        {errors.questionContent}
+                      </span>
+                    )}
+                    <div className="upload-file">
+                      <input type="file" className="upload-file__input" />
+                      <button className="upload-file__button">
+                        <ion-icon
+                          name="cloud-upload-outline"
+                          className="upload-file__icon"
+                          style={{ fontSize: "24px", marginRight: "5px" }}
+                        ></ion-icon>
+                        Upload File
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="model1__second">
+                    <div className="model1__input">
+                      <label className="modal1__label">
+                        Đáp án đúng: <br />
+                        <textarea
+                          name="answer_P"
+                          onChange={handleChange}
+                          value={formData.answer_P}
+                          className="input__input"
+                          placeholder="Nhận đáp án đúng"
+                        />
+                      </label>
+                      <div className="upload-file">
+                        <input type="file" className="upload-file__input" />
+                        <button className="upload-file__button">
+                          <ion-icon
+                            name="cloud-upload-outline"
+                            className="upload-file__icon"
+                            style={{ fontSize: "24px", marginRight: "5px" }}
+                          ></ion-icon>
+                          Upload File
+                        </button>
+                      </div>
+                      {errors.correctAnswer && (
+                        <span className="error_question">
+                          {errors.correctAnswer}
+                        </span>
+                      )}
+                    </div>
+                    {/*  */}
+                    <div className="model1__input">
+                      <label className="modal1__label">
+                        Đáp án sai 1: <br />
+                        <textarea
+                          name="answer_F1"
+                          value={formData.answer_F1}
+                          onChange={handleChange}
+                          className="input__input"
+                          placeholder="Nhập đáp sai 1"
+                        />
+                      </label>
+                      <div className="upload-file">
+                        <input type="file" className="upload-file__input" />
+                        <button className="upload-file__button">
+                          <ion-icon
+                            name="cloud-upload-outline"
+                            className="upload-file__icon"
+                            style={{ fontSize: "24px", marginRight: "5px" }}
+                          ></ion-icon>
+                          Upload File
+                        </button>
+                      </div>
+                      {errors.wrongAnswer1 && (
+                        <span className="error_question">
+                          {errors.wrongAnswer1}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  {/* in1 */}
+                  <div className="model1__second">
+                    <div className="model1__input">
+                      <label className="modal1__label">
+                        Đáp án sai 2: <br />
+                        <textarea
+                          name="answer_F2"
+                          value={formData.answer_F2}
+                          onChange={handleChange}
+                          className="input__input"
+                          placeholder="Nhập đáp sai 1"
+                        />
+                      </label>
+                      <div className="upload-file">
+                        <input type="file" className="upload-file__input" />
+                        <button className="upload-file__button">
+                          <ion-icon
+                            name="cloud-upload-outline"
+                            className="upload-file__icon"
+                            style={{ fontSize: "24px", marginRight: "5px" }}
+                          ></ion-icon>
+                          Upload File
+                        </button>
+                      </div>
+                      {errors.wrongAnswer2 && (
+                        <span className="error_question">
+                          {errors.wrongAnswer2}
+                        </span>
+                      )}
+                    </div>
+                    {/*  */}
+                    <div className="model1__input">
+                      <label className="modal1__label">
+                        Đáp án sai 3: <br />
+                        <textarea
+                          name="answer_F3"
+                          value={formData.answer_F3}
+                          onChange={handleChange}
+                          className="input__input"
+                          placeholder="Nhập đáp sai 1"
+                        />
+                      </label>
+                      <div className="upload-file">
+                        <input type="file" className="upload-file__input" />
+                        <button className="upload-file__button">
+                          <ion-icon
+                            name="cloud-upload-outline"
+                            className="upload-file__icon"
+                            style={{ fontSize: "24px", marginRight: "5px" }}
+                          ></ion-icon>
+                          Upload File
+                        </button>
+                      </div>
+                      {errors.wrongAnswer3 && (
+                        <span className="error_question">
+                          {errors.wrongAnswer3}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="modal1__button">
+                    <button
+                      type="button"
+                      onClick={closeModal}
+                      className="modal1__button-close"
+                    >
+                      Đóng
+                    </button>
+                    <button type="submit" className="modal1__button-add">
+                      Thêm
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
       <Notification
         notifications={notifications}
         clearNotifications={clearNotifications}
