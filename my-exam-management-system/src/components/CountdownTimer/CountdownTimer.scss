@@ -1,3 +1,4 @@
+@use "@scss/mixin.scss" as m;
 .countdown {
     &__container {
       border-radius: 5rem;
@@ -5,10 +6,9 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      background-color: #cdffcd;
     }
     &__timer {
-      border: 3px solid #1EBA1E;
+      border: 3px solid var(--accent);
       border-radius: 5rem;
       height: 9rem;
       width: 95%;
@@ -16,15 +16,46 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      background-color: white;
+      background-color:var(--secondary);
       p {
         margin: 0;
         text-align: center;
         font-size: 1.3rem;
         font-weight: bold;
+        color:var(--text);
         &:nth-child(2) { 
           font-size: 2.2rem; 
         }
       }
     }
   }
+
+  @include m.responsive-to(xl){
+    .countdown {
+      &__container{
+        height: auto;
+      }
+      &__timer{
+        width: 150px;
+        height: auto;
+        p:first-child{
+          display: none;
+        }
+        p:last-child {
+          font-size: 1.3rem;
+        }
+      }
+    }
+ }
+ 
+ @include m.responsive-to(md){
+  .countdown {
+    &__timer{
+      width: 300px;
+    }
+  }
+ }
+ 
+ @include m.responsive-to(sm){
+ 
+ }

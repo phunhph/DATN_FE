@@ -74,7 +74,7 @@
       hue-rotate(228deg) brightness(98%) contrast(91%);
   }
   &__outer {
-    visibility: hidden;
+    visibility: visible;
     overflow-y: auto;
     height: calc(100svh - 4rem);
     scrollbar-gutter: stable both-edges;
@@ -93,15 +93,7 @@
     color: vars.$text-theme-light;
   }
 }
-.active {
-  color: #fff;
-  background: linear-gradient(270deg, #7367f0b3 0%, #7367f0 100%);
-  // box-shadow: 0px 2px 6px 0px rgba(115, 103, 240, 0.3);
-  & > img {
-    filter: brightness(0) saturate(100%) invert(100%) sepia(100%) saturate(0%)
-      hue-rotate(202deg) brightness(108%) contrast(101%);
-  }
-}
+
 .activeSM {
   background-color: rgba(47, 43, 61, 0.157);
 }
@@ -174,32 +166,7 @@
     }
     cursor: pointer;
   }
-  &__menu {
-    position: absolute;
-    right: 0;
-    top: 147%;
-    display: block;
-    background: white;
-    list-style: none;
-    border-radius: 4px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-    min-width: 14rem;
-    border: 1px solid #dddddd;
-  }
-  &__user {
-    margin: 0.5rem 0;
-    padding-left: 1rem;
-    height: 3rem;
-    display: flex;
-    align-items: center;
-    & img {
-      margin-right: 0.5rem;
-    }
-  }
-  &__divider {
-    margin: 3px 0.5rem;
-    border-top: 1px solid #dfdfe1;
-  }
+
   &__button {
     width: 100%;
   }

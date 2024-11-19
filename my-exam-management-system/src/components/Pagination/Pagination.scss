@@ -1,62 +1,76 @@
-.pagination-container {
+@use "@scss/mixin" as m;
+
+.pagination {
+  display: flex;
+  gap: 0.625rem;
+
+  &-container {
     margin-top: 1.25rem;
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
-  
-    .pagination-info {
-      margin-bottom: 1rem;
-      font-size: 1rem;
-      color: #333;
+    gap: 2rem;
+  }
+
+  &-info {
+    height: 40px;
+    font-size: 1rem;
+    color: #333;
+    display: flex;
+    align-items: center;
+  }
+
+  button {
+    padding: 0.5rem 0.75rem;
+    border: none;
+    border-radius: 0.25rem;
+    background-color: var(--accent50);
+    color: var(--text);
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: var(--accent);
     }
-  
-    .items-per-page {
-      margin-bottom: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.625rem;
-  
-      label {
-        font-size: 1rem;
-        color: #333;
-      }
-  
-      select {
-        padding: 0.5rem;
-        border: 0.0625rem solid #ddd;
-        border-radius: 0.25rem;
-        font-size: 1rem;
-      }
+
+    &:disabled {
+      background-color: var(--accent20);
+      cursor: not-allowed;
     }
-  
-    .pagination {
-      display: flex;
-      gap: 0.625rem;
-  
-      button {
-        padding: 0.5rem 0.75rem;
-        border: none;
-        border-radius: 0.25rem;
-        background-color: #007bff;
-        color: white;
-        cursor: pointer;
-        font-size: 1rem;
-        transition: background-color 0.3s ease;
-  
-        &:hover {
-          background-color: #0056b3;
-        }
-  
-        &.active {
-          background-color: #0056b3;
-          font-weight: bold;
-        }
-  
-        &:disabled {
-          background-color: #ddd;
-          cursor: not-allowed;
-        }
-      }
+
+    &.activated-pagi {
+      background-color: var(--accent) !important;
+      font-weight: bold;
     }
   }
-  
+}
+
+.items-per-page {
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+
+  label {
+    font-size: 1rem;
+    color: #333;
+  }
+
+  select {
+    padding: 0.5rem;
+    border: 0.0625rem solid #ddd;
+    border-radius: 0.25rem;
+    font-size: 1rem;
+  }
+}
+
+@include m.responsive-to(lg) {
+  .pagination {
+
+    &-container {
+      flex-direction: column;
+      gap:0;
+    }
+  }
+}

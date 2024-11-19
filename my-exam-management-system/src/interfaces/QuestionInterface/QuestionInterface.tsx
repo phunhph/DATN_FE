@@ -16,3 +16,18 @@ export interface ApiQuestionResponse {
     success: boolean;
     warning?: string;
 }
+
+export interface APIresultOfCandidate {
+    timeSpent: number;
+    answers: {
+        multipleChoice: {
+            [key:string]: number;
+        }
+        reading: {
+            [key:string]: number;
+        }
+        listening: {
+            [key:string]: number;
+        }
+    }
+}

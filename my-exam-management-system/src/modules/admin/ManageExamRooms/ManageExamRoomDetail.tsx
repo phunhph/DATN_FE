@@ -9,7 +9,7 @@ import { ExamRoom } from "@interfaces/ExamRoomInterfaces/ExamRoomInterfaces";
 import { ErrorExamRoom } from "@interfaces/ExamRoomInterfaces/ErrorExamRoomInterfaces";
 import {
   editExamRoom,
-  getExamRoomDetail,
+  // getExamRoomDetail,
 } from "@/services/repositories/ExamRoomService/ExamRoomService";
 
 const ManageExamRoomDetail = () => {
@@ -27,42 +27,42 @@ const ManageExamRoomDetail = () => {
     setLoading(true);
     try {
       console.log(room);
-      const result = await getExamRoomDetail(room.id);
-      console.log("Room Detail", result);
-      console.log("ExamRoom Data:", result.data);
+      // const result = await getExamRoomDetail(room.id);
+      // console.log("Room Detail", result);
+      // console.log("ExamRoom Data:", result.data);
 
-      if (result.success) {
-        const examRoom = result.data?.examRoom;
-        console.log("examRoom", examRoom);
-        const id = examRoom.id;
-        console.log("ExamRoom ID:", examRoom?.id);
+      // if (result.success) {
+      //   const examRoom = result.data?.examRoom;
+      //   console.log("examRoom", examRoom);
+      //   const id = examRoom.id;
+      //   console.log("ExamRoom ID:", examRoom?.id);
 
-        const exam_sessions = result.data?.exam_sessions;
-        const exam_subjects = result.data?.exam_subjects;
-        const exam_session_name = exam_sessions[0]?.name || "Chưa có ca thi";
-        const exam_subject_name = exam_subjects[0]?.name || "Chưa có môn thi";
-        const exam_session_time_start =
-          exam_sessions[0]?.time_start || "Chưa có thời gian";
-        const exam_session_time_end =
-          exam_sessions[0]?.time_end || "Chưa có thời gian";
+      //   const exam_sessions = result.data?.exam_sessions;
+      //   const exam_subjects = result.data?.exam_subjects;
+      //   const exam_session_name = exam_sessions[0]?.name || "Chưa có ca thi";
+      //   const exam_subject_name = exam_subjects[0]?.name || "Chưa có môn thi";
+      //   const exam_session_time_start =
+      //     exam_sessions[0]?.time_start || "Chưa có thời gian";
+      //   const exam_session_time_end =
+      //     exam_sessions[0]?.time_end || "Chưa có thời gian";
 
-        const examRoomArray = Object.entries(examRoom).map(([key, value]) => ({
-          key,
-          value,
-        }));
+      //   const examRoomArray = Object.entries(examRoom).map(([key, value]) => ({
+      //     key,
+      //     value,
+      //   }));
 
-        setRoomDetail({
-          id,
-          exam_session_name,
-          exam_subject_name,
-          exam_session_time_start,
-          exam_session_time_end,
-          examRoom: examRoomArray,
-        });
-        setError("");
-      } else {
-        setError(result.message || "Lỗi khi lấy thông tin phòng thi.");
-      }
+      //   setRoomDetail({
+      //     id,
+      //     exam_session_name,
+      //     exam_subject_name,
+      //     exam_session_time_start,
+      //     exam_session_time_end,
+      //     examRoom: examRoomArray,
+      //   });
+      //   setError("");
+      // } else {
+      //   setError(result.message || "Lỗi khi lấy thông tin phòng thi.");
+      // }
     } catch (error) {
       setError("Lỗi khi tải thông tin phòng thi.");
     } finally {

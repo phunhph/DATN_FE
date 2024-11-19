@@ -1,3 +1,4 @@
+@use "@scss/mixin.scss" as m;
 .exam {
   &__question {
     margin-bottom: 3rem;
@@ -9,36 +10,93 @@
       text-align: left;
       overflow: hidden;
       word-wrap: break-word;
-      height: auto;
       margin-right: 1.5rem;
+      color:var(--text);
     }
     &-image {
-      margin:0 1.5rem 2rem 0 ;
+      margin:0 0 2rem 0 ;
       padding: 2rem;
-      // border: 1px solid black;
       border-radius: 0.5rem;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 25rem;
-      background-color: white;
+      background-color: var(--secondary70);
       img {
         height: 100%;
         border-radius: 0.5rem;
+      }
+    }
+    &-radio {
+      padding: 1rem 0;
+      max-width: 1000px;
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--text30);
+      color: var(--text);
+      div:first-child {
+        max-width: 600px;
+      }
+      div:last-child {
+        min-width: 190px;
+      }
+    }
+    &-label {
+      margin-left: 1rem;
+      position: relative;
+      padding-left: 2.5rem;
+      cursor: pointer;
+      user-select: none;
+      .radioinput {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+      }
+    
+      .radiomark {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 25px;
+        width: 25px;
+        background-color: #eee;
+        border-radius: 50%;
+      }
+    
+      /* When the radio button is checked, add a blue background */
+      .radioinput:checked ~ .radiomark {
+        background-color: var(--accent);
+      }
+    
+      /* Create the indicator (the dot/circle - hidden when not checked) */
+      .radiomark:after {
+        content: "";
+        position: absolute;
+        top: 9px;
+        left: 9px;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: white;
+        display: none;
+      }
+    
+      /* Show the indicator (dot/circle) when checked */
+      .radioinput:checked ~ .radiomark:after {
+        display: block;
       }
     }
   }
   &__answer {
     display: flex;
     flex-wrap: wrap;
-    align-items: stretch;
     gap: 2rem;
     &-content {
       gap: 0.5rem;
     }
     &-box {
+      flex-grow: 1;
       padding: 1rem;
-      // border: 1px solid black;
       border-radius: 0.5rem;
       width: 47.15%;
       box-sizing: border-box;
@@ -51,18 +109,14 @@
       height: auto;
       border:3px solid transparent;
       cursor: pointer;
-      background-color: white;
+      background-color: var(--secondary70);
+      color:var(--text);
       &.selected {
-        border:3px solid #1EBA1E;
-        .exam__answer-option {
-          background-color: #1EBA1E;
-          border-color: #1EBA1E;
-          color:white;
-        }
+        background-color: var(--accent);
       }
     }
     &-box:hover {
-      background: #99f599;
+      background: var(--accent);
     }
     &-option {
       display: flex;
@@ -87,7 +141,21 @@
       border-radius: 0.5rem;
       img {
         border-radius: 0.5rem;
+        object-fit: cover;
+        object-position: center;
       }
     }
   }
+}
+
+@include m.responsive-to(xl){
+
+}
+
+@include m.responsive-to(lg){
+
+}
+
+@include m.responsive-to(sm){
+
 }
