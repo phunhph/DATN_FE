@@ -11,21 +11,16 @@ export const getAllSession = async (): Promise<ApiSessionResponse> => {
       Authorization: `Bearer ${token}`,
     };
 
-    const response: AxiosResponse<any> = await instance.get(
+    const response: AxiosResponse<ApiSessionResponse> = await instance.get(
       "/api/admin/exam-session",
       {
         headers: headers,
       }
     );
 
-    console.log("API Response Data:", response.data); 
 
-    return {
-      success: true,
-      message: "Session fetched successfully",
-      data: response.data, 
-      status: 200,
-    };
+    return response.data;
+    
   } catch (error) {
     if (error instanceof AxiosError && error.response) {
       const { data } = error.response;
