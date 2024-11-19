@@ -21,7 +21,6 @@ const DetailCandidates: React.FC = () => {
         if (result.success) {
           const data = result.data.data;
           setCandidates(data.candidate);
-
           const datakey = data.actives.map((active) => ({
             exam_room_name: data.candidate.exam_room.name,
             subject_name: active.exam_subject.name,
@@ -130,6 +129,10 @@ const DetailCandidates: React.FC = () => {
           </p>
           <p>
             <strong>Email:</strong> {candidate.email}
+          </p>
+          <p>
+            <strong>Phòng thi:</strong>
+            {candidate.exam_room ? candidate.exam_room.name : ""}
           </p>
           <p>
             <strong>Trạng thái:</strong>{" "}

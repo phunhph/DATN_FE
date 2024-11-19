@@ -8,7 +8,6 @@ import {
 } from "@interfaces/ExamRoomInterfaces/ExamRoomInterfaces";
 import { instance } from "@/services/api/api";
 
-
 export const getAllExamRooms = async (): Promise<ApiExamRoomResponse> => {
   try {
     const token = localStorage.getItem("token");
@@ -78,7 +77,6 @@ export const getExamRoom = async (id: any) => {
     );
 
     return response.data;
-    
   } catch (error: any) {
     console.error("Error fetching exam room detail:", error);
     return {
@@ -135,15 +133,14 @@ export const getExamRoomsInExams = async (
   try {
     const token = localStorage.getItem("token");
 
-
-  if (!token) {
-    return {
-      success: false,
-      message: "Token không tồn tại. Vui lòng đăng nhập.",
-    };
-  }
-
-  try {
+    if (!token) {
+      return {
+        success: false,
+        data: [],
+        status: 404,
+        message: "Token không tồn tại. Vui lòng đăng nhập.",
+      };
+    }
     const headers = {
       Authorization: `Bearer ${token}`,
     };
@@ -185,3 +182,45 @@ export const getExamRoomsInExams = async (
   }
 };
 
+export const getExamRoomDetail = async (id: any) => {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    return {
+      success: false,
+      message: "Token không tồn tại. Vui lòng đăng nhập.",
+    };
+  }
+
+  try {
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+
+    const response: AxiosResponse<ApiExamRoomDetail> = await instance.get(
+      `/api/admin/exam-room/detail/${id}`,
+      {
+        headers: headers,
+      }
+    );
+
+    return {
+      success: response.data.success,
+      message: response.data.message,
+      data: {
+        examRoom: response.data.data.examRoom,
+        exam_room_details: response.data.data.exam_room_details,
+        exam_sessions: response.data.data.exam_sessions,
+        exam_subjects: response.data.data.exam_subjects,
+      },
+    };
+    
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.response
+        ? error.response.data.message
+        : "Lỗi không xác định",
+    };
+  }
+};
