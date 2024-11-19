@@ -7,9 +7,9 @@ export interface Candidate {
   name: string;
   image: string;
   dob: string;
-
   address: string;
   email: string;
+  exam_room: Exam_room;
   status: number | string;
 }
 
@@ -26,4 +26,10 @@ export interface CreateCandidate {
   address: string;
   email: string;
   status: number | string | boolean;
+}
+
+export interface Exam_room {
+  id: number;
+  exam_id: string;
+  name: string;
 }
