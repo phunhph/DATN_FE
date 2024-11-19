@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Notification } from "@/components";
 import "./login.scss";
 import { login } from "@/services/repositories/AutherService/autherService";
 import { useToken } from "@/contexts";
@@ -91,71 +92,58 @@ const Login: React.FC = () => {
 
   return (
     <div className="login-container">
-      <div className="content_Login">
-        <div className="left">
-          <div className="logo">EASY EXAM</div>
-          <h1>Chào mừng đến với EASY EXAM!</h1>
-          <p>Thi trắc nghiệm online, một người thi cả lớp 10 điểm!</p>
-          <div className="video-placeholder">
-            <button className="play-button">▶</button>
+      <div className="login-box">
+        <h1>Hệ thống quản trị</h1>
+        <p>Vui lòng nhập thông tin</p>
+        <form className="form-login" onSubmit={handleSubmit}>
+          <div className="input-group">
+            <label htmlFor="username">Tài khoản</label>
+            <input
+              type="text"
+              id="username"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Nhập tài khoản"
+            />
+            {emailError && <span className="error-message">{emailError}</span>}
           </div>
-          <p>Xem video để biết thêm thông tin!</p>
-        </div>
-        <div className="right">
-          <h2>ĐĂNG NHẬP</h2>
-          <p>Đăng nhập để làm bài thi ngay!</p>
-          <form className="form-login" onSubmit={handleSubmit}>
-            <div className="input-group">
-              <label htmlFor="username">Tài khoản</label>
+          <div className="input-group">
+            <label htmlFor="password">Mật khẩu</label>
+            <input
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Nhập mật khẩu"
+              autoComplete="current-password"
+            />
+            {passwordError && (
+              <span className="error-message">{passwordError}</span>
+            )}
+          </div>
+          <div className="form-options">
+            <div className="remember-me">
               <input
-                type="text"
-                id="username"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Nhập tài khoản"
+                type="checkbox"
+                id="rememberMe"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
               />
-              {emailError && <span className="error-message">{emailError}</span>}
+              <label htmlFor="rememberMe">Nhớ mật khẩu</label>
             </div>
-
-            <div className="input-group">
-              <label htmlFor="password">Mật khẩu</label>
-              <input
-                type="password"
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Nhập mật khẩu"
-                autoComplete="current-password"
-              />
-              {passwordError && (
-                <span className="error-message">{passwordError}</span>
-              )}
+            <div className="forgot-password" onClick={handleForgotPassword}>
+              Quên mật khẩu?
             </div>
-            <div className="form-options">
-              <div className="remember-me">
-                <input
-                  type="checkbox"
-                  id="rememberMe"
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
-                />
-                <label htmlFor="rememberMe">Nhớ mật khẩu</label>
-              </div>
-              <div className="forgot-password" onClick={handleForgotPassword}>
-                Quên mật khẩu?
-              </div>
-            </div>
-            <button type="submit" className="submit-btn" disabled={loading}>
-              {loading ? "Đang đăng nhập..." : "Đăng nhập"}
-            </button>
-          </form>
-        </div>
+          </div>
+          <button type="submit" className="submit-btn" disabled={loading}>
+            {loading ? "Đang đăng nhập..." : "Đăng nhập"}
+          </button>
+        </form>
       </div>
-
-      {/* <Notification
+      <Notification
         notifications={notifications}
         clearNotifications={clearNotifications}
-      /> */}
+      />
     </div>
   );
 };
