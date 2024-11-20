@@ -6,7 +6,7 @@ import { Semester } from "@/interfaces/SemesterInterface/SemestertInterface";
 import { ExamSubject } from "@/interfaces/SubjectInterface/ExamSubjectInterface";
 import { getAllSemesterWithExamSubject } from "@/services/repositories/SemesterServices/SemesterServices";
 import { getAllExamSubjectByIdSemesterWithContent } from "@/services/repositories/ExamSubjectService/ExamSubjectService";
-import { getAllQuestionByIdContent } from "@/services/repositories/QuestionServices/QuestionServices";
+import { createQuestion, getAllQuestionByIdContent } from "@/services/repositories/QuestionServices/QuestionServices";
 import { getAllExamContentByIdSubject } from "@/services/repositories/ExamContentService/ExamContentService";
 import { ExamContentInterface } from "@/interfaces/ExamContentInterface/ExamContentInterface";
 import { Question } from "@/interfaces/QuestionInterface/QuestionInterface";
@@ -55,7 +55,7 @@ const ManageENQuestions = () => {
     answer_F1: "",
     answer_F2: "",
     answer_F3: "",
-    level: "Dễ",
+    level: "easy",
     image_title: null,
     Image_P: null,
     Image_F1: null,
@@ -104,14 +104,21 @@ const ManageENQuestions = () => {
     return Object.keys(errors).length === 0;
   };
 
+  const createQuestion_ = async (formData: Question) => {
+    const result = await createQuestion(formData)
+    console.log(result);
+  }
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (validate()) {
       console.log(formData);
-      
+      formData.exam_content_id = content
       if (editMode) {
         alert("Cập nhật câu hỏi thành công!");
       } else {
+        createQuestion_(formData)
+
         addNotification("Thêm câu hỏi thành công!", true);
       }
       setFormData({
@@ -122,7 +129,7 @@ const ManageENQuestions = () => {
         answer_F1: "",
         answer_F2: "",
         answer_F3: "",
-        level: "Dễ",
+        level: "easy",
         image_title: null,
         Image_P: null,
         Image_F1: null,
@@ -290,7 +297,6 @@ const ManageENQuestions = () => {
     const subjectId = String(e.target.value);
     getAllExamContent(subjectId);
 
-    console.log(e.target.value);
   };
 
   const handleOnChange_Context = async (
@@ -403,8 +409,8 @@ const ManageENQuestions = () => {
                 {modalType === "edit"
                   ? "Chỉnh sửa câu hỏi"
                   : modalType === "file"
-                  ? "Tải lên file"
-                  : "Thêm mới câu hỏi"}
+                    ? "Tải lên file"
+                    : "Thêm mới câu hỏi"}
               </h2>
               {modalType === "file" ? (
                 <div className="modal__file-content">
@@ -462,9 +468,9 @@ const ManageENQuestions = () => {
                         }
                         className="subject__select1"
                       >
-                        <option value="Dễ">Dễ</option>
-                        <option value="Trung bình">Trung Bình</option>
-                        <option value="Khó">Khó</option>
+                        <option value="easy">Dễ</option>
+                        <option value="easy">Trung Bình</option>
+                        <option value="easy">Khó</option>
                       </select>
                       {errors.questionLevel && (
                         <span className="error_question">
