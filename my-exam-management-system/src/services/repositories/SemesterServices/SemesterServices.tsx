@@ -1,4 +1,4 @@
-import { ApiSemesterResponse, Semester } from "@/interfaces/SemesterInterface/SemestertInterface";
+import { ApiExamWithSubjectResponse, ApiSemesterResponse, Semester } from "@/interfaces/SemesterInterface/SemestertInterface";
 import { instance } from "@/services/api/api";
 import { AxiosResponse, AxiosError } from "axios";
 
@@ -174,6 +174,44 @@ export const getAllSemesterWithExamSubject = async () => {
         headers: headers,
       }
     );
+
+    return response.data;
+     
+  } catch (error) {
+    if (error instanceof AxiosError && error.response) {
+      const { data } = error.response;
+      const errorMessage = `${data.message || "Error occurred"}`;
+
+      return {
+        success: false,
+        message: errorMessage,
+        data: [],
+        status: 500
+      };
+    } else {
+      const generalError = "An unknown error occurred while fetching exams.";
+
+      return {
+        success: false,
+        message: generalError,
+        data: [],
+        status: 500
+      };
+    }
+  }
+};
+export const getExamWithSubject = async () => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+
+    const response: AxiosResponse<ApiExamWithSubjectResponse[]> =
+      await instance.get("api/admin/exam/exam-with-exam-subject", {
+        headers: headers,
+      });
 
     return response.data;
      
