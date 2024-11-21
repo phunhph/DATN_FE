@@ -1,4 +1,4 @@
-import { ApiQuestionResponse, Question } from "@/interfaces/QuestionInterface/QuestionInterface";
+import { ApiQuestionDetailResponse, ApiQuestionResponse, Question } from "@/interfaces/QuestionInterface/QuestionInterface";
 import { instance } from "@/services/api/api";
 import { AxiosResponse, AxiosError } from "axios";
 
@@ -135,3 +135,44 @@ export const createQuestion = async (data: Question) => {
     }
   }
 }
+
+export const getQuestionById = async (
+  id: string
+): Promise<ApiQuestionDetailResponse> => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+
+    const response: AxiosResponse<ApiQuestionDetailResponse> = await instance.get(
+      `/api/admin/questions/${id}`,
+      {
+        headers: headers,
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError && error.response) {
+      const { data } = error.response;
+      const errorMessage = formatWarningMessage(data.warning || data.message);
+
+      return {
+        success: false,
+        message: errorMessage,
+        status: 500,
+      };
+    } else {
+      const generalError =
+        "An unknown error occurred while fetching exam subjects.";
+
+      return {
+        success: false,
+        message: generalError,
+        status: 500,
+      };
+    }
+  }
+};

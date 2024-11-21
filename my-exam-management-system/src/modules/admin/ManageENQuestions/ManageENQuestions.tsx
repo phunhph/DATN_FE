@@ -17,7 +17,6 @@ interface ErrorQuestions {
 
 interface DataQuestion {
   id: string;
-  content_exam_id: string;
   QuestionContent: string;
   status: boolean;
 }
@@ -57,9 +56,9 @@ const ManageENQuestions = () => {
     answer_F3: "",
     level: "easy",
     image_title: null,
-    Image_P: null,
-    Image_F1: null,
-    Image_F2: null,
+    image_P: null,
+    image_F1: null,
+    image_F2: null,
     image_F3: null,
   });
   const [fileName, setFileName] = useState<string>("");
@@ -106,7 +105,17 @@ const ManageENQuestions = () => {
 
   const createQuestion_ = async (formData: Question) => {
     const result = await createQuestion(formData)
-    console.log(result);
+    if (result.success && result.data) {
+      console.log(result.data);
+
+      const data: DataQuestion[] = []
+      // data.push({
+      //   id: result.data.id,
+      //   QuestionContent: result.data.QuestionContent
+      // })
+      // setDataHardCode(...data);
+    }
+    addNotification(result.message, result.success);
   }
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -119,7 +128,6 @@ const ManageENQuestions = () => {
       } else {
         createQuestion_(formData)
 
-        addNotification("Thêm câu hỏi thành công!", true);
       }
       setFormData({
         id: "",
@@ -131,9 +139,9 @@ const ManageENQuestions = () => {
         answer_F3: "",
         level: "easy",
         image_title: null,
-        Image_P: null,
-        Image_F1: null,
-        Image_F2: null,
+        image_P: null,
+        image_F1: null,
+        image_F2: null,
         image_F3: null,
       });
       closeModal();
@@ -160,7 +168,9 @@ const ManageENQuestions = () => {
   };
 
   const detailQuestion = (id: string) => {
-    navigate(`/admin/detail-questions?&macauhoi=${encodeURIComponent(id)}`);
+    console.log(id);
+
+    navigate(`/admin/detail-questions`, { state: { id } });
   };
 
   const onLoad = async () => {
@@ -209,17 +219,15 @@ const ManageENQuestions = () => {
         if (typeof dataItem === "object" && dataItem !== null) {
           console.log(dataItem);
 
-          const { id, exam_content_id, status, current_version } = dataItem as {
+          const { id, status, title } = dataItem as {
             id: string;
-            exam_content_id: string;
             status: boolean;
-            current_version: { Title: string };
+            title: string;
           };
 
           const question: DataQuestion = {
             id: id,
-            content_exam_id: exam_content_id,
-            QuestionContent: current_version?.Title || "",
+            QuestionContent: title,
             status: status,
           };
 
@@ -381,8 +389,12 @@ const ManageENQuestions = () => {
           data={dataHardCode}
           actions_add={{ name: "Add Exam", onClick: () => openModal("add") }}
           actions_detail={{
-            name: "chitiet",
-            onClick: () => detailQuestion("file"),
+            name: "Chi tiết",
+            onClick: (exam) => {
+              if (exam) {
+                detailQuestion(exam);
+              }
+            },
           }}
           action_upload={{
             name: "Upload file",
