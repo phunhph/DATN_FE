@@ -2,8 +2,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./login.scss";
-import { login } from "@/services/repositories/AutherService/autherService";
+import { login, loginClient } from "@/services/repositories/AutherService/autherService";
 import { useToken } from "@/contexts";
+import { Notification } from "@/components";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -29,7 +30,7 @@ const Login: React.FC = () => {
   const loginServices = async (email: string, password: string) => {
     setLoading(true);
     try {
-      const user = await login(email, password);
+      const user = await loginClient(email, password);
       if (user.status !== 200) {
         addNotification(user.warning, user.success);
       } else {
@@ -41,7 +42,7 @@ const Login: React.FC = () => {
         };
         localStorage.setItem("token", JSON.stringify(data_));
         localStorage.setItem("data", JSON.stringify(user.data));
-        navigate("/admin");
+        navigate("/client");
       }
     } catch (error) {
       addNotification("Đăng nhập thất bại, vui lòng thử lại.", false);
@@ -152,10 +153,10 @@ const Login: React.FC = () => {
         </div>
       </div>
 
-      {/* <Notification
+      <Notification
         notifications={notifications}
         clearNotifications={clearNotifications}
-      /> */}
+      />
     </div>
   );
 };
