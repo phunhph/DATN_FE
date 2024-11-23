@@ -108,12 +108,13 @@ const ManageENQuestions = () => {
     if (result.success && result.data) {
       console.log(result.data);
 
-      const data: DataQuestion[] = []
-      // data.push({
-      //   id: result.data.id,
-      //   QuestionContent: result.data.QuestionContent
-      // })
-      // setDataHardCode(...data);
+      const data: DataQuestion = {
+        id: result.data.id,
+        QuestionContent: result.data.title,
+        status: result.data.status,
+      }
+      setDataHardCode([...dataHardCode, data])
+
     }
     addNotification(result.message, result.success);
   }
@@ -170,7 +171,7 @@ const ManageENQuestions = () => {
   const detailQuestion = (id: string) => {
     console.log(id);
 
-    navigate(`/admin/detail-questions`, { state: { id } });
+    navigate(`/admin/detail-questions`, { state: { id, content } });
   };
 
   const onLoad = async () => {

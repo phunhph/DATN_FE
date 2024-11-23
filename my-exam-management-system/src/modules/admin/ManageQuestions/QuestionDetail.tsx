@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import "./QuestionDetail.scss";
 import { Notification } from "../../../components";
 import { useLocation } from "react-router-dom";
-import { getQuestionById } from "@/services/repositories/QuestionServices/QuestionServices";
+import { getQuestionById, updateQuestion } from "@/services/repositories/QuestionServices/QuestionServices";
 import {
     Question,
     QuestionDetailResponse,
@@ -18,7 +18,7 @@ const QuestionDetail = () => {
     const [questions, setQuestions] = useState<Question>();
     const [answer, setAnswer] = useState<answer[]>([]);
     const location = useLocation();
-    const { id } = location.state || {};
+    const { id, content } = location.state || {};
 
     const getQuestionByid = async (id: string) => {
         const result = await getQuestionById(id);
@@ -42,7 +42,7 @@ const QuestionDetail = () => {
             if (e.id == data.current_version_id) {
                 question = {
                     id: e.question_id ?? "-",
-                    exam_content_id: e.exam_content_id ?? "",
+                    exam_content_id: e.exam_content_id ?? content,
                     title: e.title ?? "",
                     answer_P: e.answer_P ?? "",
                     answer_F1: e.answer_F1 ?? "",
@@ -80,39 +80,25 @@ const QuestionDetail = () => {
     };
     const [modalIsOpen, setModalIsOpen] = useState(false);
 
-    const [formData, setFormData] = useState<formDataQuestion>({
+    const [formData, setFormData] = useState<Question>({
         id: "",
-        questionLevel: "",
-        questionContent: "",
-        correctAnswer: "",
-        fileQuestionContent: null,
-        wrongAnswer1: "",
-        wrongAnswer2: "",
-        wrongAnswer3: "",
-        fileCorrectAnswer: null,
-        fileWrongAnswer1: null,
-        fileWrongAnswer2: null,
-        fileWrongAnswer3: null,
+        title: "",
+        exam_content_id: "",
+        answer_P: "",
+        answer_F1: "",
+        answer_F2: "",
+        answer_F3: "",
+        level: "easy",
+        image_title: null,
+        image_P: null,
+        image_F1: null,
+        image_F2: null,
+        image_F3: null,
     });
 
     const [modalType, setModalType] = useState<
         "add" | "edit" | "file" | string | undefined
     >("add");
-
-    interface formDataQuestion {
-        id: string;
-        questionLevel: string;
-        questionContent: string;
-        correctAnswer: string;
-        fileQuestionContent?: string | null;
-        wrongAnswer1: string;
-        wrongAnswer2: string;
-        wrongAnswer3: string;
-        fileCorrectAnswer?: string | null;
-        fileWrongAnswer1?: string | null;
-        fileWrongAnswer2?: string | null;
-        fileWrongAnswer3?: string | null;
-    }
 
     interface ErrorQuestions {
         id?: string;
@@ -130,31 +116,44 @@ const QuestionDetail = () => {
     const openEdit = () => {
         setModalIsOpen(true);
         setErrors({});
+        setFormData({
+            id: questions?.id ?? '',
+            title: questions?.title ?? '',
+            exam_content_id: questions?.exam_content_id ?? '',
+            answer_P: questions?.answer_P ?? '',
+            answer_F1: questions?.answer_F1 ?? '',
+            answer_F2: questions?.answer_F2 ?? '',
+            answer_F3: questions?.answer_F3 ?? '',
+            level: questions?.level ?? 'easy',
+            image_title: questions?.image_title ?? null,
+            image_P: questions?.image_P ?? null,
+            image_F1: questions?.image_F1 ?? null,
+            image_F2: questions?.image_F2 ?? null,
+            image_F3: questions?.image_F3 ?? null,
+        });
     };
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (validate()) {
-            if (editMode) {
-                alert("Cập nhật câu hỏi thành công!");
-            }
-            setFormData({
-                id: "",
-                questionLevel: "",
-                questionContent: "",
-                correctAnswer: "",
-                fileQuestionContent: null,
-                wrongAnswer1: "",
-                wrongAnswer2: "",
-                wrongAnswer3: "",
-                fileCorrectAnswer: null,
-                fileWrongAnswer1: null,
-                fileWrongAnswer2: null,
-                fileWrongAnswer3: null,
-            });
+            console.log(formData);
+
+            handleUpdateQuestion(formData);
             closeModal();
         }
     };
+
+    const handleUpdateQuestion = async (question: Question) => {
+        const result = await updateQuestion(question);
+        if (result) {
+            console.log(result);
+            //  cập nhập dữ liệu cho questions và answer
+            addNotification("Thêm mới thành ", result.success)
+        }
+
+        addNotification("Thêm mưới thất", result.success)
+    }
+
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => {
@@ -168,17 +167,17 @@ const QuestionDetail = () => {
     const validate = (): boolean => {
         const errors: ErrorQuestions = {};
         if (!formData.id) errors.id = "Mã câu hỏi không được để trống.";
-        if (!formData.questionLevel)
+        if (!formData.level)
             errors.questionLevel = "Mức độ câu hỏi không được để trống.";
-        if (!formData.questionContent)
+        if (!formData.title)
             errors.questionContent = "Nội dung câu hỏi không được để trống.";
-        if (!formData.correctAnswer)
+        if (!formData.answer_P)
             errors.correctAnswer = "Đáp án đúng không được để trống.";
-        if (!formData.wrongAnswer1)
+        if (!formData.answer_F1)
             errors.wrongAnswer1 = "Đáp án sai 1 không được để trống.";
-        if (!formData.wrongAnswer2)
+        if (!formData.answer_F2)
             errors.wrongAnswer2 = "Đáp án sai 2 không được để trống.";
-        if (!formData.wrongAnswer3)
+        if (!formData.answer_F3)
             errors.wrongAnswer3 = "Đáp án sai 3 không được để trống.";
         setErrors(errors);
         return Object.keys(errors).length === 0;
@@ -325,11 +324,11 @@ const QuestionDetail = () => {
                                         Mức độ câu hỏi: <br />
                                         <select
                                             name="questionLevel"
-                                            value={formData.questionLevel}
+                                            value={formData.level}
                                             onChange={(e) =>
                                                 setFormData({
                                                     ...formData,
-                                                    questionLevel: e.target.value,
+                                                    level: e.target.value,
                                                 })
                                             }
                                             className="subject__select1"
@@ -350,7 +349,7 @@ const QuestionDetail = () => {
                                         Nội dung câu hỏi: <br />
                                         <textarea
                                             name="questionContent"
-                                            value={formData.questionContent}
+                                            value={formData.title}
                                             onChange={handleChange}
                                             className="modal1__input"
                                             placeholder="Nhập nội dung"
@@ -382,7 +381,7 @@ const QuestionDetail = () => {
                                             <textarea
                                                 name="correctAnswer"
                                                 onChange={handleChange}
-                                                value={formData.correctAnswer}
+                                                value={formData.answer_P}
                                                 className="input__input"
                                                 placeholder="Nhận đáp án đúng"
                                             />
@@ -410,7 +409,7 @@ const QuestionDetail = () => {
                                             Đáp án sai 1: <br />
                                             <textarea
                                                 name="wrongAnswer1"
-                                                value={formData.wrongAnswer1}
+                                                value={formData.answer_F1}
                                                 onChange={handleChange}
                                                 className="input__input"
                                                 placeholder="Nhập đáp sai 1"
@@ -441,7 +440,7 @@ const QuestionDetail = () => {
                                             Đáp án sai 2: <br />
                                             <textarea
                                                 name="wrongAnswer2"
-                                                value={formData.wrongAnswer2}
+                                                value={formData.answer_F2}
                                                 onChange={handleChange}
                                                 className="input__input"
                                                 placeholder="Nhập đáp sai 1"
@@ -470,7 +469,7 @@ const QuestionDetail = () => {
                                             Đáp án sai 3: <br />
                                             <textarea
                                                 name="wrongAnswer3"
-                                                value={formData.wrongAnswer3}
+                                                value={formData.answer_F3}
                                                 onChange={handleChange}
                                                 className="input__input"
                                                 placeholder="Nhập đáp sai 1"

@@ -176,3 +176,43 @@ export const getQuestionById = async (
     }
   }
 };
+
+export const updateQuestion = async (data: Question) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+
+    const response: AxiosResponse<ApiQuestionResponse> = await instance.put(
+      `/api/admin/questions/${data.id}`,
+      data,
+      {
+        headers: headers,
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError && error.response) {
+      const { data } = error.response;
+      console.log(data);
+      const errorMessage = formatWarningMessage(data.warning);
+      return {
+        success: false,
+        message: errorMessage,
+        data: [],
+      };
+    } else {
+      const generalError =
+        "An unknown error occurred while adding exam subject.";
+
+      return {
+        success: false,
+        message: generalError,
+        data: [],
+      };
+    }
+  }
+}
