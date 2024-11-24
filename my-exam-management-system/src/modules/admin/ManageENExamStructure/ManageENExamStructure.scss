@@ -112,6 +112,10 @@
     margin-bottom: 10px;
     width: 98%;
     margin-left: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     &__item {
       width: 99%;
       border: 1px solid #000;
