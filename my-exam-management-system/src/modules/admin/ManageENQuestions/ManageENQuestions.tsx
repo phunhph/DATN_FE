@@ -17,7 +17,7 @@ interface ErrorQuestions {
 
 interface DataQuestion {
   id: string;
-  QuestionContent: string;
+  title: string;
   status: boolean;
 }
 
@@ -110,7 +110,7 @@ const ManageENQuestions = () => {
 
       const data: DataQuestion = {
         id: result.data.id,
-        QuestionContent: result.data.title,
+        title: result.data.title,
         status: result.data.status,
       }
       setDataHardCode([...dataHardCode, data])
@@ -228,7 +228,7 @@ const ManageENQuestions = () => {
 
           const question: DataQuestion = {
             id: id,
-            QuestionContent: title,
+            title: title,
             status: status,
           };
 
@@ -482,8 +482,8 @@ const ManageENQuestions = () => {
                         className="subject__select1"
                       >
                         <option value="easy">Dễ</option>
-                        <option value="easy">Trung Bình</option>
-                        <option value="easy">Khó</option>
+                        <option value="difficult">Trung Bình</option>
+                        <option value="medium">Khó</option>
                       </select>
                       {errors.questionLevel && (
                         <span className="error_question">
