@@ -3,6 +3,7 @@ import "./ManageENExamStructure.scss";
 import { Notification } from "../../../components";
 import {
   ModuleStructure,
+  reqStructure,
   totalStructure,
 } from "@/interfaces/ManageStructureInterfaces/ManageStructureInterfaces";
 import {  getAllSemesterWithExamSubject } from "@/services/repositories/SemesterServices/SemesterServices";
@@ -12,6 +13,7 @@ import { ExamSubject } from "@/interfaces/SubjectInterface/ExamSubjectInterface"
 import {
   getAllStrutureByIdSubject,
   getFinalStructure,
+  SubmitStructure,
 } from "@/services/repositories/StructureServices/StructureDetailServices";
 
 interface Errors {
@@ -28,7 +30,7 @@ const ManageENExamStructure = () => {
   const [monThi, setMonThi] = useState("");
   const [examSubjects, setExamSubject] = useState<ExamSubject[]>([]);
   const [modules, setModules] = useState<ModuleStructure[]>([]);
-  // const [checkCreateStruct, setCheckCreateStruct] = useState(true);
+  const [checkCreateStruct, setCheckCreateStruct] = useState(true);
   const [tongSoCauHoi, setTongSoCauHoi] = useState<string | number>(0);
   const [thoiGianLamBai, setThoiGianLamBai] = useState<string | number>(0);
   const [notifications, setNotifications] = useState<
@@ -70,7 +72,7 @@ const ManageENExamStructure = () => {
     if (!thoiGianLamBai || +thoiGianLamBai <= 0)
       newErrors.thoiGianLamBai = "Thời gian làm bài phải lớn hơn 0.";
 
-    let totalQuestions = 0;
+    let totalQuestions = 0;   
 
     modules.forEach((module, moduleIndex) => {
       module.levels.forEach((level, levelIndex) => {
@@ -89,8 +91,8 @@ const ManageENExamStructure = () => {
       });
     });
 
-    if (totalQuestions > +tongSoCauHoi) {
-      newErrors.tongSoCauHoi = `Tổng số câu hỏi không được lớn hơn ${tongSoCauHoi}.`;
+    if (+tongSoCauHoi > totalQuestions) {
+      newErrors.tongSoCauHoi = `Số câu hỏi phải lớn hơn 0 và không được vượt quá tổng số câu hỏi (${totalQuestions}).`;
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -105,8 +107,25 @@ const ManageENExamStructure = () => {
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     if (validateForm()) {
-      setErrors({}); // Reset errors
+      submit();
+      setErrors({});
+
     }
+  };
+
+  const submit = async () => {
+    const body: reqStructure = {
+      time: thoiGianLamBai,
+      total: tongSoCauHoi,
+      modules: modules,
+      checkCreateStruct: checkCreateStruct,
+      subject: monThi,
+      exam: kyThi,
+    };
+    const data = await SubmitStructure(body);
+    console.log("Submitted Modules:", data);
+    addNotification("Submit sucssecfully", true);
+    setCheckCreateStruct(true);
   };
 
   const groupByTitle = (data: totalStructure[]): ModuleStructure[] => {
@@ -158,10 +177,10 @@ const ManageENExamStructure = () => {
     if (data.success) {
       setTongSoCauHoi(data.data[0].quantity);
       setThoiGianLamBai(data.data[0].time);
-      // setCheckCreateStruct(true);
+      setCheckCreateStruct(true);
 
     } else {
-      // setCheckCreateStruct(false);
+      setCheckCreateStruct(false);
       setTongSoCauHoi(0);
       setThoiGianLamBai(0);
     }
