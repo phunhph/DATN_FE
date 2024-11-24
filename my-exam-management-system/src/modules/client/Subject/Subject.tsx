@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Subject.scss";
@@ -16,27 +17,24 @@ const Subject = () => {
     const fetchExams = async () => {
       setIsLoading(true);
       try {
-        const response = await getExamWithSubject();
-        console.log(response);
-        
+        const data = JSON.parse(localStorage.getItem("clientData") ?? "");
+
+        const response = await getExamWithSubject(data.id_exam);
 
         if (response.success === false) {
           setError(response.message || "Lỗi không xác định");
         } else {
-          
-          const formattedData = response.data.map((exam: any) => {
-            const subject = exam.exam_subjects[0]; 
-
-            return {
-              examId: exam.id, 
-              examName: exam.name, 
-              subjectName: subject?.name || "Chưa có tên môn thi", 
-              subjectCode: subject?.exam_id || "Chưa có mã môn thi", 
-              questionCount: subject?.questions?.length || 0, 
-              startDate: exam.time_start, 
-              endDate: exam.time_end, 
-              subjectCountInExam: exam.exam_subjects.length, 
-            };
+          const formattedData = response.data.flatMap((exam: any) => {
+            return exam.exam_subjects.map((subject: any) => ({
+              examId: exam.id,
+              examName: exam.name,
+              subjectName: subject?.name || "Chưa có tên môn thi",
+              subjectCode: subject?.id || "Chưa có mã môn thi",
+              questionCount: subject?.questions?.length || 0,
+              startDate: exam.time_start,
+              endDate: exam.time_end,
+              subjectCountInExam: exam.exam_subjects.length,
+            }));
           });
 
           setExams(formattedData);
@@ -74,10 +72,6 @@ const Subject = () => {
             exams.map((exam) => (
               <GridItem key={exam.examId} className="group__itemm">
                 <p>
-                  Tên Kỳ thi:{" "}
-                  <span className="item__span">{exam.examName}</span>
-                </p>
-                <p>
                   Tên Môn thi:{" "}
                   <span className="item__span">{exam.subjectName}</span>
                 </p>
@@ -97,10 +91,6 @@ const Subject = () => {
                 <span className="item__span">
                   {new Date(exam.endDate).toLocaleDateString()}
                 </span>
-                <p>
-                  Số lượng môn thi:{" "}
-                  <span className="item__span">{exam.subjectCountInExam}</span>
-                </p>
                 <CVO percentage={exam.subjectCountInExam > 0 ? 100 : 0}></CVO>
                 <Button onClick={() => navToExamById(exam.examId)}>
                   Làm bài thi

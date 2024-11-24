@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Notification } from "@/components";
 import "./login.scss";
 import { login } from "@/services/repositories/AutherService/autherService";
-import { useToken } from "@/contexts";
+import { useAdminToken } from "@/contexts";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -12,7 +12,7 @@ const Login: React.FC = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [emailError, setEmailError] = useState<string | null>(null);
   const [passwordError, setPasswordError] = useState<string | null>(null);
-  const { tokenRep, expiresAt, setToken } = useToken();
+  const { tokenRep, expiresAt, setToken } = useAdminToken();
   const [notifications, setNotifications] = useState<
     Array<{ message: string; isSuccess: boolean }>
   >([]);

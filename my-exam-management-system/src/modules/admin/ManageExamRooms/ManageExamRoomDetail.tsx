@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./ManageExamRoomDetail.scss";
 import { Table } from "@components/Table/Table";
-import useAuth from "@hooks/AutherHooks";
+import {useAdminAuth} from "@hooks/AutherHooks";
 import { useLocation, useParams } from "react-router-dom";
 import { Notification } from "@components/index";
 
@@ -13,7 +13,7 @@ import {
 } from "@/services/repositories/ExamRoomService/ExamRoomService";
 
 const ManageExamRoomDetail = () => {
-  useAuth();
+  useAdminAuth();
   const location = useLocation();
   const room = location.state?.room;
   const [roomDetail, setRoomDetail] = useState<any>(null);

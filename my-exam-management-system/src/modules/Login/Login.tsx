@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./login.scss";
 import { login, loginClient } from "@/services/repositories/AutherService/autherService";
-import { useToken } from "@/contexts";
+import { useClientToken } from "@/contexts";
 import { Notification } from "@/components";
 
 const Login: React.FC = () => {
@@ -12,7 +12,7 @@ const Login: React.FC = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [emailError, setEmailError] = useState<string | null>(null);
   const [passwordError, setPasswordError] = useState<string | null>(null);
-  const { tokenRep, expiresAt, setToken } = useToken();
+  const { tokenRep, expiresAt, setToken } = useClientToken();
   const [notifications, setNotifications] = useState<
     Array<{ message: string; isSuccess: boolean }>
   >([]);
@@ -35,13 +35,15 @@ const Login: React.FC = () => {
         addNotification(user.warning, user.success);
       } else {
         const { token, data, expires_at } = user;
+        console.log(user);
+        
         setToken(token, data, new Date(expires_at * 1000));
         const data_ = {
           token: user.token,
           expires_at: user.expires_at,
         };
-        localStorage.setItem("token", JSON.stringify(data_));
-        localStorage.setItem("data", JSON.stringify(user.data));
+        localStorage.setItem("token_client", JSON.stringify(data_));
+        localStorage.setItem("data_client", JSON.stringify(user.data));
         navigate("/client");
       }
     } catch (error) {
@@ -79,7 +81,7 @@ const Login: React.FC = () => {
     if (tokenRep && expiresAt) {
       const now = new Date();
       if (now < expiresAt) {
-        navigate("/admin");
+        navigate("/client");
       } else {
         setToken(null, null, null);
       }
