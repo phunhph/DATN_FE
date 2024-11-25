@@ -2,7 +2,6 @@ import { Table } from "@components/index";
 import "./Scores.scss";
 
 const Scores = () => {
-
   //mock API
   const studentScoreList = [
     {
@@ -12,7 +11,7 @@ const Scores = () => {
       subjectCode: "MTH101",
       subjectName: "Toán I",
       subjectScore: 85,
-      status: "Đạt",
+      result: "Đạt",
     },
     {
       id: "1",
@@ -21,7 +20,7 @@ const Scores = () => {
       subjectCode: "ENG102",
       subjectName: "Tiếng Anh",
       subjectScore: 92,
-      status: "Đạt",
+      result: "Đạt",
     },
     {
       id: "2",
@@ -30,7 +29,7 @@ const Scores = () => {
       subjectCode: "PHY201",
       subjectName: "Vật lý II",
       subjectScore: 78,
-      status: "Đạt",
+      result: "Đạt",
     },
     {
       id: "3",
@@ -39,7 +38,7 @@ const Scores = () => {
       subjectCode: "CHEM101",
       subjectName: "Hóa học",
       subjectScore: 88,
-      status: "Đạt",
+      result: "Đạt",
     },
     {
       id: "4",
@@ -48,7 +47,7 @@ const Scores = () => {
       subjectCode: "CS101",
       subjectName: "IT vua của mọi ngành",
       subjectScore: 95,
-      status: "Đạt",
+      result: "Đạt",
     },
     {
       id: "5",
@@ -57,21 +56,32 @@ const Scores = () => {
       subjectCode: "BIO102",
       subjectName: "Sinh học",
       subjectScore: 80,
-      status: "Đạt",
+      result: "Đạt",
     },
   ];
 
-  const handleStatus = (id: string) => {
+  const handleresult = (id: string) => {
     alert(id);
   };
+
+  const title = [
+    "STT",
+    "Mã kỳ thi",
+    "Kỳ thi",
+    "Mã môn thi",
+    "Môn thi",
+    "Điểm số",
+    "Đánh giá",
+  ];
 
   return (
     <>
       <div>
         <Table
+          title={title}
           tableName="Bảng điểm"
           data={studentScoreList}
-          action_status={handleStatus}
+          action_result={handleresult}
         ></Table>
       </div>
     </>
