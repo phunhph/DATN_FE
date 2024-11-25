@@ -1,9 +1,9 @@
 // src/App.tsx
-import { useAuth } from '@/hooks';
+import { useAdminAuth } from '@/hooks';
 import React from 'react';
 
 const Welcome: React.FC = () => {
-    useAuth();
+    useAdminAuth();
     return (
         <div>
             <h1>Chào mừng đến với hệ thống quản lý thi!</h1>

@@ -2,11 +2,11 @@ import { SubmitHandler, useForm } from "react-hook-form"
 import "./Login.scss"
 import { Button, validation } from "@components/index";
 import { NavLink, useNavigate } from "react-router-dom";
-import { useNotification, useToken } from "@contexts/index";
+import { useNotification, useClientToken } from "@contexts/index";
 import { useEffect } from "react";
 const Login = () => {
   const nav = useNavigate()
-  const { tokenRep, expiresAt, setToken } = useToken();
+  const { tokenRep, expiresAt, setToken } = useClientToken();
   const {notify} = useNotification()
 
   type LoginFormValue = {

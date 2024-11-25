@@ -3,6 +3,8 @@ import "./ManageExamRoomDetail.scss";
 import { Table } from "@components/Table/Table";
 import useAuth from "@hooks/AutherHooks";
 import { useLocation, useNavigate } from "react-router-dom";
+import {useAdminAuth} from "@hooks/AutherHooks";
+import { useLocation, useParams } from "react-router-dom";
 import { Notification } from "@components/index";
 import { ExamRoom } from "@interfaces/ExamRoomInterfaces/ExamRoomInterfaces";
 import { ErrorExamRoom } from "@interfaces/ExamRoomInterfaces/ErrorExamRoomInterfaces";
@@ -22,8 +24,7 @@ interface RoomDetailData {
 }
 
 const ManageExamRoomDetail = () => {
-  useAuth();
-  const navigate = useNavigate();
+  useAdminAuth();
   const location = useLocation();
   const room = location.state?.room;
 
