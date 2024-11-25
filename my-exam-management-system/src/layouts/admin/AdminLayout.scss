@@ -63,15 +63,10 @@
       display: inline-block;
       background: none;
     }
-    & > .active {
-      filter: brightness(0) saturate(100%) invert(44%) sepia(28%)
-        saturate(7376%) hue-rotate(228deg) brightness(98%) contrast(91%);
-    }
   }
   &__logo img {
     height: 2rem;
-    filter: brightness(0) saturate(100%) invert(44%) sepia(28%) saturate(7376%)
-      hue-rotate(228deg) brightness(98%) contrast(91%);
+    filter: brightness(0) saturate(100%) invert(34%) sepia(59%) saturate(1497%) hue-rotate(244deg) brightness(85%) contrast(88%);
   }
   &__outer {
     visibility: visible;

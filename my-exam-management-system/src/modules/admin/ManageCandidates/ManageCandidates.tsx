@@ -319,7 +319,7 @@ const ManageCandidates: React.FC = () => {
   };
 
   return (
-    <div className="candidate__container">
+    <div className="candidate__admin-container">
       <PageTitle theme="light">Quản lý thí sinh</PageTitle>
       <div className="candidate__select">
         <div className="candidate__select-semester">
