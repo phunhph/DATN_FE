@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import "./Subject.scss";
 import {
@@ -6,56 +7,36 @@ import {
   Table,
   UploadFile,
 } from "../../../components";
-import { Exam } from "../../../interfaces/ExamInterface/ExamInterface";
-import { ExamSubject } from "../../../interfaces/SubjectInterface/ExamSubjectInterface";
+import {
+  ExamSubject,
+  SubjectCreate,
+} from "../../../interfaces/SubjectInterface/ExamSubjectInterface";
 import { useNavigate } from "react-router-dom";
 import AsyncSelect from "react-select/async";
 import { ErrorSubject } from "@/interfaces/SubjectInterface/ErrorExamSubjectInterface";
+import { getAllSemester } from "@/services/repositories/SemesterServices/SemesterServices";
+import { SemesterType } from "../ManageSemester/Semester.type";
+import {
+  addExamSubject,
+  getAllExamSubjectByIdSemester,
+  importFileExcel,
+} from "@/services/repositories/ExamSubjectService/ExamSubjectService";
+import { Semester } from "@/interfaces/SemesterInterface/SemestertInterface";
 
 const Subject: React.FC = () => {
   const [selectedExamId, setSelectedExamId] = useState<string>("");
 
-  const [exams, setExams] = useState<Exam[]>([
-    {
-      id: 1,
-      Name: "Kỳ thi Bảy viên ngọc rồng",
-      TimeStart: "2024-06-01",
-      TimeEnd: "2024-06-03",
-      Status: true,
-    },
-    {
-      id: 2,
-      Name: "Kỳ thi Thuỷ thủ mặt trăng",
-      TimeStart: "2024-06-01",
-      TimeEnd: "2024-06-03",
-      Status: true,
-    },
-  ]);
+  const [semesters, setSemesters] = useState<SemesterType[]>([]);
 
-  const [examSubjects, setExamSubject] = useState<ExamSubject[]>([
-    {
-      id: 1,
-      Name: "Môn thi này khó",
-      Status: true,
-    },
-    {
-      id: 2,
-      Name: "Môn thi này khó hơn",
-      Status: true,
-    },
-  ]);
+  const [examSubjects, setExamSubject] = useState<ExamSubject[]>([]);
 
-  const examOptions = exams.map((exam) => ({
-    label: exam.Name,
-    value: exam.id,
+  const title = ["Mã ôn thi", "Tên Môn thi", "Trạng thái", "Thao tác"];
+
+  const examOptions = semesters.map((semester) => ({
+    label: semester.semesterName,
+    value: semester.semesterCode,
   }));
   const firstOption = examOptions[0];
-
-  useEffect(() => {
-    if (firstOption) {
-      setSelectedExamId(firstOption.value);
-    }
-  }, [firstOption]);
 
   const [notifications, setNotifications] = useState<
     Array<{ message: string; isSuccess: boolean }>
@@ -100,16 +81,26 @@ const Subject: React.FC = () => {
     }, 1000);
   };
 
-  const handleCreateSubject = () => {
-    const newSubject: ExamSubject = {
+  const handleCreateSubject = async () => {
+    const newSubject: SubjectCreate = {
       id: formData.id,
-      Name: formData.Name,
-      Status: true,
+      exam_id: selectedExamId,
+      name: formData.name,
+      status: true,
     };
 
-    setExamSubject([...examSubjects, newSubject]);
+    const result = await addExamSubject(newSubject);
+    console.log(result);
+    if (result.success === true) {
+      setExamSubject([...examSubjects, newSubject]);
 
-    addNotification("Thêm mới môn thi thành công!", true);
+      addNotification("Thêm mới môn thi thành công!", true);
+    } else {
+      addNotification(
+        result.message ?? "Thêm mới môn thi thất bại",
+        result.success
+      );
+    }
 
     closeModal();
   };
@@ -117,7 +108,7 @@ const Subject: React.FC = () => {
   const handleUpdateStatus = (id: string) => {
     setExamSubject((prevSubjects) =>
       prevSubjects.map((subject) =>
-        subject.id === id ? { ...subject, Status: !subject.Status } : subject
+        subject.id === id ? { ...subject, status: !subject.status } : subject
       )
     );
     addNotification(`Trạng thái của môn thi đã được thay đổi.`, true);
@@ -133,7 +124,7 @@ const Subject: React.FC = () => {
 
   const [formData, setFormData] = useState<ExamSubject>({
     id: "",
-    Name: "",
+    name: "",
   });
 
   const openAddModal = () => {
@@ -141,7 +132,7 @@ const Subject: React.FC = () => {
     setEditMode(false);
     setFormData({
       id: "",
-      Name: "",
+      name: "",
     });
     setModalIsOpen(true);
   };
@@ -149,7 +140,7 @@ const Subject: React.FC = () => {
   const openEditModal = (data: ExamSubject) => {
     setFormData({
       id: data.id,
-      Name: data.Name,
+      name: data.name,
     });
     setEditMode(true);
     setModalType("edit");
@@ -165,12 +156,14 @@ const Subject: React.FC = () => {
   const validate = (): boolean => {
     const errors: ErrorSubject = {};
     if (!formData.id) errors.id = "Mã môn thi không được để trống.";
-    if (!formData.Name) errors.name = "Tên môn thi không được để trống.";
+    if (!formData.name) errors.name = "Tên môn thi không được để trống.";
     setErrors(errors);
     return Object.keys(errors).length === 0;
   };
 
   const handleUpdateSubject = () => {
+    console.log(formData);
+
     setExamSubject((prevSubjects) =>
       prevSubjects.map((subject) =>
         subject.id === formData.id ? { ...formData } : subject
@@ -195,6 +188,7 @@ const Subject: React.FC = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
+
     setFormData((prevFormData) => ({
       ...prevFormData,
       [name]: value,
@@ -209,7 +203,7 @@ const Subject: React.FC = () => {
       } else {
         console.error("Failed to create subject:", data.message);
       }
-      addNotification(data.warning || data.message || "", data.success);
+      addNotification(data.message || "", data.success);
     }
   };
   const navigate = useNavigate();
@@ -221,6 +215,86 @@ const Subject: React.FC = () => {
       addNotification("Exam not found", false);
     }
   };
+
+  const formatData = (data: Semester[] | Semester) => {
+    if (Array.isArray(data)) {
+      return data.map((e) => ({
+        semesterName: e.name,
+        semesterCode: e.id,
+        semesterStart: e.time_start,
+        semesterEnd: e.time_end,
+        semesterStatus: e.status,
+      }));
+    } else if (data && typeof data === "object") {
+      return [
+        {
+          semesterName: data.name,
+          semesterCode: data.id,
+          semesterStart: data.time_end,
+          semesterEnd: data.time_start,
+          semesterStatus: data.status,
+        },
+      ];
+    }
+
+    return [];
+  };
+
+  const getSemester = async () => {
+    const data = await getAllSemester();
+    if (data.success) {
+      const listSemester = formatData(data.data);
+      setSemesters(listSemester);
+    } else {
+      addNotification(data.message ?? "Đã có lỗi xảy ra", data.success);
+    }
+  };
+
+  const formatDataSubject = (data: ExamSubject[] | ExamSubject) => {
+    if (Array.isArray(data)) {
+      return data.map((e) => ({
+        id: e.id,
+        name: e.name,
+        status: e.status,
+      }));
+    } else if (data && typeof data === "object") {
+      return [
+        {
+          id: data.id,
+          name: data.name,
+          status: data.status,
+        },
+      ];
+    }
+
+    return [];
+  };
+
+  const getSubjectsByIdSemester = async (id: string) => {
+    const dataSubject = await getAllExamSubjectByIdSemester(id);
+    if (dataSubject.success) {
+      const data = formatDataSubject(dataSubject.data);
+      setExamSubject(data);
+    } else {
+      setExamSubject([]);
+      addNotification(dataSubject.message || "", dataSubject.success);
+    }
+  };
+
+  useEffect(() => {
+    if (firstOption && selectedExamId === "") {
+      setSelectedExamId(firstOption.value);
+      getSubjectsByIdSemester(firstOption.value);
+    }
+  }, [firstOption]);
+
+  const onLoad = () => {
+    getSemester();
+  };
+
+  useEffect(() => {
+    onLoad();
+  }, []);
 
   return (
     <div className="subject__container">
@@ -235,19 +309,21 @@ const Subject: React.FC = () => {
           value={examOptions.find((option) => option.value === selectedExamId)}
           onChange={(selectedOption) => {
             setSelectedExamId(selectedOption?.value || "");
+            if (selectedOption?.value) {
+              getSubjectsByIdSemester(selectedOption?.value);
+            }
           }}
         />
       </div>
 
       <Table
+        title={title}
         tableName="Môn thi"
         data={examSubjects}
         actions_add={{ name: "Thêm mới", onClick: openAddModal }}
         actions_edit={{
           name: "Chỉnh sửa",
           onClick: (exam) => {
-            console.log("Edit", exam);
-
             if (exam) {
               openEditModal(exam);
             }
@@ -256,6 +332,8 @@ const Subject: React.FC = () => {
         actions_detail={{
           name: "Chi tiết",
           onClick: (exam) => {
+            console.log(exam);
+
             if (exam) {
               handleDetailClick(exam);
             }
@@ -305,9 +383,9 @@ const Subject: React.FC = () => {
                       Tên môn thi: <br />
                       <input
                         type="text"
-                        name="Name"
+                        name="name"
                         className="modal__input"
-                        value={formData.Name}
+                        value={formData.name}
                         onChange={handleChange}
                         placeholder="Nhập tên môn thi"
                       />

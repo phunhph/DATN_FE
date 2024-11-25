@@ -1,222 +1,207 @@
-import { PageTitle } from "@components/index";
-import AsyncSelect from 'react-select/async';
-import { SubmitHandler, useForm } from "react-hook-form";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Notification, PageTitle } from "@components/index";
+import AsyncSelect from "react-select/async";
 import { useEffect, useState } from "react";
 import { Table } from "@components/index";
-import './ManageExamRooms.scss'
+import "./ManageExamRooms.scss";
+import { ExamRoom } from "@/interfaces/ExamRoomInterfaces/ExamRoomInterfaces";
+import { SemesterType } from "../ManageSemester/Semester.type";
+import { getAllSemester } from "@/services/repositories/SemesterServices/SemesterServices";
+import { Semester } from "@/interfaces/SemesterInterface/SemestertInterface";
+import { getExamRoom } from "@/services/repositories/ExamRoomService/ExamRoomService";
+import { useNavigate } from "react-router-dom";
+
 const ManageExamRooms = () => {
-  const [semesterList, setSemesterList] = useState<any>([]);
-  const [subjectList, setSubjectList] = useState<any>([]);
-  const [sessionList, setSessionList] = useState<any>([]);
-  const [roomList, setRoomList] = useState<any>([]);
+  const [selectedExamId, setSelectedExamId] = useState<string>("");
+  const [semesters, setSemesters] = useState<SemesterType[]>([]);
+  const [roomList, setRoomList] = useState<ExamRoom[]>([]);
+  const [loading, setLoading] = useState(false);
 
-
-  // mock data
-  const semesterOptions: any[] = [
-    {
-      semesterName: "Fall 2024",
-      semesterCode: "F2024",
-      semesterStart: "2024-09-01",
-      semesterEnd: "2024-12-15",
-    },
-    {
-      semesterName: "Spring 2024",
-      semesterCode: "S2024",
-      semesterStart: "2024-01-10",
-      semesterEnd: "2024-05-15",
-    },
-    {
-      semesterName: "Summer 2024",
-      semesterCode: "SU2024",
-      semesterStart: "2024-06-01",
-      semesterEnd: "2024-08-31",
-    },
-    {
-      semesterName: "Winter 2024",
-      semesterCode: "W2024",
-      semesterStart: "2024-12-16",
-      semesterEnd: "2024-01-09",
-    },
-    {
-      semesterName: "Fall 2023",
-      semesterCode: "F2023",
-      semesterStart: "2023-09-01",
-      semesterEnd: "2023-12-15",
-    },
-    {
-      semesterName: "Spring 2023",
-      semesterCode: "S2023",
-      semesterStart: "2023-01-10",
-      semesterEnd: "2023-05-15",
-    },
-    {
-      semesterName: "Summer 2023",
-      semesterCode: "SU2023",
-      semesterStart: "2023-06-01",
-      semesterEnd: "2023-08-31",
-    },
-  ];
-  const subjectOptions: any[] = [
-    { id: 1, subjectName: "Kỳ thi Toán học", subjectType: "mon1", startDate: "2024-09-01", endDate: "2024-09-15", status: "Scheduled" },
-    { id: 2, subjectName: "Kỳ thi Vật lý", subjectType: "mon2", startDate: "2024-09-05", endDate: "2024-09-18", status: "Scheduled" },
-    { id: 3, subjectName: "Kỳ thi Hóa học", subjectType: "mon3", startDate: "2024-09-10", endDate: "2024-09-20", status: "Scheduled" },
-    { id: 4, subjectName: "Kỳ thi Lập trình", subjectType: "mon4", startDate: "2024-09-12", endDate: "2024-09-25", status: "Scheduled" },
-    { id: 5, subjectName: "Kỳ thi Văn học", subjectType: "mon5", startDate: "2024-09-08", endDate: "2024-09-22", status: "Scheduled" },
-  ];
-  const sessionOptions: any[] = [
-    {
-      sessionCode: "CT2024-01",
-      sessionName: "Ca thi buổi sáng - Toán học",
-      trangThai: "Đang diễn ra",
-    },
-    {
-      sessionCode: "CT2024-02",
-      sessionName: "Ca thi buổi chiều - Vật lý",
-      trangThai: "Chưa bắt đầu",
-    },
-    {
-      sessionCode: "CT2024-03",
-      sessionName: "Ca thi buổi tối - Hóa học",
-      trangThai: "Đã kết thúc",
-    },
-    {
-      sessionCode: "CT2024-04",
-      sessionName: "Ca thi buổi sáng - Lịch sử",
-      trangThai: "Chưa bắt đầu",
-    },
-    {
-      sessionCode: "CT2024-05",
-      sessionName: "Ca thi buổi chiều - Sinh học",
-      trangThai: "Đang diễn ra",
-    },
-    {
-      sessionCode: "CT2024-06",
-      sessionName: "Ca thi buổi tối - Địa lý",
-      trangThai: "Đã kết thúc",
-    },
-  ]
-  const examRooms = [
-    { examRoomID: 0, examRoomName: "Room 101", numberOfStudent: 25 },
-    { examRoomID: 1, examRoomName: "Room 102", numberOfStudent: 30 },
-    { examRoomID: 2, examRoomName: "Room 103", numberOfStudent: 20 },
-    { examRoomID: 3, examRoomName: "Room 104", numberOfStudent: 28 },
-    { examRoomID: 4, examRoomName: "Room 105", numberOfStudent: 32 },
-    { examRoomID: 5, examRoomName: "Room 106", numberOfStudent: 18 },
-    { examRoomID: 6, examRoomName: "Room 107", numberOfStudent: 24 },
-    { examRoomID: 7, examRoomName: "Room 108", numberOfStudent: 22 },
-    { examRoomID: 8, examRoomName: "Room 109", numberOfStudent: 26 },
-    { examRoomID: 9, examRoomName: "Room 110", numberOfStudent: 29 },
+  const title = [
+    "Mã phòng thi",
+    "Tên phòng thi",
+    "Số lượng sinh viên",
+    "Thao tác",
   ];
 
-  const loadSemester = () => {
-    //api semester list
-    const formattedSemesterOptions = semesterOptions.map((semester) => ({
-      value: semester.semesterCode,
-      label: semester.semesterName,
-    }));
-    setSemesterList(formattedSemesterOptions);
-  }
+  const examOptions = semesters.map((semester) => ({
+    label: semester.semesterName,
+    value: semester.semesterCode,
+  }));
 
-  const loadSubject = (chosedSemesterValue: string) => {
-    if ( chosedSemesterValue) {
-      //api subject list base on chosedSemesterValue
-      const formattedSubjectOpions = subjectOptions.map((subject) => ({
-        value: subject.subjectType,
-        label: subject.subjectName,
+  const firstOption = examOptions[0];
+
+  const loadSemesterOptions = (
+    inputValue: string,
+    callback: (options: any[]) => void
+  ) => {
+    setTimeout(() => {
+      callback(
+        examOptions.filter((i) =>
+          i.label.toLowerCase().includes(inputValue.toLowerCase())
+        )
+      );
+    }, 1000);
+  };
+
+  const [notifications, setNotifications] = useState<
+    Array<{ message: string; isSuccess: boolean }>
+  >([]);
+
+  const addNotification = (message: string, isSuccess: boolean) => {
+    setNotifications((prev) => [...prev, { message, isSuccess }]);
+  };
+
+  const clearNotifications = () => {
+    setNotifications([]);
+  };
+
+  const formatData = (data: Semester[] | Semester) => {
+    if (Array.isArray(data)) {
+      return data.map((e) => ({
+        semesterName: e.name,
+        semesterCode: e.id,
+        semesterStart: e.time_start,
+        semesterEnd: e.time_end,
+        semesterStatus: e.status,
       }));
-      setSubjectList(formattedSubjectOpions)
+    } else if (data && typeof data === "object") {
+      return [
+        {
+          semesterName: data.name,
+          semesterCode: data.id,
+          semesterStart: data.time_start,
+          semesterEnd: data.time_end,
+          semesterStatus: data.status,
+        },
+      ];
     }
-  }
-
-  const loadSession = (chosedSubjectValue: string) => {
-    if ( chosedSubjectValue) {
-      //api session list base on chosedSubjectValue
-      const formattedSessionOpions = sessionOptions.map((session) => ({
-        value: session.sessionCode,
-        label: session.sessionName,
-      }));
-      setSessionList(formattedSessionOpions)
-    }
-  }
-
-  const loadSemesterOptions = (inputValue: string, callback: (options: any[]) => void) => {
-    setTimeout(() => {
-      callback(semesterList.filter((i:any) => i.label.toLowerCase().includes(inputValue.toLowerCase())));
-    }, 1000);
+    return [];
   };
 
-  const loadSubjectOptions = (inputValue: string, callback: (options: any[]) => void) => {
-    setTimeout(() => {
-      callback(subjectList.filter((i:any) => i.label.toLowerCase().includes(inputValue.toLowerCase())));
-    }, 1000);
+  const getSemester = async () => {
+    try {
+      const data = await getAllSemester();
+      if (data.success) {
+        const listSemester = formatData(data.data);
+        setSemesters(listSemester);
+
+        if (listSemester.length > 0 && !selectedExamId) {
+          setSelectedExamId(listSemester[0].semesterCode);
+        }
+      } else {
+        addNotification(data.message ?? "Đã có lỗi xảy ra", data.success);
+      }
+    } catch (error) {
+      addNotification("Lỗi khi tải danh sách kỳ thi", false);
+    }
   };
 
-  const loadSessionOptions = (inputValue: string, callback: (options: any[]) => void) => {
-    setTimeout(() => {
-      callback(sessionList.filter((i:any) => i.label.toLowerCase().includes(inputValue.toLowerCase())));
-    }, 1000);
+  const getRoomList = async (semesterId: string) => {
+    if (!semesterId) return;
+
+    setLoading(true);
+    try {
+      const data = await getExamRoom(semesterId);
+      if (data.success) {
+        setRoomList(data.data || []);
+      } else {
+        addNotification(
+          data.message ?? "Lỗi khi tải danh sách phòng thi",
+          false
+        );
+      }
+    } catch (error) {
+      addNotification("Lỗi khi tải danh sách phòng thi", false);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const {
-    handleSubmit,
-    setValue
-  } = useForm({})
-  const onSubmit:SubmitHandler<any> = (data:any) => {
-    console.log(data)
-    if (data.semester) {
-      loadSubject(data.semester.value)
-    }
-    if (data.subject) {
-      loadSession(data.subject.value)
-    }
-    if ( data.semester && data.subject && data.session) {
-      // api get room list
-      console.log(examRooms)
-      setRoomList(examRooms)
-    }
-  }
+  const handleSemesterChange = (value: any) => {
+    const semesterId = value?.value;
+    if (!semesterId) return;
+    setSelectedExamId(semesterId);
+  };
 
-  useEffect(()=>{
-    loadSemester()
-  },[])
-  
-  return (
-    <>
-      <div className="examRooms__container">
-        <PageTitle theme="light">Quản lý phòng thi</PageTitle>
-        <div className="examRooms__filter">
-          <form className="examRooms__filter-form">
-            <div className="examRooms__container-child">
-              <p className="examRooms__container-title">Kỳ thi</p>
-              <AsyncSelect cacheOptions loadOptions={loadSemesterOptions} defaultOptions={semesterList} onChange={(value) => {
-                setValue("semester", value);
-                handleSubmit(onSubmit)()
-              }}/>
-            </div>
-            <div className="examRooms__container-child">
-              <p className="examRooms__container-title">Môn thi</p>
-              <AsyncSelect cacheOptions loadOptions={loadSubjectOptions} defaultOptions={subjectList} onChange={(value) => {
-                setValue("subject", value);
-                handleSubmit(onSubmit)()
-              }}/>
-            </div>
-            <div className="examRooms__container-child">
-              <p className="examRooms__container-title">Ca thi</p>
-              <AsyncSelect cacheOptions loadOptions={loadSessionOptions} defaultOptions={sessionList} onChange={(value) => {
-                setValue("session", value);
-                handleSubmit(onSubmit)()
-              }}/>
-            </div>
-          </form>
+  const navigate = useNavigate();
+
+  const handleDetailClick = (id: number | string) => {
+    const room = roomList.find((e) => e.id === id);
+    if (room) {
+      navigate(`/admin/detail-exam-rooms`, { state: { room } });
+    } else {
+      addNotification("Không tìm thấy thông tin phòng thi", false);
+    }
+  };
+
+  useEffect(() => {
+    getSemester();
+  }, []);
+
+  useEffect(() => {
+    if (selectedExamId) {
+      getRoomList(selectedExamId);
+    }
+  }, [selectedExamId]);
+
+  const renderContent = () => {
+    if (loading) {
+      return <div className="examRooms__loading">Đang tải dữ liệu...</div>;
+    }
+
+    if (!roomList || roomList.length === 0) {
+      return (
+        <div className="examRooms__no-data">
+          <p>Kỳ thi này không có phòng nào</p>
         </div>
-          { roomList && (
-            <Table
-              data={roomList}
-              tableName="Phòng thi"
+      );
+    }
+
+    return (
+      <Table
+        title={title}
+        data={roomList}
+        actions_detail={{
+          name: "Chi tiết",
+          onClick: (room) => {
+            if (room) {
+              handleDetailClick(room);
+            }
+          },
+        }}
+        tableName="Phòng thi"
+      />
+    );
+  };
+
+  return (
+    <div className="examRooms__container">
+      <PageTitle theme="light">Quản lý phòng thi</PageTitle>
+      <div className="examRooms__filter">
+        <form className="examRooms__filter-form">
+          <div className="examRooms__container-child">
+            <p className="examRooms__container-title">Kỳ thi</p>
+            <AsyncSelect
+              cacheOptions
+              loadOptions={loadSemesterOptions}
+              defaultOptions={examOptions}
+              value={examOptions.find(
+                (option) => option.value === selectedExamId
+              )}
+              onChange={handleSemesterChange}
             />
-          )}
+          </div>
+        </form>
       </div>
-    </>
+
+      {renderContent()}
+
+      <Notification
+        notifications={notifications}
+        clearNotifications={clearNotifications}
+      />
+    </div>
   );
 };
 

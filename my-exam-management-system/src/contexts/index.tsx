@@ -1,4 +1,4 @@
 import { useToken,TokenProvider } from "./AutherContext"
 import { useNotification, NotificationProvider } from "./NotificationContext"
-export {useToken,TokenProvider}
-export {useNotification, NotificationProvider}
+import { useTheme, ThemeProvider } from "./ThemeContext"
+export {useToken,TokenProvider, useNotification, NotificationProvider, useTheme, ThemeProvider}

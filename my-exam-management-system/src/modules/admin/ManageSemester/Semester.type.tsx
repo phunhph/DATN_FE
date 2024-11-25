@@ -3,5 +3,6 @@ export type SemesterType = {
     semesterCode: string;
     semesterStart: string;
     semesterEnd: string;
+    semesterStatus: boolean;
 }
 export type SemesterFormMode = "add" | "update";
