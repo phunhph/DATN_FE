@@ -204,7 +204,7 @@ const ManageSupervisors = () => {
 
   return (
     <div className="supervisor__container">
-      <PageTitle theme="light">Quản lý giám thị</PageTitle>
+      <PageTitle theme="light">Quản lý Giám thị</PageTitle>
 
       <div className="supervisor__information">
         <Table
