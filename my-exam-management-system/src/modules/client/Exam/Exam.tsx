@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Button,
   CandidateAvatarName,
@@ -11,16 +12,22 @@ import { Question } from "@interfaces/QuestionInterface/QuestionInterface";
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./Exam.scss";
-import { getExamByIdCode } from "@/services/repositories/CandidatesService/CandidatesService";
-import { Candidate_all, Question___ } from "@/interfaces/CandidateInterface/CandidateInterface";
+import {
+  CandidateById,
+  getExamByIdCode,
+} from "@/services/repositories/CandidatesService/CandidatesService";
+import {
+  Candidate_all,
+  Question___,
+} from "@/interfaces/CandidateInterface/CandidateInterface";
+import { finish, submitStemp } from "@/services/repositories/ExamSubjectService/ExamSubjectService";
 
 type Props = {};
 
 const Exam: React.FC<Props> = () => {
-    const [timeLeft, setTimeLeft] = useState(3600);
   const navigate = useNavigate();
   const location = useLocation();
-  const { id } = location.state || {};
+  const { id_subject } = location.state || {};
 
   //Đổi màn loại bài thi
   const [currentView, setCurrentView] = useState<string>("");
@@ -93,8 +100,26 @@ const Exam: React.FC<Props> = () => {
     [key: number]: number | null;
   }>({});
 
-  const handleAnswerSelect = (questionNumber: number, answerId: number) => {
-    console.log(`Câu hỏi trắc nghiệm ${questionNumber}, đã chọn đáp án: ${answerId}`);
+  const submit = async (data: any) => {
+    const result = await submitStemp(data);
+
+    addNotification(result.message, result.success);
+  };
+
+  const handleAnswerSelect = (
+    id: string,
+    questionNumber: number,
+    answerId: number
+  ) => {
+    const data = {
+      id_question: id,
+      idCode: candidate.idcode,
+      subject_id: id_subject,
+      temp: answerId,
+    };
+
+    submit(data);
+
     setSelectedMultiChoiceAnswers((prev) => {
       const newSelectedMultiChoiceAnswers = {
         ...prev,
@@ -104,10 +129,19 @@ const Exam: React.FC<Props> = () => {
     });
   };
   const handleReadingAnswerSelect = (
+    id: string,
     questionNumber: number,
     answerId: number
   ) => {
-    // console.log(`Câu hỏi bài đọc: ${questionNumber}, đã chọn đáp án: ${answerId}`);
+    const data = {
+      id_question: id,
+      idCode: candidate.idcode,
+      subject_id: id_subject,
+      temp: answerId,
+    };
+
+    submit(data);
+
     setSelectedReadingAnswers((prev) => {
       const newSelectedReadingAnswers = {
         ...prev,
@@ -117,9 +151,19 @@ const Exam: React.FC<Props> = () => {
     });
   };
   const handleListeningAnswerSelect = (
+    id: string,
     questionNumber: number,
     answerId: number
   ) => {
+    const data = {
+      id_question: id,
+      idCode: candidate.idcode,
+      subject_id: id_subject,
+      temp: answerId,
+    };
+
+    submit(data);
+
     // console.log(`Câu hỏi bài nghe ${questionNumber}, đã chọn đáp án: ${answerId}`);
     setSelectedListeningAnswers((prev) => {
       const newSelectedMultiChoiceAnswers = {
@@ -131,25 +175,20 @@ const Exam: React.FC<Props> = () => {
   };
 
   //thông tin thí sinh
-  const [candidates] = useState<CandidatesInformation[]>([
-    {
-      id: 1,
-      masv: "PH11111",
-      name: "Nguyễn Văn A",
-      dob: "2004-12-09",
-      address: "Hà Nội",
-      email: "anvph11111@gmail.com",
-      image: "https://cdn-icons-png.flaticon.com/512/3135/3135768.png",
-    },
-  ]);
-
-  const candidate = candidates[0];
+  const [candidate, setCandidate] = useState<CandidatesInformation>({
+    id: 1,
+    masv: "PH11111",
+    name: "Nguyễn Văn A",
+    dob: "2004-12-09",
+    address: "Hà Nội",
+    email: "anvph11111@gmail.com",
+    image: "https://cdn-icons-png.flaticon.com/512/3135/3135768.png",
+  });
 
   //thông bóa
   const [notifications, setNotifications] = useState<
     Array<{ message: string; isSuccess: boolean }>
   >([]);
-
   const addNotification = (message: string, isSuccess: boolean) => {
     setNotifications((prev) => [...prev, { message, isSuccess }]);
   };
@@ -157,7 +196,6 @@ const Exam: React.FC<Props> = () => {
   const clearNotifications = () => {
     setNotifications([]);
   };
-
   //audio bài kiểm tra
 
   const [playPause, setPlayPause] = useState<boolean>(true);
@@ -167,152 +205,188 @@ const Exam: React.FC<Props> = () => {
 
   const getExam = async (id: string, code: string) => {
     const result = await getExamByIdCode(id, code);
-    if( result.data){
-      const data:Candidate_all = result.data
+    if (result.data) {
+      const data: Candidate_all = result.data;
       const arrays = Object.values(data.question).flat();
-      renderQuestion(arrays)
-      
-      setTimeLeft(data.time)
+      console.log(arrays);
+      renderQuestion(arrays);
+
+      setTimeLeft(data.time);
     }
-    
   };
+  
 
   const renderQuestion = (question: Question___[]) => {
     const BD: Question[] = [];
     const BN: Question[] = [];
     const NP: Question[] = [];
-  
-    question.forEach((e, index) => {
-      const prefix = e.id.split("_")[0]; 
+
+    question.forEach((e) => {
+      
+      const prefix = e.id.split("_")[0];
       if (prefix === "BD") {
-        if(e.answer.id_pass === 1){
+        // setSelectedReadingAnswers((prev) => {
+        //   const newSelectedMultiChoiceAnswers = {
+        //     ...prev,
+        //     [BD.length + 1]: e.answer.temp || null,
+        //   };
+        //   return newSelectedMultiChoiceAnswers;
+        // });
+        if (e.answer.id_pass === 1) {
           const data: Question = {
-            image: e.image_title, 
-            questionNumber: index + 1,
-            questionText: e.title, 
-            answers:[
+            id: e.id,
+            image: e.image_title,
+            questionNumber: BD.length + 1,
+            questionText: e.title,
+            answers: [
               {
+                id: 1,
                 text: e.answer.correct,
                 image: e.answer.img_correct,
                 isCorrect: true,
               },
               {
+                id: 2,
                 text: e.answer.wrong1,
                 image: e.answer.img_wrong1,
                 isCorrect: false,
               },
               {
+                id: 3,
                 text: e.answer.wrong2,
                 image: e.answer.img_wrong2,
                 isCorrect: false,
               },
               {
+                id: 4,
                 text: e.answer.wrong3,
                 image: e.answer.img_wrong3,
                 isCorrect: false,
               },
-            ]
+            ],
           };
-          BD.push(data); 
+          BD.push(data);
         }
-        if(e.answer.id_pass ===2){
+        if (e.answer.id_pass === 2) {
           const data: Question = {
-            image: e.image_title, 
-            questionNumber: index + 1,
-            questionText: e.title, 
-            answers:[
+            id: e.id,
+            image: e.image_title,
+            questionNumber: BD.length + 1,
+            questionText: e.title,
+            answers: [
               {
+                id: 1,
                 text: e.answer.wrong1,
                 image: e.answer.img_wrong1,
                 isCorrect: false,
               },
               {
+                id: 2,
                 text: e.answer.correct,
                 image: e.answer.img_correct,
                 isCorrect: true,
               },
               {
+                id: 3,
                 text: e.answer.wrong2,
                 image: e.answer.img_wrong2,
                 isCorrect: false,
               },
               {
+                id: 4,
                 text: e.answer.wrong3,
                 image: e.answer.img_wrong3,
                 isCorrect: false,
               },
-            ]
+            ],
           };
-          BD.push(data); 
+          BD.push(data);
         }
-        if(e.answer.id_pass ===3){
+        if (e.answer.id_pass === 3) {
           const data: Question = {
-            image: e.image_title, 
-            questionNumber: index + 1,
-            questionText: e.title, 
-            answers:[
-             
+            id: e.id,
+            image: e.image_title,
+            questionNumber: BD.length + 1,
+            questionText: e.title,
+            answers: [
               {
+                id: 1,
                 text: e.answer.wrong1,
                 image: e.answer.img_wrong1,
                 isCorrect: false,
               },
               {
+                id: 2,
                 text: e.answer.wrong2,
                 image: e.answer.img_wrong2,
                 isCorrect: false,
               },
               {
+                id: 3,
                 text: e.answer.correct,
                 image: e.answer.img_correct,
                 isCorrect: true,
               },
               {
+                id: 4,
                 text: e.answer.wrong3,
                 image: e.answer.img_wrong3,
                 isCorrect: false,
               },
-            ]
+            ],
           };
-          BD.push(data); 
+          BD.push(data);
         }
-        if(e.answer.id_pass ===4){
+        if (e.answer.id_pass === 4) {
           const data: Question = {
-            image: e.image_title, 
-            questionNumber: index + 1,
-            questionText: e.title, 
-            answers:[
+            id: e.id,
+            image: e.image_title,
+            questionNumber: BD.length + 1,
+            questionText: e.title,
+            answers: [
               {
+                id: 1,
                 text: e.answer.wrong1,
                 image: e.answer.img_wrong1,
                 isCorrect: false,
               },
               {
+                id: 2,
                 text: e.answer.wrong2,
                 image: e.answer.img_wrong2,
                 isCorrect: false,
               },
               {
+                id: 3,
                 text: e.answer.wrong3,
                 image: e.answer.img_wrong3,
                 isCorrect: false,
               },
               {
+                id: 4,
                 text: e.answer.correct,
                 image: e.answer.img_correct,
                 isCorrect: true,
               },
-            ]
+            ],
           };
-          BD.push(data); 
-        } 
+          BD.push(data);
+        }
       } else if (prefix === "BN") {
-        if(e.answer.id_pass ===1){
+        // setSelectedListeningAnswers((prev) => {
+        //   const newSelectedMultiChoiceAnswers = {
+        //     ...prev,
+        //     [BN.length + 1]: e.answer.temp || null,
+        //   };
+        //   return newSelectedMultiChoiceAnswers;
+        // });
+        if (e.answer.id_pass === 1) {
           const data: Question = {
-            image: e.image_title, 
-            questionNumber: index + 1,
-            questionText: e.title, 
-            answers:[
+            id: e.id,
+            image: e.image_title,
+            questionNumber: BN.length + 1,
+            questionText: e.title,
+            answers: [
               {
                 id: 1,
                 text: e.answer.correct,
@@ -320,7 +394,7 @@ const Exam: React.FC<Props> = () => {
                 isCorrect: true,
               },
               {
-                id:2 ,
+                id: 2,
                 text: e.answer.wrong1,
                 image: e.answer.img_wrong1,
                 isCorrect: false,
@@ -337,16 +411,17 @@ const Exam: React.FC<Props> = () => {
                 image: e.answer.img_wrong3,
                 isCorrect: false,
               },
-            ]
+            ],
           };
-          BN.push(data); 
+          BN.push(data);
         }
-        if(e.answer.id_pass ===2){
+        if (e.answer.id_pass === 2) {
           const data: Question = {
-            image: e.image_title, 
-            questionNumber: index + 1,
-            questionText: e.title, 
-            answers:[
+            id: e.id,
+            image: e.image_title,
+            questionNumber: BN.length + 1,
+            questionText: e.title,
+            answers: [
               {
                 id: 1,
                 text: e.answer.wrong1,
@@ -371,51 +446,52 @@ const Exam: React.FC<Props> = () => {
                 image: e.answer.img_wrong3,
                 isCorrect: false,
               },
-            ]
+            ],
           };
-          BN.push(data); 
+          BN.push(data);
         }
-        if(e.answer.id_pass ===3){
+        if (e.answer.id_pass === 3) {
           const data: Question = {
-            image: e.image_title, 
-            questionNumber: index + 1,
-            questionText: e.title, 
-            answers:[
-             
+            id: e.id,
+            image: e.image_title,
+            questionNumber: BN.length + 1,
+            questionText: e.title,
+            answers: [
               {
-                id:1,
+                id: 1,
                 text: e.answer.wrong1,
                 image: e.answer.img_wrong1,
                 isCorrect: false,
               },
               {
-                id:2,
+                id: 2,
                 text: e.answer.wrong2,
                 image: e.answer.img_wrong2,
                 isCorrect: false,
               },
               {
-                id:3,
+                id: 3,
                 text: e.answer.correct,
                 image: e.answer.img_correct,
                 isCorrect: true,
               },
               {
-                id:4,
+                id: 4,
                 text: e.answer.wrong3,
                 image: e.answer.img_wrong3,
                 isCorrect: false,
               },
-            ]
+            ],
           };
-          BN.push(data); 
+          BN.push(data);
         }
-        if(e.answer.id_pass ===4){
+        if (e.answer.id_pass === 4) {
           const data: Question = {
-            image: e.image_title, 
-            questionNumber: index + 1,
-            questionText: e.title, 
-            answers:[
+            id: e.id,
+            image: e.image_title,
+            questionNumber: BN.length + 1,
+            questionText: e.title,
+            answers: [
               {
                 id: 1,
                 text: e.answer.wrong1,
@@ -440,17 +516,26 @@ const Exam: React.FC<Props> = () => {
                 image: e.answer.img_correct,
                 isCorrect: true,
               },
-            ]
+            ],
           };
-          BN.push(data); 
+          BN.push(data);
         }
       } else if (prefix === "NP") {
-        if(e.answer.id_pass ===1){
+        // setSelectedMultiChoiceAnswers((prev) => {
+          
+        //   const newSelectedMultiChoiceAnswers = {
+        //     ...prev,
+        //     [NP.length + 1]: e.answer.temp || null,
+        //   };
+        //   return newSelectedMultiChoiceAnswers;
+        // });
+        if (e.answer.id_pass === 1) {
           const data: Question = {
-            image: e.image_title, 
-            questionNumber: index + 1,
-            questionText: e.title, 
-            answers:[
+            id: e.id,
+            image: e.image_title,
+            questionNumber: NP.length + 1,
+            questionText: e.title,
+            answers: [
               {
                 id: 1,
                 text: e.answer.correct,
@@ -475,16 +560,17 @@ const Exam: React.FC<Props> = () => {
                 image: e.answer.img_wrong3,
                 isCorrect: false,
               },
-            ]
+            ],
           };
-          NP.push(data); 
+          NP.push(data);
         }
-        if(e.answer.id_pass ===2){
+        if (e.answer.id_pass === 2) {
           const data: Question = {
-            image: e.image_title, 
-            questionNumber: index + 1,
-            questionText: e.title, 
-            answers:[
+            id: e.id,
+            image: e.image_title,
+            questionNumber: NP.length + 1,
+            questionText: e.title,
+            answers: [
               {
                 id: 1,
                 text: e.answer.wrong1,
@@ -509,16 +595,17 @@ const Exam: React.FC<Props> = () => {
                 image: e.answer.img_wrong3,
                 isCorrect: false,
               },
-            ]
+            ],
           };
-          NP.push(data); 
+          NP.push(data);
         }
-        if(e.answer.id_pass ===3){
+        if (e.answer.id_pass === 3) {
           const data: Question = {
-            image: e.image_title, 
-            questionNumber: index + 1,
-            questionText: e.title, 
-            answers:[
+            id: e.id,
+            image: e.image_title,
+            questionNumber: NP.length + 1,
+            questionText: e.title,
+            answers: [
               {
                 id: 1,
                 text: e.answer.wrong1,
@@ -543,16 +630,17 @@ const Exam: React.FC<Props> = () => {
                 image: e.answer.img_wrong3,
                 isCorrect: false,
               },
-            ]
+            ],
           };
-          NP.push(data); 
+          NP.push(data);
         }
-        if(e.answer.id_pass ===4){
+        if (e.answer.id_pass === 4) {
           const data: Question = {
-            image: e.image_title, 
-            questionNumber: index + 1,
-            questionText: e.title, 
-            answers:[
+            id: e.id,
+            image: e.image_title,
+            questionNumber: NP.length + 1,
+            questionText: e.title,
+            answers: [
               {
                 id: 1,
                 text: e.answer.wrong1,
@@ -577,26 +665,34 @@ const Exam: React.FC<Props> = () => {
                 image: e.answer.img_correct,
                 isCorrect: true,
               },
-            ]
+            ],
           };
-          NP.push(data); 
+          NP.push(data);
         }
       }
     });
-  
+
     // Cập nhật state
     setQuestions(NP); // Cập nhật nhóm NP
     setReadingQuestions(BD); // Cập nhật nhóm BD
     setListeningQuestions(BN); // Cập nhật nhóm BN
   };
-  
+
+  const getInfor = async (id: string) => {
+    const result = await CandidateById(id);
+    if (result.data) {
+      setCandidate(result.data);
+    }
+  };
 
   useEffect(() => {
     const user = localStorage.getItem("clientData");
     if (user) {
       const parsedUser = JSON.parse(user);
 
-      getExam(id, parsedUser.idcode);
+      getExam(id_subject, parsedUser.idcode);
+
+      getInfor(parsedUser.idcode);
     }
     //API lấy file audio/ link audio
     audioRef.current = new Audio(
@@ -636,7 +732,7 @@ const Exam: React.FC<Props> = () => {
   };
 
   //Lấy thời gian còn lại
-
+  const [timeLeft, setTimeLeft] = useState(3600);
   const handleTimeChange = (newTime: number) => {
     setTimeLeft(newTime);
   };
@@ -688,7 +784,17 @@ const Exam: React.FC<Props> = () => {
     setHandin(true);
   };
 
+  const finish_ = async (data: any) => {
+   const result = await finish(data);
+   console.log(result);
+  };
+
   const handleSubmit = () => {
+    const data = {
+      idCode: candidate.idcode,
+      subject_id: id_subject,
+    };
+    finish_(data);
     setHandin(false);
     setSubmitted(true);
   };
@@ -873,10 +979,10 @@ const Exam: React.FC<Props> = () => {
         </>
       )}
 
-      <Notification
+      {/* <Notification
         notifications={notifications}
         clearNotifications={clearNotifications}
-      />
+      /> */}
     </div>
   );
 };

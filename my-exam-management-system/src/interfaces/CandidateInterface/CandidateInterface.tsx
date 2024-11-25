@@ -17,6 +17,10 @@ export interface ApiCandidateResponse extends BaseResponse {
   data: Candidate[];
 }
 
+export interface ApiCandidateInFoResponse extends BaseResponse {
+  data?: Candidate;
+}
+
 export interface CreateCandidate {
   idcode: string;
   name: string;
@@ -54,7 +58,7 @@ export interface Question___ {
     img_wrong1?: string;
     img_wrong2?: string;
     img_wrong3?: string;
-    temp?: string;
+    temp: number |null;
     wrong1: string;
     wrong2: string;
     wrong3: string;

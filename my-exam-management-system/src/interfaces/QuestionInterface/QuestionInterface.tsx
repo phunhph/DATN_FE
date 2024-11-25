@@ -1,9 +1,10 @@
 export interface Question {
+    id:string;
     questionNumber: number;
     questionText: string;
     image?: string;
     answers: {
-        id?: number;
+        id: number;
         text?: string; 
         image?: string;
         isCorrect?: boolean;

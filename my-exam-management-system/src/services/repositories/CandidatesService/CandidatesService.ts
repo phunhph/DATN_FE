@@ -5,6 +5,7 @@ import {
   Exam,
 } from "@/interfaces/ExamInterface/ExamInterface";
 import {
+  ApiCandidateInFoResponse,
   ApiCandidateResponse,
   ApiCandidateResponse__,
   Candidate,
@@ -250,3 +251,44 @@ export const getExamByIdCode = async (id: string, code: string):Promise<ApiCandi
     }
   }
 }
+
+export const CandidateById = async (
+  id: string
+): Promise<ApiCandidateInFoResponse> => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+
+    const response: AxiosResponse<ApiCandidateInFoResponse> = await instance.get(
+      `/api/client/info/${id}`,
+      {
+        headers: headers,
+      }
+    );
+
+    return response.data;
+      
+  } catch (error) {
+    if (error instanceof AxiosError && error.response) {
+      const { data } = error.response;
+      const errorMessage = `${data.message || "Error occurred"}`;
+
+      return {
+        success: false,
+        message: errorMessage,
+        status: 500,
+      };
+    } else {
+      const generalError = "An unknown error occurred while fetching exams.";
+
+      return {
+        success: false,
+        message: generalError,
+        status: 500,
+      };
+    }
+  }
+};

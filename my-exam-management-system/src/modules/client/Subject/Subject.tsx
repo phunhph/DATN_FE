@@ -39,7 +39,6 @@ const Subject = () => {
           });
 
           setExams(formattedData);
-          console.log("Formatted Data:", formattedData);
         }
       } catch (error) {
         console.error("Lỗi khi gọi API:", error);
@@ -52,8 +51,8 @@ const Subject = () => {
     fetchExams();
   }, []);
 
-  const navToExamById = (id: string) => {
-    navigate(`/client/exam`,{state: {id}});
+  const navToExamById = (id_subject: string) => {
+    navigate(`/client/exam`,{state: {id_subject}});
   };
 
   return (
@@ -71,7 +70,7 @@ const Subject = () => {
             <p>{error}</p>
           ) : exams.length > 0 ? (
             exams.map((exam) => (
-              <GridItem key={exam.examId} className="group__itemm">
+              <GridItem key={exam.subjectCode} className="group__itemm">
                 <p>
                   Tên Môn thi:{" "}
                   <span className="item__span">{exam.subjectName}</span>
