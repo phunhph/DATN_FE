@@ -25,6 +25,7 @@ const Subject = () => {
           setError(response.message || "Lỗi không xác định");
         } else {
           const formattedData = response.data.flatMap((exam: any) => {
+            
             return exam.exam_subjects.map((subject: any) => ({
               examId: exam.id,
               examName: exam.name,
@@ -52,7 +53,7 @@ const Subject = () => {
   }, []);
 
   const navToExamById = (id: string) => {
-    navigate(`/client/exam/${id}`);
+    navigate(`/client/exam`,{state: {id}});
   };
 
   return (
@@ -79,10 +80,10 @@ const Subject = () => {
                   Mã Môn thi:{" "}
                   <span className="item__span">{exam.subjectCode}</span>
                 </p>
-                <p>
+                {/* <p>
                   Số câu hỏi:{" "}
                   <span className="item__span">{exam.questionCount}</span>
-                </p>
+                </p> */}
                 <p>Thời gian bắt đầu:</p>
                 <span className="item__span">
                   {new Date(exam.startDate).toLocaleDateString()}
@@ -92,7 +93,7 @@ const Subject = () => {
                   {new Date(exam.endDate).toLocaleDateString()}
                 </span>
                 <CVO percentage={exam.subjectCountInExam > 0 ? 100 : 0}></CVO>
-                <Button onClick={() => navToExamById(exam.examId)}>
+                <Button onClick={() => navToExamById(exam.subjectCode)}>
                   Làm bài thi
                 </Button>
               </GridItem>

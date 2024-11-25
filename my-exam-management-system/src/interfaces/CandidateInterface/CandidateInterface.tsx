@@ -33,3 +33,29 @@ export interface Exam_room {
   exam_id: string;
   name: string;
 }
+
+export interface ApiCandidateResponse__ extends BaseResponse {
+  data: Candidate_all[];
+}
+
+export interface Candidate_all {
+  time: number;
+  question: Question___[];
+}
+
+export interface Question___ {
+  id: string;
+  title: string;
+  image_title?: string;
+  answer: {
+    correct: string;
+    img_correct?: string;
+    img_wrong1?: string;
+    img_wrong2?: string;
+    img_wrong3?: string;
+    temp?: string;
+    wrong1: string;
+    wrong2: string;
+    wrong3: string;
+  };
+}

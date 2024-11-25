@@ -6,6 +6,7 @@ import {
 } from "@/interfaces/ExamInterface/ExamInterface";
 import {
   ApiCandidateResponse,
+  ApiCandidateResponse__,
   Candidate,
   CreateCandidate,
 } from "@/interfaces/CandidateInterface/CandidateInterface";
@@ -203,3 +204,50 @@ export const addCandidate = async (data: CreateCandidate) => {
     }
   }
 };
+
+export const getExamByIdCode = async (id: string, code: string) => {
+  try {
+    const token = localStorage.getItem("token");
+    console.log(id);
+    
+    const data = {
+      "id_subject": id,
+      "idCode": code
+  }
+
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "multipart/form-data",
+    };
+
+    const response: AxiosResponse<ApiCandidateResponse__> = await instance.post(
+      `/api/client/exam`,
+      data,
+      {
+        headers: headers,
+      }
+    );
+
+    return response.data
+  } catch (error) {
+    if (error instanceof AxiosError && error.response) {
+      const { data } = error.response;
+      console.log(data);
+      const errorMessage = formatWarningMessage(data.warning);
+      return {
+        success: false,
+        message: errorMessage,
+        data: [],
+      };
+    } else {
+      const generalError =
+        "An unknown error occurred while adding exam subject.";
+
+      return {
+        success: false,
+        message: generalError,
+        data: [],
+      };
+    }
+  }
+}
