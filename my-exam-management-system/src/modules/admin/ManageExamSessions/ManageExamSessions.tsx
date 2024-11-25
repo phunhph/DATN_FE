@@ -210,7 +210,6 @@ const ManageExamSessions = () => {
             }
           },
         }}
-        action_dowload={{ name: "Tải mẫu", onClick: downloadSample }}
         action_status={handleStatusChange}
       />
       <div className={`semester ${openForm ? "" : "hidden"}`}>
