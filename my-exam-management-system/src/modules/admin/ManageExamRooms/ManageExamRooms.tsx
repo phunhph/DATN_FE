@@ -15,13 +15,20 @@ const ManageExamRooms = () => {
   const [selectedExamId, setSelectedExamId] = useState<string>("");
   const [semesters, setSemesters] = useState<SemesterType[]>([]);
   const [roomList, setRoomList] = useState<ExamRoom[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const title = ["Mã phòng thi","Tên phòng thi", "Số lượng sinh viên", "Thao tác"];
+  const title = [
+    "Mã phòng thi",
+    "Tên phòng thi",
+    "Số lượng sinh viên",
+    "Thao tác",
+  ];
 
   const examOptions = semesters.map((semester) => ({
     label: semester.semesterName,
     value: semester.semesterCode,
   }));
+
   const firstOption = examOptions[0];
 
   const loadSemesterOptions = (
@@ -40,22 +47,13 @@ const ManageExamRooms = () => {
   const [notifications, setNotifications] = useState<
     Array<{ message: string; isSuccess: boolean }>
   >([]);
+
   const addNotification = (message: string, isSuccess: boolean) => {
     setNotifications((prev) => [...prev, { message, isSuccess }]);
   };
 
   const clearNotifications = () => {
     setNotifications([]);
-  };
-
-  const getSemester = async () => {
-    const data = await getAllSemester();
-    if (data.success) {
-      const listSemester = formatData(data.data);
-      setSemesters(listSemester);
-    } else {
-      addNotification(data.message ?? "Đã có lỗi xảy ra", data.success);
-    }
   };
 
   const formatData = (data: Semester[] | Semester) => {
@@ -78,87 +76,132 @@ const ManageExamRooms = () => {
         },
       ];
     }
-
     return [];
+  };
+
+  const getSemester = async () => {
+    try {
+      const data = await getAllSemester();
+      if (data.success) {
+        const listSemester = formatData(data.data);
+        setSemesters(listSemester);
+
+        if (listSemester.length > 0 && !selectedExamId) {
+          setSelectedExamId(listSemester[0].semesterCode);
+        }
+      } else {
+        addNotification(data.message ?? "Đã có lỗi xảy ra", data.success);
+      }
+    } catch (error) {
+      addNotification("Lỗi khi tải danh sách kỳ thi", false);
+    }
+  };
+
+  const getRoomList = async (semesterId: string) => {
+    if (!semesterId) return;
+
+    setLoading(true);
+    try {
+      const data = await getExamRoom(semesterId);
+      if (data.success) {
+        setRoomList(data.data || []);
+      } else {
+        addNotification(
+          data.message ?? "Lỗi khi tải danh sách phòng thi",
+          false
+        );
+      }
+    } catch (error) {
+      addNotification("Lỗi khi tải danh sách phòng thi", false);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSemesterChange = (value: any) => {
     const semesterId = value?.value;
     if (!semesterId) return;
     setSelectedExamId(semesterId);
-    getRoomList();
   };
 
-  const getRoomList = async () => {
-    const data = await getExamRoom(selectedExamId);
-    console.log(data.data);
-  
-    setRoomList(data.data);
-  };
-
-  useEffect(() => {
-    if (firstOption && !selectedExamId) {
-      setSelectedExamId(firstOption.value);
-    }
-  }, [firstOption]);
-
-  const onLoad = () => {
-    getSemester();
-  };
   const navigate = useNavigate();
+
   const handleDetailClick = (id: number | string) => {
-    console.log(id);
-    
     const room = roomList.find((e) => e.id === id);
-    
     if (room) {
       navigate(`/admin/detail-exam-rooms`, { state: { room } });
     } else {
-      addNotification("Room not found", false);
+      addNotification("Không tìm thấy thông tin phòng thi", false);
     }
   };
 
   useEffect(() => {
-    onLoad();
+    getSemester();
   }, []);
 
-  return (
-    <>
-      <div className="examRooms__container">
-        <PageTitle theme="light">Quản lý phòng thi</PageTitle>
-        <div className="examRooms__filter">
-          <form className="examRooms__filter-form">
-            <div className="examRooms__container-child">
-              <p className="examRooms__container-title">Kỳ thi</p>
-              <AsyncSelect
-                cacheOptions
-                loadOptions={loadSemesterOptions}
-                defaultOptions={examOptions}
-                value={examOptions.find(
-                  (option) => option.value === selectedExamId
-                )}
-                onChange={handleSemesterChange}
-              />
-            </div>
-          </form>
-        </div>
-        {roomList && roomList.length > 0 && (
-          <Table title={title} data={roomList} actions_detail={{
-            name: "Chi tiết",
-            onClick: (room) => {
-              if (room) {
-                handleDetailClick(room);
-              }
-            },
-          }}  tableName="Phòng thi" />
-        )}
+  useEffect(() => {
+    if (selectedExamId) {
+      getRoomList(selectedExamId);
+    }
+  }, [selectedExamId]);
 
-         <Notification
-          notifications={notifications}
-          clearNotifications={clearNotifications}
-        /> 
+  const renderContent = () => {
+    if (loading) {
+      return <div className="examRooms__loading">Đang tải dữ liệu...</div>;
+    }
+
+    if (!roomList || roomList.length === 0) {
+      return (
+        <div className="examRooms__no-data">
+          <p>Kỳ thi này không có phòng nào</p>
+        </div>
+      );
+    }
+
+    return (
+      <Table
+        title={title}
+        data={roomList}
+        actions_detail={{
+          name: "Chi tiết",
+          onClick: (room) => {
+            if (room) {
+              handleDetailClick(room);
+            }
+          },
+        }}
+        tableName="Phòng thi"
+      />
+    );
+  };
+
+  return (
+    <div className="examRooms__container">
+      <PageTitle theme="light">Quản lý phòng thi</PageTitle>
+      <div className="examRooms__filter">
+        <form className="examRooms__filter-form">
+          <div className="examRooms__container-child">
+            <p className="examRooms__container-title">Kỳ thi</p>
+            <AsyncSelect
+              cacheOptions
+              loadOptions={loadSemesterOptions}
+              defaultOptions={examOptions}
+              value={examOptions.find(
+                (option) => option.value === selectedExamId
+              )}
+              onChange={handleSemesterChange}
+            />
+          </div>
+        </form>
       </div>
-    </>
+
+      {renderContent()}
+
+      <Notification
+        notifications={notifications}
+        clearNotifications={clearNotifications}
+      />
+    </div>
   );
 };
 

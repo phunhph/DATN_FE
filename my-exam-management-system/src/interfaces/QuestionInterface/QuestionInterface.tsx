@@ -34,6 +34,44 @@ export interface QuestionDetailResponse {
   current_version: Question[];
 }
 
+export interface ApiQuestionDetailResponse extends BaseResponse {
+  data?: QuestionDetailResponse;
+}
+export interface ApiQuestionResponse {
+    data: Question[];
+    status: string;
+    success: boolean;
+    warning?: string;
+}
+
+export interface APIresultOfCandidate {
+    timeSpent: number;
+    answers: {
+        multipleChoice: {
+            [key:string]: number;
+        }
+        reading: {
+            [key:string]: number;
+        }
+        listening: {
+            [key:string]: number;
+        }
+    }
+export interface ApiQuestionResponse extends BaseResponse {
+  data: Question[];
+}
+
+export interface QuestionDetailResponse {
+  id: string;
+  exam_content_id: string;
+  current_version_id: number | string;
+  status: number;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | null;
+  current_version: Question[];
+}
+
 
 export interface ApiQuestionDetailResponse extends BaseResponse {
   data?: QuestionDetailResponse;
