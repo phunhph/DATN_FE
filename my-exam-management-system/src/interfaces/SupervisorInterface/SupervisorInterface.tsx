@@ -1,15 +1,21 @@
 import { BaseResponse } from "@interfaces/InterfaceBaseResponse/InterfaceBaseResponse";
 
 export interface Supervisor {
-  id: string;
-  magt: string;
+  idcode: string;
   name: string;
-  image: string;
-  dob: string;
-  address: string;
-  status?: boolean;
+  profile: string;
+  email: string;
+  status?: boolean | string | number;
 }
 
 export interface ApiSupervisorResponse extends BaseResponse {
   data: Supervisor[];
+}
+
+export interface CreateSupervisor {
+  idcode: string;
+  name: string;
+  profile: string;
+  email: string;
+  status?: boolean | string | number;
 }

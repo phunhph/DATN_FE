@@ -1,55 +1,75 @@
 import React, { useEffect, useState } from "react";
 import "./DetailSupervisor.scss";
 import { Table } from "@components/Table/Table";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 
 import { PageTitle, UploadFile } from "@components/index";
 import { Supervisor } from "@/interfaces/SupervisorInterface/SupervisorInterface";
 import { ErrorSupervisor } from "@/interfaces/SupervisorInterface/ErrorSupervisorInterface";
 
-
 type Props = {};
 
 const DetailSupervisor = (props: Props) => {
-  
-  const [formData, setFormData] = useState({
-    id: "",
-    magt: "",
-    name: "",
-    image: "",
-    dob: "",
-    address: "",
-
-  });
+  const title = [
+    "Mã giảng viên",
+    "Tên",
+    "Ảnh",
+    "Email",
+    "Trạng thái",
+    "Thao tác",
+  ];
   const location = useLocation();
+   const { id } = useParams<{ id: string }>();
   const queryParams = new URLSearchParams(location.search);
   const [supervisors, setSupervisors] = useState<Supervisor[]>([]);
+  const [data, setData] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const id = queryParams.get("id");
-    const magt = queryParams.get("magt");
-    const name = queryParams.get("name");
-    const image = queryParams.get("image");
-    const dob = queryParams.get("dob");
-    const address = queryParams.get("address");
-    const status = queryParams.get("status");
-    console.log({ id, magt, name, image, dob, address, status });
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          `/api/admin/lecturer/{lecturer}/${id}`
+        );
 
-    if (id && magt && name && image && dob && address && status) {
-      const supervisor: Supervisor = {
-        id,
-        magt,
-        name,
-        image,
-        dob,
-        address,
-       
-      };
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
 
-      setSupervisors([supervisor]);
-      console.log("Supervisor:", [supervisor]);
-    }
-  }, [location.search]);
+        const contentType = response.headers.get("Content-Type");
+        if (contentType && contentType.includes("application/json")) {
+          const result = await response.json();
+          setData(result);
+        } else {
+          throw new Error("Expected JSON, but got something else.");
+        }
+      } catch (error: any) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [id]);
+
+  if (loading) {
+    return <div>Loading...</div>; 
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>; 
+  }
+
+
+  const [formData, setFormData] = useState({
+    Idcode: "",
+    name: "",
+    image: "",
+    email: "",
+    status: true,
+  });
 
   const handleStatusChange = (id: string) => {
     alert("Status id " + id);
@@ -62,13 +82,11 @@ const DetailSupervisor = (props: Props) => {
     if (type === "add") {
       setEditMode(false);
       setFormData({
-        id: "",
-        magt: "",
+        Idcode: "",
         name: "",
         image: "",
-        dob: "",
-        address: "",
-        
+        email: "",
+        status: true,
       });
     }
   };
@@ -78,10 +96,9 @@ const DetailSupervisor = (props: Props) => {
     const errors: ErrorSupervisor = {};
 
     if (!formData.name) errors.name = "Tên không được để trống.";
-    if (!formData.magt) errors.magt = "Mã giám thị không được để trống.";
+    if (!formData.Idcode) errors.Idcode = "Mã giám thị không được để trống.";
     if (!formData.image) errors.image = "Ảnh không được để trống.";
-    if (!formData.dob) errors.dob = "Ngày sinh không được để trống.";
-    if (!formData.address) errors.address = "Địa chỉ không được để trống.";
+    if (!formData.email) errors.email = "Email không được để trống.";
 
     setErrors(errors);
     console.log("Errors:", errors);
@@ -133,12 +150,11 @@ const DetailSupervisor = (props: Props) => {
     if (validate()) {
       alert("Thêm giám thị thành công!");
       setFormData({
-        id: "",
-        magt: "",
+        Idcode: "",
         name: "",
         image: "",
-        dob: "",
-        address: "",
+        email: "",
+        status: true,
       });
       closeModal();
     }
@@ -166,9 +182,12 @@ const DetailSupervisor = (props: Props) => {
 
   return (
     <div className="detailSupervisor__containter">
-      <PageTitle theme="light" showBack={true}>Thông tin giám thị</PageTitle>
+      <PageTitle theme="light" showBack={true}>
+        Thông tin giám thị
+      </PageTitle>
       <div className="detailSupervisor__content">
         <Table
+          title={title}
           tableName={`Giám thị ${
             supervisors.length > 0 ? supervisors[0].name : ""
           }`}

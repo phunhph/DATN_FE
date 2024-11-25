@@ -1,39 +1,63 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./ManageSupervisors.scss";
 import { Table } from "@components/Table/Table";
 
-import { PageTitle, UploadFile } from "@components/index";
+import { Notification, PageTitle, UploadFile } from "@components/index";
 import { useNavigate } from "react-router-dom";
 import { Supervisor } from "@/interfaces/SupervisorInterface/SupervisorInterface";
 import { ErrorSupervisor } from "@/interfaces/SupervisorInterface/ErrorSupervisorInterface";
-
+import {
+  addSupervisor,
+  getAllSupervisors,
+} from "@/services/repositories/SupervisorsService/SupervisorsService";
 
 const ManageSupervisors = () => {
-  
-  const [supervisors, setSupervisors] = useState<Supervisor[]>([
-    {
-      id: "1",
-      magt: "PH111",
-      name: "Nguyễn Văn A",
-      image: "https://picsum.photos/100/100",
-      dob: "2004-12-09",
-      address: "Hà Nội",
-      status: true,
-    },
-    {
-      id: "2",
-      magt: "PH112",
-      name: "Nguyễn Văn B",
-      image: "https://picsum.photos/100/100",
-      dob: "2004-12-09",
-      address: "Hà Nội",
-      status: true,
-    },
-  ]);
+  const [supervisors, setSupervisors] = useState<Supervisor[]>([]);
+
   const [modalType, setModalType] = useState<"add" | "edit" | "file">("add");
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [errors, setErrors] = useState<ErrorSupervisor>({});
   const [editMode, setEditMode] = useState(false);
+
+  const [formData, setFormData] = useState({
+    idcode: "",
+    name: "",
+    profile: "",
+    email: "",
+  });
+
+  const [errors, setErrors] = useState<ErrorSupervisor>({});
+  const [notifications, setNotifications] = useState<
+    Array<{ message: string; isSuccess: boolean }>
+  >([]);
+
+  const navigate = useNavigate();
+
+  const getSupervisors = async () => {
+    const data = await getAllSupervisors();
+    console.log("Dữ liệu trả về từ API:", data);
+
+    if (data.success) {
+      const supervisorList = data.data.data;
+      console.log("Danh sách giám thị:", supervisorList);
+
+      if (Array.isArray(supervisorList)) {
+        setSupervisors(supervisorList);
+      } else {
+        console.log("Dữ liệu không phải là mảng.");
+        setSupervisors([]);
+      }
+    } else {
+      addNotification(data.message ?? "Đã có lỗi xảy ra", data.success);
+    }
+  };
+
+  const onLoad = () => {
+    getSupervisors();
+  };
+
+  useEffect(() => {
+    onLoad();
+  }, []);
 
   const openModal = (type: "add" | "edit" | "file") => {
     setModalType(type);
@@ -41,109 +65,86 @@ const ManageSupervisors = () => {
     setErrors({});
     if (type === "add") {
       setEditMode(false);
-      setFormData({
-        id: "",
-        magt: "",
-        name: "",
-        image: "",
-        dob: "",
-        address: "",
-        
-      });
+      resetForm();
     }
   };
-  const [formData, setFormData] = useState({
-    id: "",
-    magt: "",
-    name: "",
-    image: "",
-    dob: "",
-    address: "",
-   
-  });
 
   const closeModal = () => {
     setModalIsOpen(false);
   };
 
-  const downloadSample = () => {
-    const table = document.querySelector(".subject__table");
-    if (!table) {
-      console.error("Bảng không được tìm thấy.");
-      return;
-    }
-
-    let csvContent = "data:text/csv;charset=utf-8,";
-    const rows = table.querySelectorAll("tr");
-
-    rows.forEach((row) => {
-      const cells = row.querySelectorAll("th");
-      const rowContent = Array.from(cells)
-        .map((cell) => (cell.textContent || "").replace(/,/g, ""))
-        .join(",");
-      csvContent += rowContent + "\n";
+  const resetForm = () => {
+    setFormData({
+      idcode: "",
+      name: "",
+      profile: "",
+      email: "",
     });
+  };
 
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "Biểu mẫu Giám thị.csv");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const addNotification = (message: string, isSuccess: boolean) => {
+    setNotifications((prev) => [...prev, { message, isSuccess }]);
   };
-  const handleStatusChange = (id: string) => {
-    alert("Status id " + id);
+
+  const clearNotifications = () => {
+    setNotifications([]);
   };
+
   const validate = (): boolean => {
-    console.log("Validating...");
     const errors: ErrorSupervisor = {};
-
     if (!formData.name) errors.name = "Tên không được để trống.";
-    if (!formData.magt) errors.magt = "Mã giám thị không được để trống.";
-    if (!formData.image) errors.image = "Ảnh không được để trống.";
-    if (!formData.dob) errors.dob = "Ngày sinh không được để trống.";
-    if (!formData.address) errors.address = "Địa chỉ không được để trống.";
+    if (!formData.idcode) errors.idcode = "Mã giám thị không được để trống.";
+    if (!formData.profile) errors.profile = "Ảnh không được để trống.";
+    if (!formData.email) errors.email = "Email không được để trống.";
 
     setErrors(errors);
     console.log("Errors:", errors);
     return Object.keys(errors).length === 0;
   };
 
-  const [fileName, setFileName] = useState<string>("");
-
-  const handleFileSelect = (fileName: string) => {
-    setFileName(fileName);
-  };
-
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     if (validate()) {
-      alert("Thêm giám thị thành công!");
-      setFormData({
-        id: "",
-        magt: "",
-        name: "",
-        image: "",
-        dob: "",
-        address: "",
-      });
+      const callAPI = async () => {
+
+        const result = await addSupervisor(formData);
+        console.log("Kết quả trả về:", formData);
+
+        if (result.success) {
+          const newSupervisor = result.data.supervisors;
+          setSupervisors((prevSupervisors) => [
+            ...prevSupervisors,
+            newSupervisor,
+          ]);
+         addNotification("Thêm giám thị thành công!", true);
+         resetForm();
+
+       
+         getSupervisors();
+          setFormData({
+            idcode: "",
+            name: "",
+            profile: "",
+            email: "",
+          });
+        } else {
+          console.log("Lỗi kết quả: ", result.error);
+          addNotification(result.message ?? "Đã có lỗi xảy ra", false);
+        }
+      };
+      callAPI();
       closeModal();
     }
   };
-    const openEditModal = (data: Supervisor) => {
-      setFormData({
-        id: data.id,
-        magt: data.magt,
-        name: data.name,
-        image: data.image,
-        dob: data.dob,
-        address: data.address,
-      });
-      setEditMode(true);
-      setModalType("edit");
-      setModalIsOpen(true);
-    };
+
+  const openEditModal = (data: Supervisor) => {
+    setFormData(data);
+    setEditMode(true);
+    setModalType("edit");
+    setModalIsOpen(true);
+  };
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -153,44 +154,69 @@ const ManageSupervisors = () => {
       [name]: value,
     }));
   };
+  const handleUpdateStatus = (id: string) => {
+    setSupervisors((prevSupervisors) =>
+      prevSupervisors.map((supervisor) =>
+        supervisor.idcode === id
+          ? { ...supervisor, status: !supervisor.status }
+          : supervisor
+      )
+    );
+    addNotification(`Trạng thái của môn thi đã được thay đổi.`, true);
+  };
+
+  const handleStatusChange = (id: string) => {
+    if (confirm("Are you sure you want to change the status?")) {
+      handleUpdateStatus(id);
+    }
+  };
+
+  const handleDetailClick = (id: string) => {
+    const supervisor = supervisors.find((s) => s.idcode === id);
+    if (supervisor) {
+      navigate(`/admin/detail-supervisors/${id}`);
+    }
+  };
+
+  const title = ["Mã giảng viên", "Tên", "Ảnh", "Trạng thái", "Thao tác"];
+
+ const formattedSupervisors = Array.isArray(supervisors)
+   ? supervisors
+       .filter((supervisor) => supervisor.idcode && supervisor.name) 
+       .map((supervisor) => ({
+         idcode: supervisor.idcode,
+         name: supervisor.name,
+         profile: supervisor.profile,
+         status: supervisor.status,
+       }))
+   : [];
+
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       setFormData((prevFormData) => ({
         ...prevFormData,
-        image: URL.createObjectURL(file),
+        profile: file,
       }));
-    }
-  };
-  const navigate = useNavigate();
-  const handleDetailClick = (id: string) => {
-    const supervisor = supervisors.find((s) => s.id === id);
-    if (supervisor) {
-      navigate(
-        `/admin/detail-supervisors?${new URLSearchParams(
-          supervisor as any
-        ).toString()}`
-      );
-    } else {
-      console.error("Candidate not found");
     }
   };
 
   return (
     <div className="supervisor__container">
-      <PageTitle theme="light">Quản lý giám thị</PageTitle>
+      <PageTitle theme="light">Quản lý Giám thị</PageTitle>
 
       <div className="supervisor__information">
         <Table
+          title={title}
           tableName="Giám thị"
-          data={supervisors}
+          data={formattedSupervisors}
           actions_add={{ name: "Thêm mới", onClick: () => openModal("add") }}
           action_upload={{
             name: "Upload file",
             onClick: () => openModal("file"),
           }}
-          action_dowload={{ name: "Tải mẫu", onClick: downloadSample }}
+          action_dowload={{ name: "Tải mẫu", onClick: () => {} }}
           actions_detail={{
             name: "Chi tiết",
             onClick: (supervisor) => {
@@ -200,18 +226,13 @@ const ManageSupervisors = () => {
             },
           }}
           actions_edit={{
-          name: "Chỉnh sửa",
-          onClick: (supervisor) => {
-            console.log("Edit", supervisor);
-
-            if (supervisor) {
-              openEditModal(supervisor);
-            }
-          },
-        }}
+            name: "Chỉnh sửa",
+            onClick: openEditModal,
+          }}
           action_status={handleStatusChange}
         />
       </div>
+
       {modalIsOpen && (
         <div className="modal">
           <div className="modal__overlay">
@@ -221,31 +242,33 @@ const ManageSupervisors = () => {
               </button>
               <h2 className="modal__title">
                 {modalType === "edit"
-                  ? "Chỉnh sửa môn thi"
+                  ? "Chỉnh sửa giám thị"
                   : modalType === "file"
                   ? "Tải lên file"
-                  : "Thêm mới môn thi"}
+                  : "Thêm mới giám thị"}
               </h2>
               {modalType === "file" ? (
-                <UploadFile onFileSelect={handleFileSelect} />
+                <UploadFile onFileSelect={() => {}} />
               ) : (
-                <form className="modal__form" onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit}>
                   <div className="modal__firstline-add">
                     <label className="modal__label">
-                      Mã giám thị: <br />
+                      Mã Giám thị:
                       <input
                         type="text"
-                        name="magt"
+                        name="idcode"
                         className="modal__input"
-                        value={formData.magt}
+                        value={formData.idcode}
                         onChange={handleChange}
                         placeholder="Nhập mã giám thị"
                         readOnly={editMode}
                       />
-                      {errors.magt && <p className="error">{errors.magt}</p>}
+                      {errors.idcode && (
+                        <p className="error">{errors.idcode}</p>
+                      )}
                     </label>
                     <label className="modal__label">
-                      Tên giám thị: <br />
+                      Tên Giám thị:
                       <input
                         type="text"
                         name="name"
@@ -253,76 +276,46 @@ const ManageSupervisors = () => {
                         value={formData.name}
                         onChange={handleChange}
                         placeholder="Nhập tên giám thị"
-                        readOnly={false}
                       />
                       {errors.name && <p className="error">{errors.name}</p>}
                     </label>
                   </div>
                   <div className="modal__firstline-add">
                     <label className="modal__label">
-                      Ảnh: <br />
-                      {modalType === "add" ? (
-                        <>
-                          <input
-                            type="file"
-                            name="image"
-                            className="modal__input"
-                            onChange={handleFileChange}
-                            accept="image/*"
-                            disabled={false}
-                          />
-                          {errors.image && (
-                            <p className="error">{errors.image}</p>
-                          )}
-                        </>
-                      ) : (
-                        <input
-                          type="text"
-                          name="image"
-                          className="modal__input"
-                          value={formData.image}
-                          onChange={handleChange}
-                          placeholder="Nhập đường dẫn ảnh"
-                          readOnly={false}
-                        />
-                      )}
-                    </label>
-                    <label className="modal__label">
-                      Ngày sinh: <br />
+                      Email:
                       <input
-                        type="date"
-                        name="dob"
+                        type="text"
+                        name="email"
                         className="modal__input"
-                        value={formData.dob}
+                        value={formData.email}
                         onChange={handleChange}
-                        placeholder="Nhập ngày sinh"
-                        readOnly={false}
+                        placeholder="Nhập email"
                       />
-                      {errors.dob && <p className="error">{errors.dob}</p>}
+                      {errors.email && <p className="error">{errors.email}</p>}
                     </label>
                   </div>
                   <div className="modal__firstline-add">
                     <label className="modal__label">
-                      Địa chỉ: <br />
+                      Hình ảnh:
                       <input
-                        type="text"
-                        name="address"
+                       
+                        type="file"
                         className="modal__input"
-                        value={formData.address}
-                        onChange={handleChange}
-                        placeholder="Nhập địa chỉ"
-                        readOnly={false}
+                        onChange={handleFileChange}
                       />
-                      {errors.address && (
-                        <p className="error">{errors.address}</p>
+                      {errors.profile && (
+                        <p className="error">{errors.profile}</p>
                       )}
                     </label>
                   </div>
+
                   <div className="modal__button">
                     <button
+                      name="status"
                       type="button"
                       onClick={closeModal}
                       className="modal__button-close"
+                      value={true}
                     >
                       Đóng
                     </button>
@@ -336,6 +329,10 @@ const ManageSupervisors = () => {
           </div>
         </div>
       )}
+      <Notification
+        notifications={notifications}
+        clearNotifications={clearNotifications}
+      />
     </div>
   );
 };
