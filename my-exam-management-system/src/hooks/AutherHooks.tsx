@@ -39,6 +39,6 @@ export const useAdminAuth = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    checkAndRedirect(tokenRep, expiresAt, setToken, navigate, "/admin/login");
+    checkAndRedirect(tokenRep, expiresAt, setToken, navigate, "/adminLogin");
   }, [tokenRep, expiresAt, setToken, navigate]);
 };

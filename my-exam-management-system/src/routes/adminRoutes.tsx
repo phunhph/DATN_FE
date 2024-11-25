@@ -24,11 +24,10 @@ import {
   ManageStatus,
   AdminPage
 } from "../modules/admin/index";
-import Login from "@/modules/admin/Login/Login";
+
 
 const adminRoutes = [
   { path: "", element: <Welcome /> },
-  { path: "login", element: <Login /> },
   { path: "manage-semester", element: <ManageSemester /> },
   { path: "manage-candidates", element: <ManageCandidates /> },
   { path: "detail-candidates", element: <DetailCandidates /> },

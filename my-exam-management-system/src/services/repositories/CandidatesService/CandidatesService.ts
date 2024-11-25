@@ -227,7 +227,8 @@ export const getExamByIdCode = async (id: string, code: string):Promise<ApiCandi
         headers: headers,
       }
     );
-
+    console.log(response);
+    
     return response.data
   } catch (error) {
     if (error instanceof AxiosError && error.response) {

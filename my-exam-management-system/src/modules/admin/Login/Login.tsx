@@ -6,7 +6,7 @@ import "./login.scss";
 import { login } from "@/services/repositories/AutherService/autherService";
 import { useAdminToken } from "@/contexts";
 
-const Login: React.FC = () => {
+const LoginAdmin: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
@@ -148,4 +148,4 @@ const Login: React.FC = () => {
   );
 };
 
-export default Login;
+export default LoginAdmin;
