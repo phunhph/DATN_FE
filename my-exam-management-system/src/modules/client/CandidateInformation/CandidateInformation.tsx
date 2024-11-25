@@ -1,105 +1,117 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import "./CandidateInformation.scss";
 import { CandidatesInformation } from '@interfaces/CandidateInfoInterface/CandidateInfoInterface';
+import useDebounce from '@/hooks/useDebounce';
+import { Notification } from '@/components';
 
-type Props = {}
+const CandidateInformation = () => {
+    const [candidate, setCandidate] = useState<CandidatesInformation | null>(null);
 
-const CandidateInformation = (props: Props) => {
-    const [candidates, setCandidates] = useState<CandidatesInformation[]>([
-        {
-            id: 1,
-            masv: "PH11111",
-            name: "Nguyễn Văn A",
-            dob: "2004 - 12 - 09",
-            address: "Hà Nội",
-            email: "anvph11111@gmail.com",
-            image: "https://i.pinimg.com/736x/bb/e3/02/bbe302ed8d905165577c638e908cec76.jpg"
-        }
-    ]);
+    //thông bóa
+    const [notifications, setNotifications] = useState<Array<{ message: string; isSuccess: boolean }>>([]);
 
-    const [hoveredCandidateId, setHoveredCandidateId] = useState<number | null>(null);
-
-    const cropImageToSquare = (url: string, callback: (croppedImage: string) => void) => {
-        const img = new Image();
-        img.src = url;
-        img.onload = () => {
-            const canvas = document.createElement('canvas');
-            const minSize = Math.min(img.width, img.height);
-            const offsetX = (img.width - minSize) / 2;
-            const offsetY = (img.height - minSize) / 2;
-            canvas.width = minSize;
-            canvas.height = minSize;
-            const ctx = canvas.getContext('2d');
-
-            if (ctx) {
-                ctx.drawImage(img, offsetX, offsetY, minSize, minSize, 0, 0, minSize, minSize);
-                const croppedImage = canvas.toDataURL('image/png');
-                callback(croppedImage);
-            }
-        };
+    const addNotification = (message: string, isSuccess: boolean) => {
+        setNotifications((prev) => [...prev, { message, isSuccess }]);
     };
 
-    const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>, candidateId: number) => {
-        const file = event.target.files && event.target.files[0];
+    const clearNotifications = () => {
+        setNotifications([]);
+    };
+
+    const handleImageUpload = useDebounce((e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        console.log(e)
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
-                if (reader.result) {
-                    cropImageToSquare(reader.result as string, (croppedImage) => {
-                        const updatedCandidates = candidates.map(candidate =>
-                            candidate.id === candidateId ? { ...candidate, image: croppedImage } : candidate
-                        );
-                        setCandidates(updatedCandidates);
-                    });
-                }
+                setCandidate((prevCandidate) => prevCandidate ? { ...prevCandidate, image: reader.result as string } : null);
             };
             reader.readAsDataURL(file);
+
+            // api upload
+
+            //thành công:
+            // addNotification("Tải ảnh lên thành công.", true)
+
+            //thất bại:
+            // addNotification("Tải ảnh lên không thành công. Xin vui lòng thử lại sau.", false)
         }
-    };
+    }, 500)
+
+    useEffect(() => {
+        //api
+        setCandidate({
+            id: 1,
+            masv: "PH11111",
+            name: "Nguyễn Văn A",
+            dob: "2004-12-09",
+            address: "141 Nguyễn Thái Học, quận Ba Đình, Hà Nội",
+            email: "anvph11111@gmail.com",
+            image: "https://mcdn.coolmate.me/image/July2023/gigachad-la-ai-2138_928.jpg"
+        })
+    }, [])
 
     return (
-        <div className='information__container'>
-            <div className="information__title">
-                <h1>Thông tin thí sinh</h1>
-            </div>
-            {candidates.map((candidate) => (
-                <div key={candidate.id} className="detail__item">
-                    <div
-                        className="detail__avatar"
-                        onMouseEnter={() => setHoveredCandidateId(candidate.id)}
-                        onMouseLeave={() => setHoveredCandidateId(null)}
+
+
+        <div className="candidate__container">
+            <div className="candidate__avatar-wrapper">
+                <label htmlFor='avatar' className="candidate__avatar-wrapper-label">
+                    <input
+                        id="avatar"
+                        name="avatar"
+                        className="candidate__avatar-wrapper-input"
+                        type="file"
+                        accept="image/*"
+                        multiple={false}
+                        onChange={handleImageUpload}
                     >
-                        <img src={candidate.image} alt={`Avatar của ${candidate.name}`} />
-                        <div className="overlay">
-                            {hoveredCandidateId === candidate.id && (
-                                <button
-                                    className="change-image-btn"
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        document.getElementById(`upload-${candidate.id}`)?.click();
-                                    }}
-                                >
-                                    Tải ảnh đại diện
-                                </button>
-                            )}
+                    </input>
+                    <div className="candidate__avatar-wrapper-image">
+                        {candidate ?
+                            <img src={candidate.image} alt={candidate.name} ></img>
+                            : <img src="https://static.vecteezy.com/system/resources/previews/004/141/669/non_2x/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg" alt="Tạm thời không có ảnh"></img>
+                        }
+                        <div>
+                            <p>Tải ảnh lên</p>
                         </div>
-                        <input
-                            id={`upload-${candidate.id}`}
-                            type="file"
-                            accept="image/*"
-                            style={{ display: 'none' }}
-                            onChange={(e) => handleImageUpload(e, candidate.id)}
-                        />
                     </div>
-                    <div className="detail__info">
-                        <p>Mã SV: {candidate.masv}</p>
-                        <p>Tên: {candidate.name}</p>
-                        <p>Ngày sinh: {candidate.dob}</p>
-                        <p>Địa chỉ: {candidate.address}</p>
-                        <p>Email: {candidate.email}</p>
-                    </div>
+                </label>
+                <div className="candidate__avatar-wrapper-base-info">
+                    <p>@{candidate?.masv}</p>
                 </div>
-            ))}
+            </div>
+            <div className="candidate__information-wrapper">
+                <h1>Thông tin cơ bản</h1>
+
+                <form>
+                    <div>
+                        <label>Họ và tên:
+                            <input type='text' readOnly defaultValue={candidate?.name}></input>
+                        </label>
+                        <label>Email:
+                            <input type='text' readOnly defaultValue={candidate?.email}></input>
+                        </label>
+                    </div>
+                    <div>
+                        <label htmlFor="date">Ngày sinh:
+                            <input
+                                id="date"
+                                type="date"
+                                readOnly
+                                defaultValue={candidate?.dob}
+                            />
+                        </label>
+                        <label>Địa chỉ:
+                            <input type='text' readOnly defaultValue={candidate?.address}></input>
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <Notification
+                notifications={notifications}
+                clearNotifications={clearNotifications}
+            />
         </div>
     );
 }

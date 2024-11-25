@@ -1,4 +1,5 @@
 import React from 'react';
+import './Pagination.scss';
 
 interface PaginationProps {
   totalItems: number;
@@ -14,18 +15,41 @@ export const Pagination: React.FC<PaginationProps> = ({
   itemsPerPage,
   onPageChange,
 }) => {
-  // Calculate showing range
-  const startIndex = (currentPage - 1) * itemsPerPage + 1;
-  const endIndex = Math.min(currentPage * itemsPerPage, totalItems);
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
+  // Calculate the range of pages to show
+  const pageNumbers = () => {
+    if (totalPages <= 5) {
+      // Show all pages if there are 5 or fewer
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+
+    if (currentPage <= 2) {
+      // If the current page is 1 or 2, show the first 5 pages
+      return [1, 2, 3, 4, 5];
+    }
+
+    if (currentPage >= totalPages - 1) {
+      // If the current page is the last page or second-to-last, show the last 5 pages
+      return [totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
+    }
+
+    // Show 2 pages before and 2 pages after the current page
+    return [currentPage - 2, currentPage - 1, currentPage, currentPage + 1, currentPage + 2];
+  };
+
+  const pageNumbersToDisplay = pageNumbers();
+  const startIndex = (currentPage - 1) * itemsPerPage + 1;
+  const endIndex = Math.min(currentPage * itemsPerPage, totalItems);
 
   return (
     <div className="pagination-container">
       <div className="pagination-info">
-        <p>Showing {startIndex} to {endIndex} of {totalItems} entries</p>
+        <p>
+          Showing {startIndex} to {endIndex} of {totalItems} entries
+        </p>
       </div>
-      
+
       <div className="pagination">
         <button
           onClick={() => onPageChange(currentPage - 1)}
@@ -33,13 +57,13 @@ export const Pagination: React.FC<PaginationProps> = ({
         >
           &laquo;
         </button>
-        {Array.from({ length: totalPages }, (_, i) => (
+        {pageNumbersToDisplay.map((page) => (
           <button
-            key={i + 1}
-            onClick={() => onPageChange(i + 1)}
-            className={currentPage === i + 1 ? 'active' : ''}
+            key={page}
+            onClick={() => onPageChange(page)}
+            className={currentPage === page ? 'activated-pagi' : ''}
           >
-            {i + 1}
+            {page}
           </button>
         ))}
         <button

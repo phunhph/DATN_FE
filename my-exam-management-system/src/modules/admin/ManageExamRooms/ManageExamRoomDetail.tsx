@@ -8,7 +8,7 @@ import { ExamRoom } from "@interfaces/ExamRoomInterfaces/ExamRoomInterfaces";
 import { ErrorExamRoom } from "@interfaces/ExamRoomInterfaces/ErrorExamRoomInterfaces";
 import {
   editExamRoom,
-  getExamRoomDetail,
+  // getExamRoomDetail,
 } from "@/services/repositories/ExamRoomService/ExamRoomService";
 
 interface RoomDetailData {

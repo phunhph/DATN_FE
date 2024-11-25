@@ -8,7 +8,7 @@ type ButtonProps = {
 
 const Button: React.FC<ButtonProps> = ({ className, children, ...props}) => {
   return (
-    <button {...props} className={`submit-btn ${className}`}>
+    <button {...props} className={`base-btn ${className}`}>
       {children}
     </button>
   );

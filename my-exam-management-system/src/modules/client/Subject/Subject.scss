@@ -1,3 +1,4 @@
+@use "@scss/mixin.scss" as m;
 .Subject__Client {
   width: 100%;
   height: auto;
@@ -7,65 +8,26 @@
     font-weight: bold;
     font-size: 20px;
     margin: 10px 0 10px 0;
+    color: var(--text);
   }
 }
-.group__content {
-  width: 100%;
-  height: auto;
-  border: 1px solid black;
-  padding: 1.1% 0.6%;
-  background-color: #d9d9d9;
-  border-radius: 10px;
-  display: grid;
-  grid-template-columns: 23% 23% 23% 23%;
-  grid-auto-rows: 1fr;
-  column-gap: 1.1%;
-  row-gap: 3%;
-  justify-content: center;
-  align-items: stretch;
-}
-.group__item {
-  background-color: #d9d9d9;
-  font-weight: bold;
-  font-size: 18px;
-  border: 1px solid black;
-  border-radius: 10px;
-  padding: 10px;
-  p {
-    margin-top: 10px;
+
+
+
+@include m.responsive-to(xl){
+  .group__contentt {
+    grid-template-columns: repeat(3, 1fr);
   }
 }
-.subject-group__button {
-  background-color: #80ad78;
-  border: 1px solid #80ad78;
-  border-radius: 10px;
-  padding: 4px 30px;
-  //2 cái trên-dưới //trái-phải
-  //4 cái trên phải dưới trái
-  margin: 10px 0 0 0;
-  font-weight: normal;
-  color: #f9f9f9;
-}
-.cvo-progress {
-  display: flex;
-  height: 7px;
-  width: 100%;
+
+@include m.responsive-to(lg){
+  .group__contentt {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
-.cvo-block-title-underline {
-  height: 100%;
-}
-
-.completed {
-  background-color: #f05a66;
-  width: 50%;
-  border-top-left-radius: 25px;
-  border-bottom-left-radius: 25px;
-}
-
-.remaining {
-  background-color: #ccc;
-  width: 50%;
-  border-top-right-radius: 25px;
-  border-bottom-right-radius: 25px;
+@include m.responsive-to(sm){
+  .group__contentt {
+    grid-template-columns: repeat(1, 1fr);
+  }
 }

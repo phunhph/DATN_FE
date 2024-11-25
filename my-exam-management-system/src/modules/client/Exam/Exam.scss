@@ -1,28 +1,33 @@
+@use "@scss/mixin.scss" as m;
 .exam {
   &__container {
     flex-grow: 1;
   }
   &__title {
-    border-bottom: 0.0625rem solid black;
     h1 {
       font-size: 2rem;
       font-weight: bold;
       text-align: center;
+      color:var(--text);
     }
   }
   &__detail {
     margin-top: 2rem;
     margin-bottom: 2rem;
     display: flex;
+    gap:2rem;
+    position: relative;
     &-left {
       width: 75%;
     }
     &-right {
+      margin-top: 2rem;
       width: 25%;
       position: sticky;
       top: 1rem;
-      max-height: 90vh;
+      max-height:800px;
       overflow-y: auto;
+      align-items: center;
     }
   }
   &__handin {
@@ -30,16 +35,157 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    button {
-      padding: 0.3rem;
-      background-color: #1EBA1E;
-      transition: background-color 0.1s linear;
-      color: white;
-      border: none;
-      border-radius: 100px;
+  }
+  &__reading{
+    margin-top: 2rem;
+    color: var(--text);
+    p {
+      margin: 1rem 0;
     }
-    button:hover{
-      background-color: #16a516;
+    &-answer {
+      margin: 2rem 0;
+      max-width: 1000px;
+      display: flex;
+      justify-content: space-between;
+      color: var(--text);
     }
   }
+  &__audio {
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap:2rem;
+    color: var(--text);
+    &-button{
+      color: black;
+      width: 60px;
+    }
+    div {
+      display: flex;
+      align-items: center;
+      position: relative;
+      span {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        pointer-events: none;
+      }
+    }
+    &-progress {
+      width: 200px;
+      height: 24px;
+      display: flex;
+      border-radius: 2px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25) inset;
+      transition: width 0.2s ease-out;
+      &::-webkit-progress-bar {
+        background-color: var(--secondary70);
+        border-radius: 2px;
+      }
+      &::-webkit-progress-value {
+        background-color: var(--accent); 
+        border-radius: 2px;
+        transition: width 0.3s ease-out;
+      }
+    }
+  }
+  &__submit {
+    height: 90svh;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.5s ease-out;
+    span {
+      color: var(--text);
+    }
+    div {
+      display: flex;
+      gap: 2rem;
+      button:first-child {
+        background-color: gray;
+        &:hover{
+          box-shadow: none;
+        }
+      }
+    }
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  }
+}
+
+@include m.responsive-to(xl){
+   .exam{
+    &__detail {
+      display: block;
+      &-left{
+        width: 100%;
+      }
+      &-right {
+        position: sticky;
+        bottom: 1rem;
+        width: 100%;
+        margin-top: 0;
+        padding: 8px 0;
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        background-color: rgba($color: var(--text10), $alpha: 0.1);
+        backdrop-filter: blur(10px) opacity(0.7);
+      }
+    }
+    &__handin {
+      margin-top: 0;
+    }
+   }
+}
+
+@include m.responsive-to(lg){
+  .exam{
+    &__detail {
+      display: block;
+      &-left{
+        width: 100%;
+      }
+      &-right {
+        position: sticky;
+        bottom: 1rem;
+        width: 100%;
+        margin-top: 0;
+        padding: 8px 0;
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        background-color: rgba($color: var(--text10), $alpha: 0.1);
+        backdrop-filter: blur(10px) opacity(0.7);
+      }
+    }
+    &__handin {
+      margin-top: 0;
+    }
+   }
+}
+
+@include m.responsive-to(md){
+  .exam{
+    &__detail {
+      &-right {
+        flex-direction: column;
+        bottom: 0.25rem;
+      }
+    }
+    &__audio{
+      flex-direction: column;
+      gap:0.25rem;
+    }
+   }
 }
