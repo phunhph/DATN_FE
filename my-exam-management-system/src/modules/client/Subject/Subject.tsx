@@ -1,11 +1,13 @@
 import { useNavigate } from 'react-router-dom';
 import './Subject.scss'
 import Slideshow from '@components/Slideshow/Slideshow';
+import { Button, CVO, GridItem } from '@/components';
 
 const Subject = () => {
 
     const navigate = useNavigate();
-    const handleClick = () => {
+    const navToExamById = (id:string) => {
+        console.log(id)
         navigate('/client/exam');
     };
     const images = [
@@ -17,77 +19,77 @@ const Subject = () => {
     return (
         <div className="Subject__Client">
             <div className='Subject__image'>
-                <Slideshow images={images} />
+                <Slideshow/>
             </div>
             {/*  */}
             <div className='Subject__group'>
                 <h2>Môn thi</h2>
-                <div className='group__content'>
-                    <div className='group__item'>
+                <div className='group__contentt'>
+                <GridItem className='group__itemm'>
                         <p>Tên kì thi</p>
                         <p>Tên Môn thi: <span className='item__span'>text</span></p>
                         <p>Mã Môn thi:<span className='item__span'>text</span></p>
                         <p>Số câu hỏi:<span className='item__span'>text</span></p>
-                        <p>Thời gian bắt đầu:<span className='item__span'>text</span></p>
-                        <p>Thời gian kết thúc:<span className='item__span'>text</span></p>
+                        <p>Thời gian bắt đầu:</p>
+                        <span className='item__span'> 03/11/2024</span>
+                        <p>Thời gian kết thúc:</p>
+                        <span className='item__span'> 03/11/2024</span>
                         <p>Số lượng môn thi:<span className='item__span'>text</span></p>
-                        <div className="cvo-progress">
-                            <div className="cvo-block-title-underline completed"></div>
-                            <div className="cvo-block-title-underline remaining"></div>
-                        </div>
-                        <button className='subject-group__button' onClick={handleClick}>
-                            Làm bài thi
-                        </button>
-                    </div>
-                    <div className='group__item'>
+                        <CVO percentage={50}></CVO>
+                        <Button onClick={() => navToExamById("idhere")}>Làm bài thi</Button>
+                    </GridItem>
+                    <GridItem className='group__itemm'>
                         <p>Tên kì thi</p>
                         <p>Tên Môn thi: <span className='item__span'>text</span></p>
                         <p>Mã Môn thi:<span className='item__span'>text</span></p>
                         <p>Số câu hỏi:<span className='item__span'>text</span></p>
-                        <p>Thời gian bắt đầu:<span className='item__span'>text</span></p>
-                        <p>Thời gian kết thúc:<span className='item__span'>text</span></p>
+                        <p>Thời gian bắt đầu:</p>
+                        <span className='item__span'> 03/11/2024</span>
+                        <p>Thời gian kết thúc:</p>
+                        <span className='item__span'> 03/11/2024</span>
                         <p>Số lượng môn thi:<span className='item__span'>text</span></p>
-                        <div className="cvo-progress">
-                            <div className="cvo-block-title-underline completed"></div>
-                            <div className="cvo-block-title-underline remaining"></div>
-                        </div>
-                        <button className='subject-group__button' onClick={handleClick}>
-                            Làm bài thi
-                        </button>
-                    </div>
-                    <div className='group__item'>
+                        <CVO percentage={50}></CVO>
+                        <Button onClick={() => navToExamById("idhere")}>Làm bài thi</Button>
+                    </GridItem>
+                    <GridItem className='group__itemm'>
                         <p>Tên kì thi</p>
                         <p>Tên Môn thi: <span className='item__span'>text</span></p>
                         <p>Mã Môn thi:<span className='item__span'>text</span></p>
                         <p>Số câu hỏi:<span className='item__span'>text</span></p>
-                        <p>Thời gian bắt đầu:<span className='item__span'>text</span></p>
-                        <p>Thời gian kết thúc:<span className='item__span'>text</span></p>
+                        <p>Thời gian bắt đầu:</p>
+                        <span className='item__span'> 03/11/2024</span>
+                        <p>Thời gian kết thúc:</p>
+                        <span className='item__span'> 03/11/2024</span>
                         <p>Số lượng môn thi:<span className='item__span'>text</span></p>
-                        <div className="cvo-progress">
-                            <div className="cvo-block-title-underline completed"></div>
-                            <div className="cvo-block-title-underline remaining"></div>
-                        </div>
-                        <button className='subject-group__button' onClick={handleClick}>
-                            Làm bài thi
-                        </button>
-                    </div>
-                    <div className='group__item'>
+                        <CVO percentage={50}></CVO>
+                        <Button onClick={() => navToExamById("idhere")}>Làm bài thi</Button>
+                    </GridItem>
+                    <GridItem className='group__itemm'>
                         <p>Tên kì thi</p>
                         <p>Tên Môn thi: <span className='item__span'>text</span></p>
                         <p>Mã Môn thi:<span className='item__span'>text</span></p>
                         <p>Số câu hỏi:<span className='item__span'>text</span></p>
-                        <p>Thời gian bắt đầu:<span className='item__span'>text</span></p>
-                        <p>Thời gian kết thúc:<span className='item__span'>text</span></p>
+                        <p>Thời gian bắt đầu:</p>
+                        <span className='item__span'> 03/11/2024</span>
+                        <p>Thời gian kết thúc:</p>
+                        <span className='item__span'> 03/11/2024</span>
                         <p>Số lượng môn thi:<span className='item__span'>text</span></p>
-                        <div className="cvo-progress">
-                            <div className="cvo-block-title-underline completed"></div>
-                            <div className="cvo-block-title-underline remaining"></div>
-                        </div>
-
-                        <button className='subject-group__button' onClick={handleClick}>
-                            Làm bài thi
-                        </button>
-                    </div>
+                        <CVO percentage={50}></CVO>
+                        <Button onClick={() => navToExamById("idhere")}>Làm bài thi</Button>
+                    </GridItem>
+                    <GridItem className='group__itemm'>
+                        <p>Tên kì thi</p>
+                        <p>Tên Môn thi: <span className='item__span'>text</span></p>
+                        <p>Mã Môn thi:<span className='item__span'>text</span></p>
+                        <p>Số câu hỏi:<span className='item__span'>text</span></p>
+                        <p>Thời gian bắt đầu:</p>
+                        <span className='item__span'> 03/11/2024</span>
+                        <p>Thời gian kết thúc:</p>
+                        <span className='item__span'> 03/11/2024</span>
+                        <p>Số lượng môn thi:<span className='item__span'>text</span></p>
+                        <CVO percentage={50}></CVO>
+                        <Button onClick={() => navToExamById("idhere")}>Làm bài thi</Button>
+                    </GridItem>
 
                 </div>
             </div>

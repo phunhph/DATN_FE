@@ -7,7 +7,7 @@ import { ToggleSwitch } from "../ToggleSwitch/ToggleSwitch";
 interface TableAction {
   name: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onClick?: (type: "add" | "edit" | "file" | string | any| null) => void;
+  onClick?: (type: "add" | "edit" | "file" | string | any | null) => void;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -125,7 +125,7 @@ export const Table = <T extends Record<string, any>>({
         />
       );
     } else if (key === "image") {
-      return <img src={value} alt="Image" className="table-image" />;
+      return <img src={value.image} alt="Image" className="table-image" />;
     } else {
       return highlightText(String(value[key]));
     }
@@ -137,18 +137,27 @@ export const Table = <T extends Record<string, any>>({
         <h1>{tableName}</h1>
         <div className="table-button-group">
           {action_upload && (
-            <button className="table-button" onClick={() => action_upload.onClick?.('file')}>
+            <button
+              className="table-button"
+              onClick={() => action_upload.onClick?.("file")}
+            >
               <img src="/Lấy file.svg" alt="Upload file" />
             </button>
           )}
           {action_dowload && (
-            <button className="table-button" onClick={() => action_dowload.onClick?.('')}>
+            <button
+              className="table-button"
+              onClick={() => action_dowload.onClick?.("")}
+            >
               <img src="/Tải xuống.svg" alt="Tải xuống" />
               Tải xuống
             </button>
           )}
           {actions_add && (
-            <button className="table-button" onClick={() => actions_add.onClick?.('add')}>
+            <button
+              className="table-button"
+              onClick={() => actions_add.onClick?.("add")}
+            >
               {actions_add.name}
             </button>
           )}
@@ -210,7 +219,11 @@ export const Table = <T extends Record<string, any>>({
                     {actions_detail && (
                       <button
                         className="table-button"
-                        onClick={() => actions_detail.onClick?.(item.id)}
+                        onClick={() =>
+                          actions_detail.onClick?.(
+                            item.id != undefined ? item.id : item.idcode
+                          )
+                        }
                       >
                         {actions_detail.name}
                       </button>

@@ -34,7 +34,27 @@ export interface QuestionDetailResponse {
   current_version: Question[];
 }
 
-
 export interface ApiQuestionDetailResponse extends BaseResponse {
   data?: QuestionDetailResponse;
+}
+export interface ApiQuestionResponse {
+    data: Question[];
+    status: string;
+    success: boolean;
+    warning?: string;
+}
+
+export interface APIresultOfCandidate {
+    timeSpent: number;
+    answers: {
+        multipleChoice: {
+            [key:string]: number;
+        }
+        reading: {
+            [key:string]: number;
+        }
+        listening: {
+            [key:string]: number;
+        }
+    }
 }

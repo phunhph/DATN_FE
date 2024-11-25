@@ -1,67 +1,85 @@
-import { Notification, PageTitle, UploadFile,Table } from "@/components";
+import { Notification, PageTitle, UploadFile, Table } from "@/components";
 import { Exam } from "@/interfaces/ExamInterface/ExamInterface";
 import React, { useEffect, useState } from "react";
 import AsyncSelect from "react-select/async";
 import "./ManageCandidates.scss";
-import { Candidate } from "@/interfaces/CandidateInterface/CandidateInterface";
+import {
+  Candidate,
+  CreateCandidate,
+} from "@/interfaces/CandidateInterface/CandidateInterface";
 import { ErrorCandidate } from "@/interfaces/CandidateInterface/ErrorCandidateInterface";
 import { useNavigate } from "react-router-dom";
+import {
+  getAllWithStatusTrue,
+  CandidateInExamRoom,
+  addCandidate,
+} from "@/services/repositories/CandidatesService/CandidatesService";
+import { getExamRoomsInExams } from "@/services/repositories/ExamRoomService/ExamRoomService";
 
 const ManageCandidates: React.FC = () => {
-  const [exams, setExams] = useState<Exam[]>([
-    {
-      id: 1,
-      Name: "Kỳ thi Bảy viên ngọc rồng",
-      TimeStart: "2024-06-01",
-      TimeEnd: "2024-06-03",
-      Status: true,
-    },
-    {
-      id: 2,
-      Name: "Kỳ thi Thuỷ thủ mặt trăng",
-      TimeStart: "2024-06-01",
-      TimeEnd: "2024-06-03",
-      Status: true,
-    },
-  ]);
-  const [rooms, setRooms] = useState<any>([
-    {
-      id: 1,
-      Name: "Phòng điều hoà",
-    },
-    {
-      id: 2,
-      Name: "Phòng quạt trần",
-    },
-  ]);
+  const title = [
+    "Mã sinh viên",
+    "Tên",
+    "Ảnh",
+    "Ngày sinh",
+    "Nơi sinh",
+    "Hành động",
+  ];
 
-  const [candidates, setCandidates] = useState<Candidate[]>([
-    {
-      id: "1",
-      sbd: "PH111",
-      name: "Nguyễn Văn A",
-      image: "https://picsum.photos/100/100",
-      dob: "2004-12-09",
-      address: "Hà Nội",
-      status: true,
-    },
-    {
-      id: "2",
-      sbd: "PH112",
-      name: "Nguyễn Văn B",
-      image: "https://picsum.photos/100/100",
-      dob: "2004-12-09",
-      address: "Hà Nội",
-      status: true,
-    },
-  ]);
-  const [formData, setFormData] = useState<Candidate>({
-    id: "",
-    sbd: "",
+  const [exams, setExams] = useState<Exam[]>([]);
+
+  const handleChangeOptionExams = (id: string, exam_room_id?: string) => {
+    const callAPI = async () => {
+      const result = await getExamRoomsInExams(id);
+      if (result.success) {
+        const roomsData = result.data.data;
+        setRooms(roomsData);
+        if (exam_room_id) {
+          setSelectedRoomId(exam_room_id);
+          handleChangeRoom(exam_room_id);
+        } else {
+          if (roomsData.length > 0) {
+            setSelectedRoomId(roomsData[0].id);
+            handleChangeRoom(roomsData[0].id);
+          } else {
+            handleChangeRoom("");
+          }
+        }
+      }
+    };
+    callAPI();
+  };
+
+  const [rooms, setRooms] = useState<any>([]);
+
+  const [candidates, setCandidates] = useState<Candidate[]>([]);
+  const handleChangeRoom = (id: string) => {
+    if (id != "") {
+      const callAPI = async () => {
+        const result = await CandidateInExamRoom(id);
+        if (result.success) {
+          if (result.data.data.length > 0) {
+            setCandidates(result.data.data);
+          } else {
+            setCandidates([]);
+          }
+        }
+      };
+      callAPI();
+    } else {
+      setRooms([]);
+      setCandidates([]);
+    }
+  };
+
+  const [formData, setFormData] = useState<CreateCandidate>({
+    idcode: "",
     name: "",
     image: "",
     dob: "",
     address: "",
+    email: "",
+    status: "",
   });
 
   const loadSemesterOptions = (
@@ -90,26 +108,38 @@ const ManageCandidates: React.FC = () => {
   };
 
   const [selectedExamId, setSelectedExamId] = useState<string>("");
+  const [selectedRoomId, setSelectedRoomId] = useState<string>("");
 
   const examOptions = exams.map((exam) => ({
-    label: exam.Name,
+    label: exam.name,
     value: exam.id,
   }));
   const roomOptions = rooms.map((room: any) => ({
-    label: room.Name,
+    label: room.name,
     value: room.id,
   }));
-  const firstOption = examOptions[0];
-  const firstRoomOption = roomOptions[0];
+  useEffect(() => {
+    const initializeData = async () => {
+      const result = await getAllWithStatusTrue();
+      if (result.success && result.data) {
+        setExams(result.data.data);
+
+        const firstExamOption = result.data.data[0];
+        if (firstExamOption) {
+          setSelectedExamId(firstExamOption.id);
+          handleChangeOptionExams(firstExamOption.id);
+        }
+      }
+    };
+
+    initializeData();
+  }, []);
 
   useEffect(() => {
-    if (firstOption) {
-      setSelectedExamId(firstOption.value);
+    if (selectedExamId) {
+      handleChangeOptionExams(selectedExamId);
     }
-    if (firstRoomOption) {
-      setSelectedExamId(firstRoomOption.value);
-    }
-  }, [firstOption, firstRoomOption]);
+  }, [selectedExamId]);
 
   const [modalType, setModalType] = useState<"add" | "edit" | "file">("add");
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -123,12 +153,13 @@ const ManageCandidates: React.FC = () => {
     if (type === "add") {
       setEditMode(false);
       setFormData({
-        id: "",
-        sbd: "",
+        idcode: "",
         name: "",
         image: "",
         dob: "",
         address: "",
+        email: "",
+        status: "",
       });
     }
   };
@@ -149,13 +180,9 @@ const ManageCandidates: React.FC = () => {
   const navigate = useNavigate();
 
   const handleDetailClick = (id: string) => {
-    const candidate = candidates.find((c) => c.id === id);
+    const candidate = candidates.find((c) => c.idcode === id);
     if (candidate) {
-      navigate(
-        `/admin/detail-candidates?${new URLSearchParams(
-          candidate as any
-        ).toString()}`
-      );
+      navigate(`/admin/detail-candidates?idcode=${id}`);
     } else {
       console.error("Candidate not found");
     }
@@ -172,27 +199,73 @@ const ManageCandidates: React.FC = () => {
     const errors: ErrorCandidate = {};
 
     if (!formData.name) errors.name = "Tên không được để trống.";
-    if (!formData.sbd) errors.sbd = "Số báo danh không được để trống.";
+    if (!formData.idcode) errors.sbd = "Số báo danh không được để trống.";
     if (!formData.image) errors.image = "Ảnh không được để trống.";
     if (!formData.dob) errors.dob = "Ngày sinh không được để trống.";
     if (!formData.address) errors.address = "Địa chỉ không được để trống.";
+    if (!formData.email) errors.email = "Địa chỉ email không được để trống.";
 
     setErrors(errors);
     console.log("Errors:", errors);
     return Object.keys(errors).length === 0;
   };
+  function generateRandomCode() {
+    const letters = "abcdefghijklmnopqrstuvwxyz";
+    const randomLetters = Array.from({ length: 6 }, () =>
+      letters.charAt(Math.floor(Math.random() * letters.length))
+    ).join("");
+
+    const randomNumber = Math.floor(Math.random() * 100)
+      .toString()
+      .padStart(2, "0");
+
+    return randomLetters + randomNumber;
+  }
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     if (validate()) {
-      alert("Thêm thí sinh thành công!");
-      setFormData({
-        id: "",
-        sbd: "",
-        name: "",
-        image: "",
-        dob: "",
-        address: "",
-      });
+      const callAPI = async () => {
+        const newFormData = new FormData();
+
+        newFormData.append("idcode", formData.idcode);
+        newFormData.append("name", formData.name);
+        newFormData.append("image", formData.image);
+        newFormData.append("dob", formData.dob);
+        newFormData.append("address", formData.address);
+        newFormData.append("email", formData.email);
+        newFormData.append("password", generateRandomCode());
+        newFormData.append("status", "true");
+
+        const result = await addCandidate(newFormData);
+        console.log("ket qua", result);
+
+        if (result.success) {
+          const newCandidate = result.data.candidate;
+
+          setSelectedExamId(newCandidate.exam_id);
+          handleChangeOptionExams(
+            newCandidate.exam_id,
+            newCandidate.exam_room_id
+          );
+          console.log("new: ", newCandidate);
+          alert("Thêm thí sinh thành công!");
+          setFormData({
+            idcode: "",
+            name: "",
+            image: "",
+            dob: "",
+            address: "",
+            email: "",
+            status: "",
+          });
+          // setCandidates((prevCandidates) => [...prevCandidates, newCandidate]);
+        }
+      };
+      callAPI();
+      console.log("Form Data:", formData);
+
       closeModal();
     }
   };
@@ -210,10 +283,9 @@ const ManageCandidates: React.FC = () => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const imageUrl = URL.createObjectURL(file);
       setFormData((prevFormData) => ({
         ...prevFormData,
-        image: imageUrl,
+        image: file,
       }));
     }
   };
@@ -228,10 +300,12 @@ const ManageCandidates: React.FC = () => {
     setNotifications([]);
   };
 
-    const handleUpdateStatus = (id: string|number) => {
+  const handleUpdateStatus = (id: string | number) => {
     setCandidates((prevCandidates) =>
       prevCandidates.map((candidate) =>
-        candidate.id === id ? { ...candidate, Status: !candidate.status } : candidate
+        candidate.id === id
+          ? { ...candidate, Status: !candidate.status }
+          : candidate
       )
     );
     addNotification(`Trạng thái của môn thi đã được thay đổi.`, true);
@@ -249,7 +323,6 @@ const ManageCandidates: React.FC = () => {
       <PageTitle theme="light">Quản lý thí sinh</PageTitle>
       <div className="candidate__select">
         <div className="candidate__select-semester">
-         
           <h2>Kỳ thi</h2>
           <AsyncSelect
             cacheOptions
@@ -260,6 +333,9 @@ const ManageCandidates: React.FC = () => {
             )}
             onChange={(selectedOption) => {
               setSelectedExamId(selectedOption?.value || "");
+              if (selectedOption?.value) {
+                handleChangeOptionExams(selectedOption?.value);
+              }
             }}
           />
         </div>
@@ -269,13 +345,20 @@ const ManageCandidates: React.FC = () => {
           cacheOptions
           loadOptions={loadRoomOptions}
           defaultOptions={roomOptions}
-          value={roomOptions.find((option) => option.value === selectedExamId)}
+          value={
+            roomOptions.length > 0
+              ? roomOptions.find((option) => option.value === selectedRoomId)
+              : ""
+          }
           onChange={(selectedRoomOption) => {
-            setSelectedExamId(selectedRoomOption?.value || "");
+            setSelectedRoomId(selectedRoomOption?.value || "");
+            handleChangeRoom(selectedRoomOption?.value);
+            console.log("selectedRoomOption: " + selectedRoomOption?.value);
           }}
         />
       </div>
       <Table
+        title={title}
         tableName="Thí sinh"
         data={candidates}
         actions_add={{ name: "Thêm mới", onClick: () => openModal("add") }}
@@ -308,20 +391,26 @@ const ManageCandidates: React.FC = () => {
               {modalType === "file" ? (
                 <UploadFile onFileSelect={handleFileSelect} />
               ) : (
-                <form className="modal__form" onSubmit={handleSubmit}>
+                <form
+                  className="modal__form"
+                  onSubmit={handleSubmit}
+                  encType="multipart/form-data"
+                >
                   <div className="modal__firstline-add">
                     <label className="modal__label">
                       Mã thí sinh: <br />
                       <input
                         type="text"
-                        name="sbd"
+                        name="idcode"
                         className="modal__input"
-                        value={formData.sbd}
+                        value={formData.idcode}
                         onChange={handleChange}
                         placeholder="Nhập số báo danh"
                         readOnly={editMode}
                       />
-                      {errors.sbd && <p className="error">{errors.sbd}</p>}
+                      {errors.idcode && (
+                        <p className="error">{errors.idcode}</p>
+                      )}
                     </label>
                     <label className="modal__label">
                       Tên thí sinh: <br />
@@ -381,6 +470,19 @@ const ManageCandidates: React.FC = () => {
                     </label>
                   </div>
                   <div className="modal__firstline-add">
+                    <label className="modal__label">
+                      Email: <br />
+                      <input
+                        type="text"
+                        name="email"
+                        className="modal__input"
+                        value={formData.email}
+                        onChange={handleChange}
+                        placeholder="Nhập địa chỉ"
+                        readOnly={editMode}
+                      />
+                      {errors.email && <p className="error">{errors.email}</p>}
+                    </label>
                     <label className="modal__label">
                       Địa chỉ: <br />
                       <input

@@ -1,3 +1,4 @@
+@use "@scss/mixin.scss" as m;
 .Home__Client {
   width: 100%;
   height: auto;
@@ -8,18 +9,18 @@
   }
 }
 .Home__group {
-  h1 {
+  h2 {
     font-weight: bold;
     font-size: 20px;
     margin: 10px 0 10px 0;
+    color: var(--text);
   }
 }
 .group__contentt {
   width: 100%;
-  height: auto;
   border-radius: 10px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   grid-auto-rows: 1fr;
   column-gap: 1.1%;
   row-gap: 3%;
@@ -27,11 +28,13 @@
   align-items: stretch;
 }
 .group__itemm {
+  height: fit-content;
   border-radius: 10px;
   padding: 10px;
-  background-color: #fff;
+  color: var(--text);
+  background-color: var(--secondary70);
   border: 2px solid transparent;
-  box-shadow: 0 4px 4px 2px #c2d8c2;
+  cursor: auto;
   p {
     font-weight: bold;
     font-size: 18px;
@@ -41,23 +44,42 @@
       font-size: 1rem;
     }
   }
+  & .base-btn{
+    margin-top: 1rem;
+    &:hover{
+      transition: transform 0.2s ease;
+      transform: translateY(-4px);
+    }
+  }
   &:hover{
-    border: 2px solid #1EBA1E;
+    border-color: transparent;
   }
 }
-.client-group__button {
-  border-radius: 10px;
-  padding: 0.25rem 2rem;
-  margin-top: 1rem;
-  width: auto;
-  height: auto;
-  font-weight: normal;
-  color: #f9f9f9;
-  border:none;
-  border-radius: 100px;
-  background-color: #1EBA1E;
-  transition: background-color 0.1s linear;
-  &:hover{
-    background-color: #16a516;
+
+.cvo-progress {
+  display: flex;
+  height: 7px;
+  width: 100%;
+}
+
+.cvo-block-title-underline {
+  height: 100%;
+}
+
+@include m.responsive-to(xl){
+  .group__contentt {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@include m.responsive-to(lg){
+  .group__contentt {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@include m.responsive-to(sm){
+  .group__contentt {
+    grid-template-columns: repeat(1, 1fr);
   }
 }
