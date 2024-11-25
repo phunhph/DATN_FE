@@ -5,7 +5,9 @@ import {
   Exam,
 } from "@/interfaces/ExamInterface/ExamInterface";
 import {
+  ApiCandidateInFoResponse,
   ApiCandidateResponse,
+  ApiCandidateResponse__,
   Candidate,
   CreateCandidate,
 } from "@/interfaces/CandidateInterface/CandidateInterface";
@@ -199,6 +201,94 @@ export const addCandidate = async (data: CreateCandidate) => {
         success: false,
         message: generalError,
         data: [],
+      };
+    }
+  }
+};
+
+export const getExamByIdCode = async (id: string, code: string):Promise<ApiCandidateResponse__ > => {
+  try {
+    const token = localStorage.getItem("token");
+   
+    const data = {
+      "id_subject": id,
+      "idCode": code
+  }
+
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "multipart/form-data",
+    };
+
+    const response: AxiosResponse<ApiCandidateResponse__> = await instance.post(
+      `/api/client/exam`,
+      data,
+      {
+        headers: headers,
+      }
+    );
+    console.log(response);
+    
+    return response.data
+  } catch (error) {
+    if (error instanceof AxiosError && error.response) {
+      const { data } = error.response;
+      console.log(data);
+      const errorMessage = formatWarningMessage(data.warning);
+      return {
+        success: false,
+        message: errorMessage,
+       status:500,
+      };
+    } else {
+      const generalError =
+        "An unknown error occurred while adding exam subject.";
+
+      return {
+        success: false,
+        message: generalError,
+        status:500,
+      };
+    }
+  }
+}
+
+export const CandidateById = async (
+  id: string
+): Promise<ApiCandidateInFoResponse> => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+
+    const response: AxiosResponse<ApiCandidateInFoResponse> = await instance.get(
+      `/api/client/info/${id}`,
+      {
+        headers: headers,
+      }
+    );
+
+    return response.data;
+      
+  } catch (error) {
+    if (error instanceof AxiosError && error.response) {
+      const { data } = error.response;
+      const errorMessage = `${data.message || "Error occurred"}`;
+
+      return {
+        success: false,
+        message: errorMessage,
+        status: 500,
+      };
+    } else {
+      const generalError = "An unknown error occurred while fetching exams.";
+
+      return {
+        success: false,
+        message: generalError,
+        status: 500,
       };
     }
   }

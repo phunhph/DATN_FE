@@ -3,12 +3,12 @@ import "./ManageSemester.scss";
 import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { SemesterFormMode, SemesterType } from "./Semester.type";
-import useAuth from '@hooks/AutherHooks';
+import {useAdminAuth} from '@hooks/AutherHooks';
 import { addSemester, getAllSemester, removeSemester, updateSemester } from "@/services/repositories/SemesterServices/SemesterServices";
 import { Semester } from "@/interfaces/SemesterInterface/SemestertInterface";
 
 const ManageSemester = () => {
-  useAuth();
+  useAdminAuth();
   const [openForm, setOpenForm] = useState<boolean>(false);
   const [animateOut, setAnimateOut] = useState<boolean>(false);
   const [formMode, setFormMode] = useState<SemesterFormMode>("add");

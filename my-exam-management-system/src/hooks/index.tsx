@@ -1,2 +1,2 @@
-import useAuth from "./AutherHooks"
-export {useAuth}
+import {useAdminAuth,useClientAuth} from "./AutherHooks"
+export {useAdminAuth,useClientAuth}
