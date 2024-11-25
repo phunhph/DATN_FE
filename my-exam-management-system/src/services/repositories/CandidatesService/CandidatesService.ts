@@ -205,11 +205,10 @@ export const addCandidate = async (data: CreateCandidate) => {
   }
 };
 
-export const getExamByIdCode = async (id: string, code: string) => {
+export const getExamByIdCode = async (id: string, code: string):Promise<ApiCandidateResponse__ > => {
   try {
     const token = localStorage.getItem("token");
-    console.log(id);
-    
+   
     const data = {
       "id_subject": id,
       "idCode": code
@@ -237,7 +236,7 @@ export const getExamByIdCode = async (id: string, code: string) => {
       return {
         success: false,
         message: errorMessage,
-        data: [],
+       status:500,
       };
     } else {
       const generalError =
@@ -246,7 +245,7 @@ export const getExamByIdCode = async (id: string, code: string) => {
       return {
         success: false,
         message: generalError,
-        data: [],
+        status:500,
       };
     }
   }

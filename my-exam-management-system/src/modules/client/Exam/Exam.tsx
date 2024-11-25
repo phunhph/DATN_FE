@@ -12,6 +12,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./Exam.scss";
 import { getExamByIdCode } from "@/services/repositories/CandidatesService/CandidatesService";
+import { Candidate_all, Question___ } from "@/interfaces/CandidateInterface/CandidateInterface";
 
 type Props = {};
 
@@ -166,10 +167,68 @@ const Exam: React.FC<Props> = () => {
 
   const getExam = async (id: string, code: string) => {
     const result = await getExamByIdCode(id, code);
-    console.log(result.data.time);
+    if( result.data){
+      const data:Candidate_all = result.data
+      const arrays = Object.values(data.question).flat();
+      renderQuestion(arrays)
+      
+      setTimeLeft(data.time)
+    }
     
-    setTimeLeft(result.data.time)
   };
+
+  const renderQuestion = (question: Question___[]) => {
+    const BD: Question[] = [];
+    const BN: Question[] = [];
+    const NP: Question[] = [];
+  
+    question.forEach((e, index) => {
+      const prefix = e.id.split("_")[0]; // Tách tiền tố trước dấu "_"
+  
+      // Xử lý từng loại câu hỏi
+      if (prefix === "BD") {
+        const data: Question = {
+          image: e.image_title, 
+          questionNumber: index + 1,
+          questionText: e.title, 
+          answers:[
+            {
+              image: e.answer.img_correct
+            }
+          ]
+        };
+        BD.push(data); // Thêm vào nhóm BD
+      } else if (prefix === "BN") {
+        const data: Question = {
+          image: e.image_title,
+          questionNumber: index + 1,
+          questionText: e.title,
+          answers: e.answer.map((answer) => ({
+            text: answer.text,
+            isCorrect: answer.isCorrect,
+          })),
+        };
+        BN.push(data); // Thêm vào nhóm BN
+      } else if (prefix === "NP") {
+        const data: Question = {
+          image: e.image_title,
+          questionNumber: index + 1,
+          questionText: e.title,
+          answers: e.answer.map((answer) => ({
+            text: answer.text,
+            isCorrect: answer.isCorrect,
+          })),
+        };
+        NP.push(data); // Thêm vào nhóm NP
+      }
+    });
+  
+    // Cập nhật state
+    setQuestions(NP); // Cập nhật nhóm NP
+    setReadingQuestions(BD); // Cập nhật nhóm BD
+    setListeningQuestions(BN); // Cập nhật nhóm BN
+  };
+  
 
   useEffect(() => {
     const user = localStorage.getItem("clientData");

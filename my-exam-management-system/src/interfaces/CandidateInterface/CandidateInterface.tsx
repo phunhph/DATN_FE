@@ -35,7 +35,7 @@ export interface Exam_room {
 }
 
 export interface ApiCandidateResponse__ extends BaseResponse {
-  data: Candidate_all[];
+  data?: Candidate_all;
 }
 
 export interface Candidate_all {
