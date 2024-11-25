@@ -183,43 +183,404 @@ const Exam: React.FC<Props> = () => {
     const NP: Question[] = [];
   
     question.forEach((e, index) => {
-      const prefix = e.id.split("_")[0]; // Tách tiền tố trước dấu "_"
-  
-      // Xử lý từng loại câu hỏi
+      const prefix = e.id.split("_")[0]; 
       if (prefix === "BD") {
-        const data: Question = {
-          image: e.image_title, 
-          questionNumber: index + 1,
-          questionText: e.title, 
-          answers:[
-            {
-              image: e.answer.img_correct
-            }
-          ]
-        };
-        BD.push(data); // Thêm vào nhóm BD
+        if(e.answer.id_pass === 1){
+          const data: Question = {
+            image: e.image_title, 
+            questionNumber: index + 1,
+            questionText: e.title, 
+            answers:[
+              {
+                text: e.answer.correct,
+                image: e.answer.img_correct,
+                isCorrect: true,
+              },
+              {
+                text: e.answer.wrong1,
+                image: e.answer.img_wrong1,
+                isCorrect: false,
+              },
+              {
+                text: e.answer.wrong2,
+                image: e.answer.img_wrong2,
+                isCorrect: false,
+              },
+              {
+                text: e.answer.wrong3,
+                image: e.answer.img_wrong3,
+                isCorrect: false,
+              },
+            ]
+          };
+          BD.push(data); 
+        }
+        if(e.answer.id_pass ===2){
+          const data: Question = {
+            image: e.image_title, 
+            questionNumber: index + 1,
+            questionText: e.title, 
+            answers:[
+              {
+                text: e.answer.wrong1,
+                image: e.answer.img_wrong1,
+                isCorrect: false,
+              },
+              {
+                text: e.answer.correct,
+                image: e.answer.img_correct,
+                isCorrect: true,
+              },
+              {
+                text: e.answer.wrong2,
+                image: e.answer.img_wrong2,
+                isCorrect: false,
+              },
+              {
+                text: e.answer.wrong3,
+                image: e.answer.img_wrong3,
+                isCorrect: false,
+              },
+            ]
+          };
+          BD.push(data); 
+        }
+        if(e.answer.id_pass ===3){
+          const data: Question = {
+            image: e.image_title, 
+            questionNumber: index + 1,
+            questionText: e.title, 
+            answers:[
+             
+              {
+                text: e.answer.wrong1,
+                image: e.answer.img_wrong1,
+                isCorrect: false,
+              },
+              {
+                text: e.answer.wrong2,
+                image: e.answer.img_wrong2,
+                isCorrect: false,
+              },
+              {
+                text: e.answer.correct,
+                image: e.answer.img_correct,
+                isCorrect: true,
+              },
+              {
+                text: e.answer.wrong3,
+                image: e.answer.img_wrong3,
+                isCorrect: false,
+              },
+            ]
+          };
+          BD.push(data); 
+        }
+        if(e.answer.id_pass ===4){
+          const data: Question = {
+            image: e.image_title, 
+            questionNumber: index + 1,
+            questionText: e.title, 
+            answers:[
+              {
+                text: e.answer.wrong1,
+                image: e.answer.img_wrong1,
+                isCorrect: false,
+              },
+              {
+                text: e.answer.wrong2,
+                image: e.answer.img_wrong2,
+                isCorrect: false,
+              },
+              {
+                text: e.answer.wrong3,
+                image: e.answer.img_wrong3,
+                isCorrect: false,
+              },
+              {
+                text: e.answer.correct,
+                image: e.answer.img_correct,
+                isCorrect: true,
+              },
+            ]
+          };
+          BD.push(data); 
+        } 
       } else if (prefix === "BN") {
-        const data: Question = {
-          image: e.image_title,
-          questionNumber: index + 1,
-          questionText: e.title,
-          answers: e.answer.map((answer) => ({
-            text: answer.text,
-            isCorrect: answer.isCorrect,
-          })),
-        };
-        BN.push(data); // Thêm vào nhóm BN
+        if(e.answer.id_pass ===1){
+          const data: Question = {
+            image: e.image_title, 
+            questionNumber: index + 1,
+            questionText: e.title, 
+            answers:[
+              {
+                id: 1,
+                text: e.answer.correct,
+                image: e.answer.img_correct,
+                isCorrect: true,
+              },
+              {
+                id:2 ,
+                text: e.answer.wrong1,
+                image: e.answer.img_wrong1,
+                isCorrect: false,
+              },
+              {
+                id: 3,
+                text: e.answer.wrong2,
+                image: e.answer.img_wrong2,
+                isCorrect: false,
+              },
+              {
+                id: 4,
+                text: e.answer.wrong3,
+                image: e.answer.img_wrong3,
+                isCorrect: false,
+              },
+            ]
+          };
+          BN.push(data); 
+        }
+        if(e.answer.id_pass ===2){
+          const data: Question = {
+            image: e.image_title, 
+            questionNumber: index + 1,
+            questionText: e.title, 
+            answers:[
+              {
+                id: 1,
+                text: e.answer.wrong1,
+                image: e.answer.img_wrong1,
+                isCorrect: false,
+              },
+              {
+                id: 2,
+                text: e.answer.correct,
+                image: e.answer.img_correct,
+                isCorrect: true,
+              },
+              {
+                id: 3,
+                text: e.answer.wrong2,
+                image: e.answer.img_wrong2,
+                isCorrect: false,
+              },
+              {
+                id: 4,
+                text: e.answer.wrong3,
+                image: e.answer.img_wrong3,
+                isCorrect: false,
+              },
+            ]
+          };
+          BN.push(data); 
+        }
+        if(e.answer.id_pass ===3){
+          const data: Question = {
+            image: e.image_title, 
+            questionNumber: index + 1,
+            questionText: e.title, 
+            answers:[
+             
+              {
+                id:1,
+                text: e.answer.wrong1,
+                image: e.answer.img_wrong1,
+                isCorrect: false,
+              },
+              {
+                id:2,
+                text: e.answer.wrong2,
+                image: e.answer.img_wrong2,
+                isCorrect: false,
+              },
+              {
+                id:3,
+                text: e.answer.correct,
+                image: e.answer.img_correct,
+                isCorrect: true,
+              },
+              {
+                id:4,
+                text: e.answer.wrong3,
+                image: e.answer.img_wrong3,
+                isCorrect: false,
+              },
+            ]
+          };
+          BN.push(data); 
+        }
+        if(e.answer.id_pass ===4){
+          const data: Question = {
+            image: e.image_title, 
+            questionNumber: index + 1,
+            questionText: e.title, 
+            answers:[
+              {
+                id: 1,
+                text: e.answer.wrong1,
+                image: e.answer.img_wrong1,
+                isCorrect: false,
+              },
+              {
+                id: 2,
+                text: e.answer.wrong2,
+                image: e.answer.img_wrong2,
+                isCorrect: false,
+              },
+              {
+                id: 3,
+                text: e.answer.wrong3,
+                image: e.answer.img_wrong3,
+                isCorrect: false,
+              },
+              {
+                id: 4,
+                text: e.answer.correct,
+                image: e.answer.img_correct,
+                isCorrect: true,
+              },
+            ]
+          };
+          BN.push(data); 
+        }
       } else if (prefix === "NP") {
-        const data: Question = {
-          image: e.image_title,
-          questionNumber: index + 1,
-          questionText: e.title,
-          answers: e.answer.map((answer) => ({
-            text: answer.text,
-            isCorrect: answer.isCorrect,
-          })),
-        };
-        NP.push(data); // Thêm vào nhóm NP
+        if(e.answer.id_pass ===1){
+          const data: Question = {
+            image: e.image_title, 
+            questionNumber: index + 1,
+            questionText: e.title, 
+            answers:[
+              {
+                id: 1,
+                text: e.answer.correct,
+                image: e.answer.img_correct,
+                isCorrect: true,
+              },
+              {
+                id: 2,
+                text: e.answer.wrong1,
+                image: e.answer.img_wrong1,
+                isCorrect: false,
+              },
+              {
+                id: 3,
+                text: e.answer.wrong2,
+                image: e.answer.img_wrong2,
+                isCorrect: false,
+              },
+              {
+                id: 4,
+                text: e.answer.wrong3,
+                image: e.answer.img_wrong3,
+                isCorrect: false,
+              },
+            ]
+          };
+          NP.push(data); 
+        }
+        if(e.answer.id_pass ===2){
+          const data: Question = {
+            image: e.image_title, 
+            questionNumber: index + 1,
+            questionText: e.title, 
+            answers:[
+              {
+                id: 1,
+                text: e.answer.wrong1,
+                image: e.answer.img_wrong1,
+                isCorrect: false,
+              },
+              {
+                id: 2,
+                text: e.answer.correct,
+                image: e.answer.img_correct,
+                isCorrect: true,
+              },
+              {
+                id: 3,
+                text: e.answer.wrong2,
+                image: e.answer.img_wrong2,
+                isCorrect: false,
+              },
+              {
+                id: 4,
+                text: e.answer.wrong3,
+                image: e.answer.img_wrong3,
+                isCorrect: false,
+              },
+            ]
+          };
+          NP.push(data); 
+        }
+        if(e.answer.id_pass ===3){
+          const data: Question = {
+            image: e.image_title, 
+            questionNumber: index + 1,
+            questionText: e.title, 
+            answers:[
+              {
+                id: 1,
+                text: e.answer.wrong1,
+                image: e.answer.img_wrong1,
+                isCorrect: false,
+              },
+              {
+                id: 2,
+                text: e.answer.wrong2,
+                image: e.answer.img_wrong2,
+                isCorrect: false,
+              },
+              {
+                id: 3,
+                text: e.answer.correct,
+                image: e.answer.img_correct,
+                isCorrect: true,
+              },
+              {
+                id: 4,
+                text: e.answer.wrong3,
+                image: e.answer.img_wrong3,
+                isCorrect: false,
+              },
+            ]
+          };
+          NP.push(data); 
+        }
+        if(e.answer.id_pass ===4){
+          const data: Question = {
+            image: e.image_title, 
+            questionNumber: index + 1,
+            questionText: e.title, 
+            answers:[
+              {
+                id: 1,
+                text: e.answer.wrong1,
+                image: e.answer.img_wrong1,
+                isCorrect: false,
+              },
+              {
+                id: 2,
+                text: e.answer.wrong2,
+                image: e.answer.img_wrong2,
+                isCorrect: false,
+              },
+              {
+                id: 3,
+                text: e.answer.wrong3,
+                image: e.answer.img_wrong3,
+                isCorrect: false,
+              },
+              {
+                id: 4,
+                text: e.answer.correct,
+                image: e.answer.img_correct,
+                isCorrect: true,
+              },
+            ]
+          };
+          NP.push(data); 
+        }
       }
     });
   

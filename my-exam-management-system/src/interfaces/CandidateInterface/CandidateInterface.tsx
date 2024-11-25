@@ -48,6 +48,7 @@ export interface Question___ {
   title: string;
   image_title?: string;
   answer: {
+    id: string;
     correct: string;
     img_correct?: string;
     img_wrong1?: string;
@@ -57,5 +58,6 @@ export interface Question___ {
     wrong1: string;
     wrong2: string;
     wrong3: string;
+    id_pass?:number;
   };
 }

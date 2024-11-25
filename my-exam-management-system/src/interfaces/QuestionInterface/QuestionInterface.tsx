@@ -3,6 +3,7 @@ export interface Question {
     questionText: string;
     image?: string;
     answers: {
+        id?: number;
         text?: string; 
         image?: string;
         isCorrect?: boolean;
