@@ -3,7 +3,7 @@ import ExamResults from "./ExamResults/ExamResults";
 import ManageCandidates from "./ManageCandidates/ManageCandidates";
 import ManageENExamStructure from "./ManageENExamStructure/ManageENExamStructure";
 import ManageENQuestions from "./ManageENQuestions/ManageENQuestions";
-import ManageEligibility from "./ManageEligibility/ManageEligibility";
+import ManageStatus from "./ManageStatus/ManageStatus";
 import ManageExamRooms from "./ManageExamRooms/ManageExamRooms";
 import ManageExamSessions from "./ManageExamSessions/ManageExamSessions";
 import ManageExamState_Candidates from "./ManageExamState_Candidates/ManageExamState_Candidates";
@@ -20,13 +20,14 @@ import ManageSemester from "./ManageSemester/ManageSemester";
 import DetailSupervisor from "./ManageSupervisors/DetailSupervisor";
 import ExamContent from "./Subject/ExamContent";
 import Welcome from "./Welcome/Welcome";
+import AdminPage from "./AdminPage/AdminPage";
 export {
   ExamResults,
   Home,
   ManageCandidates,
   ManageENExamStructure,
   ManageENQuestions,
-  ManageEligibility,
+  ManageStatus,
   ManageExamRooms,
   ManageExamSessions,
   ManageExamState_Candidates,
@@ -43,4 +44,5 @@ export {
   ManageSemester,
   DetailCandidates,
   QuestionDetail,
+  AdminPage
 };

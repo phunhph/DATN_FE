@@ -1,0 +1,35 @@
+.candidate-info {
+  display: flex;
+  align-items: center;
+  margin: 20px 0;
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.candidate-info__image {
+  flex: 0 0 100px; /* Chiều rộng cố định cho ảnh */
+  margin-right: 20px;
+}
+
+.candidate-info__image img {
+  width: 100%;
+  height: auto;
+  border-radius: 50%; /* Làm cho ảnh tròn */
+}
+
+.candidate-info__details {
+  flex: 1;
+}
+
+.candidate-info__details h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.candidate-info__details p {
+  margin: 5px 0;
+  color: #666;
+}

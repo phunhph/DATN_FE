@@ -1,15 +1,18 @@
+@use "sass:map"; // Import the map module for map-get and map-has-key
+
 @mixin responsive-to($size) {
     $breakpoints: (
-        xs:390px,
+        xs: 390px,
         sm: 576px,
         md: 768px,
         lg: 920px,
         xl: 1200px,
-        xxl:1440px
+        2xl: 1440px,
+        3xl: 1920px
     );
 
-    @if map-has-key($breakpoints, $size) {
-        $value: map-get($breakpoints, $size);
+    @if map.has-key($breakpoints, $size) {
+        $value: map.get($breakpoints, $size);
         @media screen and (max-width: $value) {
             @content;
         }

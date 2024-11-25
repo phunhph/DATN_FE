@@ -1,14 +1,14 @@
-import React from 'react';
 import './ToggleSwitch.scss'
 interface ToggleSwitchProps {
     id: string;
-    toggleState: string;
-    onToggle: (id: string) => void; 
+    toggleState: boolean;
+    onToggle: (id: string) => void;
+    className?:string;
 }
 
-export const ToggleSwitch = ({ id, toggleState, onToggle }: ToggleSwitchProps) => (
+export const ToggleSwitch = ({ id, toggleState, onToggle, className }: ToggleSwitchProps) => (
     <div
-        className={`toggle-switch ${toggleState =='true' ? "active_" : "inactive"}`}
+        className={`toggle-switch ${className} ${toggleState == true ? "active_" : "inactive"}`}
         onClick={() => onToggle(id)}
     >
         <div className="toggle-switch-circle" />
