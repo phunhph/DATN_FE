@@ -33,7 +33,7 @@ export const login = async (
         data: [],
         expires_at: 0,
         status: error.response?.status || "500",
-        warning: error.response?.data?.warning || "Đã xảy ra lỗi"
+        warning: error.response?.data?.message || "Đã xảy ra lỗi"
       };
     } else {
       console.error("Login error:", (error as Error).message || error);
@@ -78,7 +78,7 @@ export const loginClient = async (
         data: [],
         expires_at: 0,
         status: error.response?.status || "500",
-        warning: error.response?.data?.warning || "Đã xảy ra lỗi từ server.",
+        warning: error.response?.data?.message || "Đã xảy ra lỗi từ server.",
       };
     }
 
