@@ -168,7 +168,7 @@ export const getAllSemesterWithExamSubject = async () => {
       Authorization: `Bearer ${token}`,
     };
 
-    const response: AxiosResponse<ApiSemesterResponse[]> = await instance.get(
+    const response: AxiosResponse<ApiSemesterResponse> = await instance.get(
       "/api/admin/exam/exam-with-exam-subject",
       {
         headers: headers,
