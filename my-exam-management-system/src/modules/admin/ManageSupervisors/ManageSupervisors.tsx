@@ -253,7 +253,7 @@ const ManageSupervisors = () => {
                 <form onSubmit={handleSubmit}>
                   <div className="modal__firstline-add">
                     <label className="modal__label">
-                      Mã giám thị:
+                      Mã Giám thị:
                       <input
                         type="text"
                         name="idcode"
@@ -268,7 +268,7 @@ const ManageSupervisors = () => {
                       )}
                     </label>
                     <label className="modal__label">
-                      Tên giám thị:
+                      Tên Giám thị:
                       <input
                         type="text"
                         name="name"
