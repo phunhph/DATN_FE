@@ -183,6 +183,10 @@ const QuestionDetail = () => {
         return Object.keys(errors).length === 0;
     };
 
+  useEffect(() => {
+    document.documentElement.className = `admin-light`;
+  }, [])
+  
     return (
         <div className="Questions__detail__container">
             <div className="Questions__detail__title">

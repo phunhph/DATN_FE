@@ -318,6 +318,7 @@ const ManageENQuestions = () => {
 
   useEffect(() => {
     onLoad();
+    document.documentElement.className = `admin-light`;
   }, []);
 
   return (
@@ -383,7 +384,7 @@ const ManageENQuestions = () => {
           </div>
         </div>
       </div>
-      <div className="subject__subject">
+      <div className="subject__subjectt">
         <Table
           title={title}
           tableName="Exam Table"

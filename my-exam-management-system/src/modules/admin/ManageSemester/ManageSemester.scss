@@ -115,13 +115,13 @@ button.submit-btn.btn {
     position: absolute;
     right: 1rem;
     top: 1rem;
-    background-color: #7367f0;
-    border-color: #7367f0;
+    background-color: var(--primary80);
+    border-color: var(--primary80);
     padding: 0.25rem;
-    color: white;
+    color: white !important;
     transition: background-color 0.3s ease;
     &:hover {
-      background-color: #5c61e6;
+      background-color: var(--primary);
       border-color: #5c61e6;
     }
   }
@@ -153,12 +153,12 @@ button.submit-btn.btn {
   }
   &-update {
     color: #fff;
-    background-color: #7367f0;
-    border-color: #7367f0;
+    background-color: var(--primary80);
+    border-color: var(--primary80);
     transition: background-color 0.3s ease;
     &:hover {
-      background-color: #5c61e6;
-      border-color: #5c61e6;
+      background-color: var(--primary);
+      border-color: var(--primary);
     }
   }
 }

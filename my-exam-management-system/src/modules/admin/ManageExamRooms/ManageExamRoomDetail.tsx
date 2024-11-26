@@ -195,6 +195,10 @@ const ManageExamRoomDetail = () => {
     setEditMode(false);
     setErrors({});
   };
+  
+  useEffect(() => {
+    document.documentElement.className = `admin-light`;
+  }, [])
 
   if (loading) {
     return (

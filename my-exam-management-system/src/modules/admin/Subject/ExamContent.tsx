@@ -203,6 +203,11 @@ const ExamContent: React.FC = () => {
       onload()
     }
   }, [subject]);
+  
+  useEffect(() => {
+    document.documentElement.className = `admin-light`;
+  }, [])
+  
 
   return (
     <div className="examContent__container">

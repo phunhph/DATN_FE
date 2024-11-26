@@ -242,6 +242,7 @@ const ManageENExamStructure = () => {
 
   useEffect(() => {
     onLoad();
+    document.documentElement.className = `admin-light`;
   }, []);
   return (
     <div className="Structure">

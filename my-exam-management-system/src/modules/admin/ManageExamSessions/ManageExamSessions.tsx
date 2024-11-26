@@ -83,7 +83,7 @@ const ManageExamSessions = () => {
   };
 
   const handleStatusChange = (id: string) => {
-    if (confirm("Are you sure you want to change the status?")) {
+    if (confirm("Xác nhận thay đổi trạng thái ?")) {
       handleUpdateStatus(id);
     }
   };
@@ -188,6 +188,10 @@ const ManageExamSessions = () => {
     document.body.removeChild(link);
   };
 
+  useEffect(() => {
+    document.documentElement.className = `admin-light`
+  }, [])
+  
   return (
     <div className="examSessions__container">
       <PageTitle theme="light">Quản lý ca thi</PageTitle>
