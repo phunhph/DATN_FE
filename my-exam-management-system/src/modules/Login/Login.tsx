@@ -5,6 +5,7 @@ import "./login.scss";
 import { login, loginClient } from "@/services/repositories/AutherService/autherService";
 import { useClientToken } from "@/contexts";
 import { Notification } from "@/components";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -36,7 +37,7 @@ const Login: React.FC = () => {
       } else {
         const { token, data, expires_at } = user;
         console.log(user);
-        
+
         setToken(token, data, new Date(expires_at * 1000));
         const data_ = {
           token: user.token,
@@ -98,11 +99,15 @@ const Login: React.FC = () => {
         <div className="left">
           <div className="logo">EASY EXAM</div>
           <h1>Chào mừng đến với EASY EXAM!</h1>
-          <p>Thi trắc nghiệm online, một người thi cả lớp 10 điểm!</p>
+          <p>Thi trắc nghiệm online, điểm cao ngất ngưỡng!</p>
           <div className="video-placeholder">
-            <button className="play-button">▶</button>
+            {/* <button className="play-button">▶</button> */}
+            <DotLottieReact
+              src="/public/image/Animation - 1732722005771.lottie"
+              loop
+              autoplay
+            />
           </div>
-          <p>Xem video để biết thêm thông tin!</p>
         </div>
         <div className="right">
           <h2>ĐĂNG NHẬP</h2>

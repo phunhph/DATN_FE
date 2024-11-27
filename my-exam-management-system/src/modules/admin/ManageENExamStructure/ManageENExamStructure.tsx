@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./ManageENExamStructure.scss";
-import { Notification } from "../../../components";
+import { Button, Notification } from "../../../components";
 import {
   ModuleStructure,
   reqStructure,
@@ -307,7 +307,6 @@ const ManageENExamStructure = () => {
         </div>
       </div>
 
-      <hr />
       <div className="Structure__item">
         <h3>Danh sách module</h3>
         <form onSubmit={handleSubmit}>
@@ -317,14 +316,14 @@ const ManageENExamStructure = () => {
               <div className="module__item" key={moduleIndex}>
                 <h1>{module.title}</h1>
                 <div className="module__title">
-                  <h3 className="lever">Mức độ</h3>
-                  <h3 className="quantity">Số lượng</h3>
-                  <h3 className="number">Số câu trong đề</h3>
+                  <h4 className="lever">Mức độ</h4>
+                  <h4 className="quantity">Số lượng</h4>
+                  <h4 className="number">Số câu</h4>
                 </div>
                 {module.levels.map((level, levelIndex) => (
                   <div className="module__title" key={levelIndex}>
-                    <h3 className="lever">{level.level}</h3>
-                    <h3 className="quantity">{level.total}</h3>
+                    <h4 className="lever">{level.level}</h4>
+                    <h4 className="quantity">{level.total}</h4>
                     <div className="number grid_input">
                       <input
                         type="number"
@@ -351,7 +350,7 @@ const ManageENExamStructure = () => {
             {/* Bạn có thể thêm code logic render module */}
           </div>
           <div className="Button__capnhap">
-            <button type="submit">Submit</button>
+            <Button type="submit">Submit</Button>
           </div>
         </form>
       </div>

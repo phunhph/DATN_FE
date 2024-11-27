@@ -1,14 +1,17 @@
 @use "@scss/variables.scss" as vars;
 @use "@scss/mixin.scss" as m;
+
 .semester {
   width: 100%;
   height: 100svh;
   position: absolute;
-  top:0;
-  left:0;
+  top: 0;
+  left: 0;
+
   &__container {
     flex-grow: 1;
   }
+
   &__overlay {
     position: fixed;
     top: 0;
@@ -34,6 +37,7 @@
       animation: fadeOut 0.3s forwards;
     }
   }
+
   &__overlay-content {
     width: 35rem;
     height: auto;
@@ -42,33 +46,45 @@
     background-color: white;
     border-radius: 0.625rem;
   }
+
   &-grid__container {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 1rem;
     padding: 1rem 0 0 0;
+
+    &>div {
+      border-color: transparent;
+      box-shadow: 0 0.125rem 0.3125rem 0 black;
+    }
   }
-  &__name{
+
+  &__name {
     font-size: 1.5rem;
     font-weight: bolder;
     margin-bottom: 0.5rem;
   }
-  &__info{
+
+  &__info {
     margin: 1.5rem 0;
   }
 }
+
 .form {
   margin: 3rem 0 1rem 0;
+
   &__group {
     width: 100%;
     min-height: 2rem;
     display: flex;
     flex-direction: column;
   }
+
   &__label {
     min-width: 8rem;
     line-height: 2rem;
   }
+
   &__input {
     flex-grow: 1;
     border: 2px solid #e0e0e0;
@@ -76,17 +92,21 @@
     border-radius: 0.25rem;
     outline: none;
     transition: border-color 0.3s ease;
+
     &:hover {
       border-color: #000;
     }
+
     &:focus {
       border-color: #7367f0;
       border-width: 2px;
     }
   }
+
   &__error {
     margin: 0.5rem 0;
     height: 1.25rem;
+
     & span {
       height: inherit;
       line-height: 1.25rem;
@@ -94,16 +114,19 @@
     }
   }
 }
+
 .btn-group {
   display: flex;
   justify-content: end;
   gap: 1rem;
 }
+
 .btn-group-2 {
   display: flex;
   justify-content: space-between;
   gap: 1rem;
 }
+
 button.submit-btn.btn {
   padding: 0.5rem 1rem;
   border: 1px solid black;
@@ -111,6 +134,7 @@ button.submit-btn.btn {
   min-width: 2rem;
   min-height: 2rem;
   text-align: center;
+
   &-close {
     position: absolute;
     right: 1rem;
@@ -120,48 +144,58 @@ button.submit-btn.btn {
     padding: 0.25rem;
     color: white !important;
     transition: background-color 0.3s ease;
+
     &:hover {
       background-color: var(--primary);
       border-color: #5c61e6;
     }
   }
+
   &-reset {
     transition: background-color 0.3s ease;
     color: black;
     border: 1px solid black;
+
     &:hover {
       background-color: #f3f4f6;
     }
   }
+
   &-submit {
     color: #fff;
     background-color: #7367f0;
     border-color: #7367f0;
     transition: background-color 0.3s ease;
+
     &:hover {
       background-color: #5c61e6;
       border-color: #5c61e6;
     }
   }
-  &-del{
+
+  &-del {
     transition: background-color 0.3s ease;
     color: black;
     border: 1px solid black;
+
     &:hover {
       background-color: #f3f4f6;
     }
   }
+
   &-update {
     color: #fff;
     background-color: var(--primary80);
     border-color: var(--primary80);
     transition: background-color 0.3s ease;
+
     &:hover {
       background-color: var(--primary);
       border-color: var(--primary);
     }
   }
 }
+
 .non-selectable {
   user-select: none;
   -webkit-user-drag: none;
@@ -170,7 +204,8 @@ button.submit-btn.btn {
   -ms-user-select: none;
   pointer-events: none;
 }
-.hidden{
+
+.hidden {
   display: none;
 }
 
@@ -179,6 +214,7 @@ button.submit-btn.btn {
     opacity: 0;
     visibility: hidden;
   }
+
   to {
     opacity: 1;
     visibility: visible;
@@ -190,26 +226,31 @@ button.submit-btn.btn {
     opacity: 1;
     visibility: visible;
   }
+
   to {
     opacity: 0;
     visibility: hidden;
   }
 }
+
 @include m.responsive-to(3xl) {
   .semester-grid__container {
     grid-template-columns: repeat(4, 1fr);
   }
 }
+
 @include m.responsive-to(2xl) {
   .semester-grid__container {
     grid-template-columns: repeat(3, 1fr);
   }
 }
+
 @include m.responsive-to(lg) {
   .semester-grid__container {
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
 @include m.responsive-to(sm) {
   .semester-grid__container {
     grid-template-columns: 1fr;
