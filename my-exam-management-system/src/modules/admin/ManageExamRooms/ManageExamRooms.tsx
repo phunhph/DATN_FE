@@ -4,7 +4,7 @@ import AsyncSelect from "react-select/async";
 import { useEffect, useState } from "react";
 import { Table } from "@components/index";
 import "./ManageExamRooms.scss";
-import { ExamRoom } from "@/interfaces/ExamRoomInterfaces/ExamRoomInterfaces";
+import { ExamRoomDetails } from "@/interfaces/ExamRoomInterfaces/ExamRoomInterfaces";
 import { SemesterType } from "../ManageSemester/Semester.type";
 import { getAllSemester } from "@/services/repositories/SemesterServices/SemesterServices";
 import { Semester } from "@/interfaces/SemesterInterface/SemestertInterface";
@@ -12,9 +12,14 @@ import { getExamRoom } from "@/services/repositories/ExamRoomService/ExamRoomSer
 import { useNavigate } from "react-router-dom";
 
 const ManageExamRooms = () => {
+  interface ApiResponse<T> {
+    success: boolean;
+    message?: string;
+    data?: T;
+  }
   const [selectedExamId, setSelectedExamId] = useState<string>("");
   const [semesters, setSemesters] = useState<SemesterType[]>([]);
-  const [roomList, setRoomList] = useState<ExamRoom[]>([]);
+  const [roomList, setRoomList] = useState<ExamRoomDetails[]>([]);
   const [loading, setLoading] = useState(false);
 
   const title = [
@@ -28,8 +33,6 @@ const ManageExamRooms = () => {
     label: semester.semesterName,
     value: semester.semesterCode,
   }));
-
-  const firstOption = examOptions[0];
 
   const loadSemesterOptions = (
     inputValue: string,
@@ -92,7 +95,7 @@ const ManageExamRooms = () => {
       } else {
         addNotification(data.message ?? "Đã có lỗi xảy ra", data.success);
       }
-    } catch (error) {
+    } catch {
       addNotification("Lỗi khi tải danh sách kỳ thi", false);
     }
   };
@@ -102,16 +105,18 @@ const ManageExamRooms = () => {
 
     setLoading(true);
     try {
-      const data = await getExamRoom(semesterId);
-      if (data.success) {
-        setRoomList(data.data || []);
+      const response = (await getExamRoom(semesterId)) as ApiResponse<
+        ExamRoomDetails[]
+      >;
+      if (response.success && response.data) {
+        setRoomList(response.data);
       } else {
         addNotification(
-          data.message ?? "Lỗi khi tải danh sách phòng thi",
+          response.message ?? "Lỗi khi tải danh sách phòng thi",
           false
         );
       }
-    } catch (error) {
+    } catch {
       addNotification("Lỗi khi tải danh sách phòng thi", false);
     } finally {
       setLoading(false);
