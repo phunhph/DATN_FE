@@ -316,7 +316,7 @@ const ManageENExamStructure = () => {
               <div className="module__item" key={moduleIndex}>
                 <h1>{module.title}</h1>
                 <div className="module__title">
-                  <h4 className="lever">Mức độ</h4>
+                  <h4 className="lever">Nội dung thi</h4>
                   <h4 className="quantity">Số lượng</h4>
                   <h4 className="number">Số câu</h4>
                 </div>

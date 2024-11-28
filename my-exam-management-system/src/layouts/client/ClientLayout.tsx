@@ -45,10 +45,10 @@ const ClientLayout = () => {
                   <NavLink to={"/client/scores"} className={({ isActive, isPending }) => isPending ? "pending" : isActive ? "client-active" : ""}
                   >Bảng điểm</NavLink>
                 </li>
-                <li className="nav__link">
+                {/* <li className="nav__link">
                   <NavLink to={"/client/history"} className={({ isActive, isPending }) => isPending ? "pending" : isActive ? "client-active" : ""}
                   >Lịch sử thi</NavLink>
-                  </li>
+                  </li> */}
               </ul>
             </div>
             <div className="navbar__dropdown"  ref={dropDownRef}>
@@ -68,7 +68,7 @@ const ClientLayout = () => {
                         <div className="dropdown__divider"></div>
                         <div className="show-responsive-nav">
                           <DropdownLink location="client/scores" onClick={toggleUserMenu} title="Bảng điểm"></DropdownLink>
-                          <DropdownLink location="client/history" onClick={toggleUserMenu} title="Lịch sử thi"></DropdownLink>
+                          {/* <DropdownLink location="client/history" onClick={toggleUserMenu} title="Lịch sử thi"></DropdownLink> */}
                         </div>
                         {/* <DropdownLink location="settings" onClick={toggleUserMenu} title="Cài đặt"></DropdownLink> */}
                         <li className="dropdown__item">
@@ -107,7 +107,7 @@ const ClientLayout = () => {
               <ul className="client-footer__list">
                 <li><Link to="/client/home">Trang chủ</Link></li>
                 <li><Link to="/client/scores">Bảng điểm</Link></li>
-                <li><Link to="/client/history">Lịch sử thi</Link></li>
+                {/* <li><Link to="/client/history">Lịch sử thi</Link></li> */}
                 <li><Link to=""></Link></li>
                 <li><Link to=""></Link></li>
               </ul>

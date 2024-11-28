@@ -184,7 +184,7 @@ export const Table = <T extends Record<string, any>>({
         </div>
         <TableSearch onSearch={setSearchQuery} />
       </div>
-      <div style={{overflow:"hidden", overflowX:"auto"}}>
+      <div style={{ overflow: "hidden", overflowX: "auto" }}>
         <table id="custom-table" className="custom-table">
           <thead>
             <tr>
@@ -208,28 +208,32 @@ export const Table = <T extends Record<string, any>>({
                     {dataKeys.map((key) => (
                       <td key={String(key)}>{renderCellValue(key, item)}</td>
                     ))}
-                    <td className="table-button-group">
-                      {actions_edit && (
-                        <button
-                          className="table-button"
-                          onClick={() => actions_edit.onClick?.(item)}
-                        >
-                          {actions_edit.name}
-                        </button>
-                      )}
-                      {actions_detail && (
-                        <button
-                          className="table-button"
-                          onClick={() =>
-                            actions_detail.onClick?.(
-                              item.id != undefined ? item.id : item.idcode
-                            )
-                          }
-                        >
-                          {actions_detail.name}
-                        </button>
-                      )}
-                    </td>
+                    {actions_edit || actions_detail ? (
+                      <>
+                        <td className="table-button-group">
+                          {actions_edit && (
+                            <button
+                              className="table-button"
+                              onClick={() => actions_edit.onClick?.(item)}
+                            >
+                              {actions_edit.name}
+                            </button>
+                          )}
+                          {actions_detail && (
+                            <button
+                              className="table-button"
+                              onClick={() =>
+                                actions_detail.onClick?.(
+                                  item.id != undefined ? item.id : item.idcode
+                                )
+                              }
+                            >
+                              {actions_detail.name}
+                            </button>
+                          )}
+                        </td>
+                      </>
+                    ) : (<></>)}
                   </tr>
                 ))
               ) : (

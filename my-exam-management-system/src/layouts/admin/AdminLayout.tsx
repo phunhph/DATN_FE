@@ -71,7 +71,7 @@ const AdminLayout = () => {
               <MenuLink imgSrc="Quản lý ca thi" title="Quản lý ca thi" location="manage-exam-sessions" />
               <MenuLink imgSrc="Câu hỏi thường" title="Câu hỏi tiếng Anh" location="manage-en-questions" />
               <MenuLink imgSrc="Quản lý thí sinh" title="Quản lý thí sinh" location="manage-candidates" />
-              <MenuLink imgSrc="Quản lý giám thị" title="Quản lý giám thị" location="manage-supervisors" />
+              {/* <MenuLink imgSrc="Quản lý giám thị" title="Quản lý giám thị" location="manage-supervisors" /> */}
               <MenuLink imgSrc="Kết quả thi" title="Kết quả thi" location="exam-results" />
               <MenuLink imgSrc="Quản lý báo cáo" title="Quản lý báo cáo" location="manage-reports" />
               <MenuLink imgSrc="circle" title="Quản lý trạng thái" location="manage-status" />
