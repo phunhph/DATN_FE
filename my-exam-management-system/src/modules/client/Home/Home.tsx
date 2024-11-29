@@ -1,17 +1,19 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, CVO, GridItem } from "@components/index";
 import Slideshow from "@components/Slideshow/Slideshow";
-
+import { useClientAuth } from "@/hooks";
 import "./Home.scss";
 import { getExamWithSubject } from "@/services/repositories/SemesterServices/SemesterServices";
 import { ExamWithSubject } from "@/interfaces/SemesterInterface/SemestertInterface";
 
 const Home = () => {
+  useClientAuth();
   const [examData, setExamData] = useState<ExamWithSubject[]>([]);
 
-  const [isLoading, setIsLoading] = useState(true); 
-  const [error, setError] = useState<string | null>(null); 
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const navigate = useNavigate();
 
@@ -19,25 +21,24 @@ const Home = () => {
     navigate("/client/subject");
   };
 
-  
   useEffect(() => {
     const fetchExams = async () => {
       setIsLoading(true);
       try {
-        const response = await getExamWithSubject();
-        
-        
+        const data = JSON.parse(localStorage.getItem("clientData") ?? '');
 
+        const response = await getExamWithSubject(data.id_exam);
+        
         if (response.success === false) {
           setError(response.message || "Lỗi không xác định");
         } else {
           const formattedData = response.data.map((exam: any) => ({
             examName: exam.name,
-            examCode: exam.id,
+            examId: exam.id,
             startDate: exam.time_start,
             endDate: exam.time_end,
-            subjectCount: exam.exam_subjects?.length || 0,
-            percentage: exam.status === 1 ? 100 : 0, 
+            subjectCountInExam: exam.exam_subjects?.length || 0,
+            percentage: exam.status === 1 ? 100 : 0,
           }));
 
           setExamData(formattedData);
@@ -53,7 +54,6 @@ const Home = () => {
 
     fetchExams();
   }, []);
-
 
   return (
     <div className="Home__Client">
@@ -78,7 +78,7 @@ const Home = () => {
                 </p>
                 <p>
                   Mã kỳ thi:
-                  <span className="item__span">{exam.examCode}</span>
+                  <span className="item__span">{exam.examId}</span>
                 </p>
                 <p>Thời gian bắt đầu:</p>
                 <span className="item__span">{exam.startDate}</span>
@@ -86,7 +86,7 @@ const Home = () => {
                 <span className="item__span">{exam.endDate}</span>
                 <p>
                   Số lượng môn thi:
-                  <span className="item__span">{exam.subjectCount}</span>
+                  <span className="item__span">{exam.subjectCountInExam}</span>
                 </p>
                 <CVO percentage={exam.percentage || 0} />
                 <Button onClick={goToSubject}>Vào kỳ thi</Button>

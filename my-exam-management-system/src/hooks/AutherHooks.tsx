@@ -1,26 +1,44 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useToken } from "@contexts/AutherContext";
+import { useAdminToken, useClientToken } from "@contexts/AutherContext";
 
-const useAuth = () => {
-  const { tokenRep, expiresAt, setToken } = useToken();
-  const navigate = useNavigate();
-  const checkToken = () => {
-    if (tokenRep && expiresAt) {
-      const now = new Date();
-      if (now < expiresAt) {
-        return;
-      } else {
-        setToken(null, null, null);
-        navigate("/");
-      }
-    } else {
-      navigate("/");
+// Utility function for checking token
+const checkAndRedirect = (
+  tokenRep: string | null,
+  expiresAt: Date | null,
+  setToken: (token: string | null, data: [] | null, expiresAt: Date | null) => void,
+  navigate: (path: string) => void,
+  redirectPath: string
+) => {
+  if (tokenRep && expiresAt) {
+    const now = new Date();
+    if (now >= expiresAt) {
+      // Token expired, clear token and redirect
+      setToken(null, null, null);
+      navigate(redirectPath);
     }
-  };
-  useEffect(() => {
-    checkToken();
-  }, [tokenRep, expiresAt, navigate, setToken]);
+  } else {
+    // Token not found, redirect
+    navigate(redirectPath);
+  }
 };
 
-export default useAuth;
+// Client Auth Hook
+export const useClientAuth = () => {
+  const { tokenRep, expiresAt, setToken } = useClientToken();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    checkAndRedirect(tokenRep, expiresAt, setToken, navigate, "/");
+  }, [tokenRep, expiresAt, setToken, navigate]);
+};
+
+// Admin Auth Hook
+export const useAdminAuth = () => {
+  const { tokenRep, expiresAt, setToken } = useAdminToken();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    checkAndRedirect(tokenRep, expiresAt, setToken, navigate, "/adminLogin");
+  }, [tokenRep, expiresAt, setToken, navigate]);
+};

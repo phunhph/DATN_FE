@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./ManageQuestion.scss";
 import { useNavigate } from "react-router-dom";
 import { Notification, Table } from "../../../components";
@@ -247,6 +247,10 @@ const ManageQuestions = () => {
         alert("path dowload")
     }
 
+    useEffect(() => {
+        document.documentElement.className = `admin-light`;
+      }, [])
+      
     return (
         <div className="Questions__container">
             <div className="Questions__title">
@@ -285,6 +289,7 @@ const ManageQuestions = () => {
             </div>
             <div className="subject__subject">
                 <Table
+                    title={[]}
                     tableName="Exam Table"
                     data={dataHardCode}
                     actions_add={{ name: "Add Exam", onClick: () => openModal("add") }}

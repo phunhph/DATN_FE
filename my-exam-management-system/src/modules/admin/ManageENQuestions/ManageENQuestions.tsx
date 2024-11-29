@@ -318,6 +318,7 @@ const ManageENQuestions = () => {
 
   useEffect(() => {
     onLoad();
+    document.documentElement.className = `admin-light`;
   }, []);
 
   return (
@@ -383,7 +384,7 @@ const ManageENQuestions = () => {
           </div>
         </div>
       </div>
-      <div className="subject__subject">
+      <div className="subject__subjectt">
         <Table
           title={title}
           tableName="Exam Table"
@@ -468,7 +469,7 @@ const ManageENQuestions = () => {
                       )}
                     </label>
 
-                    <label className="modal1__label">
+                    {/* <label className="modal1__label">
                       Mức độ câu hỏi: <br />
                       <select
                         name="level"
@@ -490,7 +491,7 @@ const ManageENQuestions = () => {
                           {errors.questionLevel}
                         </span>
                       )}
-                    </label>
+                    </label> */}
                   </div>
                   <div className="model1__question">
                     <label className="modal1__label">
@@ -509,8 +510,8 @@ const ManageENQuestions = () => {
                         {errors.questionContent}
                       </span>
                     )}
-                    <div className="upload-file">
-                      <input type="file" className="upload-file__input" />
+                    {/* <div className="upload-file">
+                      <input type="file" className="upload-file__input" />ABC
                       <button className="upload-file__button">
                         <ion-icon
                           name="cloud-upload-outline"
@@ -519,7 +520,7 @@ const ManageENQuestions = () => {
                         ></ion-icon>
                         Upload File
                       </button>
-                    </div>
+                    </div> */}
                   </div>
 
                   <div className="model1__second">
@@ -534,7 +535,7 @@ const ManageENQuestions = () => {
                           placeholder="Nhận đáp án đúng"
                         />
                       </label>
-                      <div className="upload-file">
+                      {/* <div className="upload-file">
                         <input type="file" className="upload-file__input" />
                         <button className="upload-file__button">
                           <ion-icon
@@ -544,7 +545,7 @@ const ManageENQuestions = () => {
                           ></ion-icon>
                           Upload File
                         </button>
-                      </div>
+                      </div> */}
                       {errors.correctAnswer && (
                         <span className="error_question">
                           {errors.correctAnswer}
@@ -563,7 +564,7 @@ const ManageENQuestions = () => {
                           placeholder="Nhập đáp sai 1"
                         />
                       </label>
-                      <div className="upload-file">
+                      {/* <div className="upload-file">
                         <input type="file" className="upload-file__input" />
                         <button className="upload-file__button">
                           <ion-icon
@@ -573,7 +574,7 @@ const ManageENQuestions = () => {
                           ></ion-icon>
                           Upload File
                         </button>
-                      </div>
+                      </div> */}
                       {errors.wrongAnswer1 && (
                         <span className="error_question">
                           {errors.wrongAnswer1}
@@ -594,7 +595,7 @@ const ManageENQuestions = () => {
                           placeholder="Nhập đáp sai 1"
                         />
                       </label>
-                      <div className="upload-file">
+                      {/* <div className="upload-file">
                         <input type="file" className="upload-file__input" />
                         <button className="upload-file__button">
                           <ion-icon
@@ -604,7 +605,7 @@ const ManageENQuestions = () => {
                           ></ion-icon>
                           Upload File
                         </button>
-                      </div>
+                      </div> */}
                       {errors.wrongAnswer2 && (
                         <span className="error_question">
                           {errors.wrongAnswer2}
@@ -623,7 +624,7 @@ const ManageENQuestions = () => {
                           placeholder="Nhập đáp sai 1"
                         />
                       </label>
-                      <div className="upload-file">
+                      {/* <div className="upload-file">
                         <input type="file" className="upload-file__input" />
                         <button className="upload-file__button">
                           <ion-icon
@@ -633,7 +634,7 @@ const ManageENQuestions = () => {
                           ></ion-icon>
                           Upload File
                         </button>
-                      </div>
+                      </div> */}
                       {errors.wrongAnswer3 && (
                         <span className="error_question">
                           {errors.wrongAnswer3}

@@ -40,10 +40,17 @@ const AdminLayout = () => {
       window.removeEventListener('resize', removeClassDisplayMenu);
     }
   }, []);
-  
+
   useEffect(() => {
-    document.documentElement.className = `admin-light`;
-  }, [])
+    const interval = setInterval(() => {
+      document.documentElement.className = "admin-light";
+    }, 1000);
+    if(document.documentElement.className == "app-light" || document.documentElement.className == "app-dark") {
+      clearInterval(interval)
+    }
+
+    return () => clearInterval(interval);
+  }, []);
   return (
     <>
       <div className="layout__container">
@@ -64,7 +71,7 @@ const AdminLayout = () => {
               <MenuLink imgSrc="Quản lý ca thi" title="Quản lý ca thi" location="manage-exam-sessions" />
               <MenuLink imgSrc="Câu hỏi thường" title="Câu hỏi tiếng Anh" location="manage-en-questions" />
               <MenuLink imgSrc="Quản lý thí sinh" title="Quản lý thí sinh" location="manage-candidates" />
-              <MenuLink imgSrc="Quản lý giám thị" title="Quản lý giám thị" location="manage-supervisors" />
+              {/* <MenuLink imgSrc="Quản lý giám thị" title="Quản lý giám thị" location="manage-supervisors" /> */}
               <MenuLink imgSrc="Kết quả thi" title="Kết quả thi" location="exam-results" />
               <MenuLink imgSrc="Quản lý báo cáo" title="Quản lý báo cáo" location="manage-reports" />
               <MenuLink imgSrc="circle" title="Quản lý trạng thái" location="manage-status" />
@@ -77,30 +84,30 @@ const AdminLayout = () => {
               <img src="/dash-line.svg" alt="dash icon" onClick={displayLayoutMenu}></img>
             </div>
             <div className="navbar__dropdown" ref={dropDownRef}>
-            <div className="dropdown__button" onClick={toggleUserMenu}>
-                  <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="🗿"></img>
-                  {isUserMenuOpen && (
-                    <>
-                      <ul className="dropdown__menu">
-                        <li className="dropdown__item">
-                          <a>
-                            <div className="dropdown__user">
-                              <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="🗿"></img>
-                              <span>Username</span>
-                            </div>
-                          </a>
-                        </li>
-                        <div className="dropdown__divider"></div>
-                        <li className="dropdown__button" onClick={toggleUserMenu}>
-                          <NavLink  to="/" className="dropdown__logout">
-                            <small>Đăng xuất</small>
-                            <img src="/log-out.svg" alt="icon"></img>
-                          </NavLink>
-                          </li>
-                      </ul>
-                    </>
-                  )}
-                </div>
+              <div className="dropdown__button" onClick={toggleUserMenu}>
+                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="🗿"></img>
+                {isUserMenuOpen && (
+                  <>
+                    <ul className="dropdown__menu">
+                      <li className="dropdown__item">
+                        <a>
+                          <div className="dropdown__user">
+                            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="🗿"></img>
+                            <span>Username</span>
+                          </div>
+                        </a>
+                      </li>
+                      <div className="dropdown__divider"></div>
+                      <li className="dropdown__button" onClick={toggleUserMenu}>
+                        <NavLink to="/" className="dropdown__logout">
+                          <small>Đăng xuất</small>
+                          <img src="/log-out.svg" alt="icon"></img>
+                        </NavLink>
+                      </li>
+                    </ul>
+                  </>
+                )}
+              </div>
             </div>
           </nav>
           <section className="content-wrapperr">

@@ -21,6 +21,7 @@ export type ExamWithSubject = {
   startDate?: string; 
   endDate?: string; 
   subjectCountInExam?: number; 
+  percentage?: number; 
 };
 
 export interface ApiExamWithSubjectResponse extends BaseResponse {

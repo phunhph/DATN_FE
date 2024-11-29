@@ -179,6 +179,11 @@ const DetailSupervisor = (props: Props) => {
       }));
     }
   };
+  
+  useEffect(() => {
+    document.documentElement.className = `admin-light`;
+  }, [])
+  
 
   return (
     <div className="detailSupervisor__containter">

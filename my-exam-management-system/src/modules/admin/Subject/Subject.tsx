@@ -294,6 +294,7 @@ const Subject: React.FC = () => {
 
   useEffect(() => {
     onLoad();
+    document.documentElement.className = `admin-light`;
   }, []);
 
   return (
