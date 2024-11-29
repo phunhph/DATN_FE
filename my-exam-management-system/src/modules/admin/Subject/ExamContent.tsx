@@ -188,14 +188,15 @@ const ExamContent: React.FC = () => {
     }));
   };
 
-  const handleUpdateStatus = (id: string) => {
-    setExamContent((prevContents) =>
-      prevContents.map((content) =>
-        content.id === id ? { ...content, Status: !content.status } : content
-      )
-    );
-    addNotification(`Trạng thái của môn thi đã được thay đổi.`, true);
-  };
+ const handleUpdateStatus = (id: string) => {
+   setExamContent((prevContents) =>
+     prevContents.map((content) =>
+       content.id === id ? { ...content, status: !content.status } : content
+     )
+   );
+   addNotification(`Trạng thái của môn thi đã được thay đổi.`, true);
+ };
+
 
   const handleStatusChange = (id: string) => {
     if (confirm("Are you sure you want to change the status?")) {
