@@ -1,24 +1,14 @@
 import { Notification, PageTitle, Table, UploadFile } from "@/components";
-import { ExamContentInterface } from "@/interfaces/ExamContentInterface/ExamContentInterface";
+import { ExamContentCreate, ExamContentInterface } from "@/interfaces/ExamContentInterface/ExamContentInterface";
 import { ErrorSubject } from "@/interfaces/SubjectInterface/ErrorExamSubjectInterface";
-import React, { useState } from "react";
+import { addExamContent, getAllExamContentByIdSubject, importFileExcelContent, updateExamContent } from "@/services/repositories/ExamContentService/ExamContentService";
+import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 const ExamContent: React.FC = () => {
-  const [examContent, setExamContent] = useState<ExamContentInterface[]>([
-    {
-      id: 1,
-      Name: "Nội dung thi 1",
-      title: "Tiêu đề 1",
-      Status: "active",
-    },
-    {
-      id: 2,
-      Name: "Nội dung thi 2",
-      title: "Tiêu đề 2",
-      Status: "active",
-    },
-  ]);
-
+  const location = useLocation();
+  const { subject } = location.state || {};
+  
   const downloadSample = () => {
     const link = document.createElement("a");
     link.href = `public/excel/Exam-Content.xlsx`;
@@ -28,38 +18,39 @@ const ExamContent: React.FC = () => {
     document.body.removeChild(link);
   };
 
-  const handleStatusChange = (id: string) => {
-    if (confirm("Are you sure you want to change the status?")) {
-      updateStatuContent(id);
-    }
-  };
   const [modalType, setModalType] = useState<"add" | "edit" | "file">("add");
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [errors, setErrors] = useState<ErrorSubject>({});
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState<ExamContentInterface>({
     id: "",
-    Name: "",
-    Status: "",
+    title: "",
+    status: true,
   });
 
   const openModal = (type: "add" | "edit" | "file") => {
     setModalType(type);
     setModalIsOpen(true);
     setErrors({});
+    if (type === "add") {
+      setEditMode(false)
+    }
     if (!editMode) {
       setFormData({
         id: "",
-        Name: "",
-        Status: "true",
+        title: "",
+        status: true,
       });
     }
   };
 
+  const title = ['Mã nội dung thi', 'Tên nội dung thi', 'trạng thái', 'thao tác']
+
   const openEditModal = (data: ExamContentInterface) => {
     setFormData({
       id: data.id,
-      Name: data.Name,
+      title: data.title,
+      status: data.status,
     });
     setEditMode(true);
     setModalType("edit");
@@ -68,11 +59,12 @@ const ExamContent: React.FC = () => {
 
   const closeModal = () => {
     setModalIsOpen(false);
+    setEditMode(false)
     if (!editMode) {
       setFormData({
         id: "",
-        Name: "",
-        Status: "",
+        title: "",
+        status: true,
       });
     }
   };
@@ -92,16 +84,48 @@ const ExamContent: React.FC = () => {
     if (file) {
       const data = await importFileExcelContent(file);
 
-      addNotification(data.warning || data.message || "", data.success);
+      addNotification( data.message || "", data.success);
     }
   };
 
   const validate = (): boolean => {
     const errors: ErrorSubject = {};
     if (!formData.id) errors.id = "Mã không được để trống.";
-    if (!formData.Name) errors.name = "Tên không được để trống.";
+    if (!formData.title) errors.name = "Tên không được để trống.";
     setErrors(errors);
     return Object.keys(errors).length === 0;
+  };
+
+  const createExamContent =  async() => {
+    const newContent: ExamContentCreate = {
+      exam_subject_id: subject.id,
+      id: formData.id,
+      title: formData.title,
+      status: true,
+    };
+
+    const result = await addExamContent(newContent)
+    if(result.success) {
+      setExamContent([...examContent, newContent]);
+    }
+
+    addNotification(result.message, result.success);
+
+    closeModal();
+  };
+
+  const handleUpdateSubject = async () => {
+    console.log(formData);
+    const result = await updateExamContent(formData)
+    if(result.success){
+      setExamContent((prevContents) =>
+        prevContents.map((content) =>
+          content.id === formData.id ? { ...formData } : content
+        )
+      );
+    }
+    addNotification(result.message, result.success);
+    closeModal();
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -110,12 +134,12 @@ const ExamContent: React.FC = () => {
       if (editMode) {
         handleUpdateSubject();
       } else {
-        createExamContent(formData);
+        createExamContent();
       }
       setFormData({
         id: "",
-        Name: "",
-        Status: "",
+        title: "",
+        status: true,
       });
       closeModal();
     }
@@ -131,16 +155,67 @@ const ExamContent: React.FC = () => {
     }));
   };
 
+   const handleUpdateStatus = (id: string) => {
+     setExamContent((prevContents) =>
+       prevContents.map((content) =>
+         content.id === id ? { ...content, Status: !content.status } : content
+       )
+     );
+     addNotification(`Trạng thái của môn thi đã được thay đổi.`, true);
+   };
+
+   const handleStatusChange = (id: string) => {
+     if (confirm("Are you sure you want to change the status?")) {
+       handleUpdateStatus(id);
+     }
+   };
+
+  const [examContent, setExamContent] = useState<ExamContentInterface[]>([]);
+
+  const formatDataSubject = (data: ExamContentInterface[] | ExamContentInterface) => {
+    if (Array.isArray(data)) {
+      return data.map((e) => ({
+        id: e.id,
+        title: e.title,
+        status: e.status
+      }));
+    } else if (data && typeof data === "object") {
+      return [
+        {
+          id: data.id,
+          title: data.title,
+          status: data.status
+        },
+      ];
+    }
+
+    return [];
+  };
+   const onload = async () => {
+    const result = await getAllExamContentByIdSubject(subject.id);
+      if(result.success){
+        const data = formatDataSubject(result.data)
+        setExamContent(data)
+      }
+   }
+  useEffect(() => {
+    if (subject) {
+      onload()
+    }
+  }, [subject]);
+
   return (
     <div className="examContent__container">
-      <PageTitle theme="light">Quản lý nội dung thi</PageTitle>
+      <PageTitle theme="light" showBack={true}>Quản lý nội dung thi</PageTitle>
       <Table
-        tableName="Nội dung thi"
+      title={title}
+        tableName={`Nội dung thi của môn ${subject?.name || ""}`}
         data={examContent}
         actions_add={{ name: "Thêm mới", onClick: () => openModal("add") }}
         actions_edit={{
           name: "Chỉnh sửa",
-          onClick: (content) => {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          onClick: (content: any) => {
             if (content) {
               openEditModal(content);
             }
@@ -152,7 +227,7 @@ const ExamContent: React.FC = () => {
         }}
         action_dowload={{ name: "Tải mẫu", onClick: downloadSample }}
         action_status={handleStatusChange}
-      ></Table>
+      />
 
       {modalIsOpen && (
         <div className="modal">
@@ -191,9 +266,9 @@ const ExamContent: React.FC = () => {
                       Tên: <br />
                       <input
                         type="text"
-                        name="Name"
+                        name="title"
                         className="modal__input"
-                        value={formData.Name}
+                        value={formData.title}
                         onChange={handleChange}
                         placeholder="Nhập tên"
                       />

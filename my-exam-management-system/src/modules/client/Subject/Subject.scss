@@ -1,0 +1,33 @@
+@use "@scss/mixin.scss" as m;
+.Subject__Client {
+  width: 100%;
+  height: auto;
+}
+.Subject__group {
+  h2 {
+    font-weight: bold;
+    font-size: 20px;
+    margin: 10px 0 10px 0;
+    color: var(--text);
+  }
+}
+
+
+
+@include m.responsive-to(xl){
+  .group__contentt {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@include m.responsive-to(lg){
+  .group__contentt {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@include m.responsive-to(sm){
+  .group__contentt {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}

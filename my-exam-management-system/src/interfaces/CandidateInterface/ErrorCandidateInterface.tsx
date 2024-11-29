@@ -1,9 +1,10 @@
 export interface ErrorCandidate {
-    id?: string;
-    sbd?:string;
-    name?: string;
-    image?:string;
-    dob?:string;
-    address?:string;
-    status?:string
+  idcode?: string;
+  sbd?: string;
+  name?: string;
+  image?: string;
+  dob?: string;
+  address?: string;
+  email?: string;
+  status?: boolean;
 }

@@ -1,15 +1,35 @@
 import { BaseResponse } from "@interfaces/InterfaceBaseResponse/InterfaceBaseResponse";
 
 export interface Candidate {
-    id: string;
-    sbd:string;
-    name: string;
-    image:string;
-    dob:string;
-    address:string;
-    status:string
+  idcode: string;
+  exam_room_id: number | string;
+  exam_id: string;
+  name: string;
+  image: string;
+  dob: string;
+  address: string;
+  email: string;
+  exam_room: Exam_room;
+  status: number | string;
 }
 
 export interface ApiCandidateResponse extends BaseResponse {
-    data: Candidate[];
+  data: Candidate[];
+}
+
+export interface CreateCandidate {
+  idcode: string;
+  name: string;
+  image: string | File;
+  imagePreviewUrl?: string;
+  dob: string;
+  address: string;
+  email: string;
+  status: number | string | boolean;
+}
+
+export interface Exam_room {
+  id: number;
+  exam_id: string;
+  name: string;
 }

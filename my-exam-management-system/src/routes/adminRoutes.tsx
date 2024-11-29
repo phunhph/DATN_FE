@@ -1,10 +1,10 @@
 // adminRoutes.js
+import ManageExamRoomDetail from "@/modules/admin/ManageExamRooms/ManageExamRoomDetail";
 import {
     Welcome,
     ManageCandidates,
     ManageENExamStructure,
     ManageENQuestions,
-    ManageEligibility,
     ManageExamRooms,
     ManageExamSessions,
     ManageExamState_Candidates,
@@ -21,6 +21,8 @@ import {
     DetailCandidates,
     QuestionDetail,
     ExamResults,
+    ManageStatus,
+    AdminPage
   } from "../modules/admin/index";
   
   const adminRoutes = [
@@ -31,8 +33,9 @@ import {
     { path: "exam-results", element: <ExamResults /> },
     { path: "manage-en-exam-structure", element: <ManageENExamStructure /> },
     { path: "manage-en-questions", element: <ManageENQuestions /> },
-    { path: "manage-eligibility", element: <ManageEligibility /> },
+    { path: "manage-status", element: <ManageStatus /> },
     { path: "manage-exam-rooms", element: <ManageExamRooms /> },
+    { path: "detail-exam-rooms", element: <ManageExamRoomDetail /> },
     { path: "manage-exam-sessions", element: <ManageExamSessions /> },
     { path: "manage-exam-state-candidates", element: <ManageExamState_Candidates /> },
     { path: "manage-exam-state-rooms", element: <ManageExamState_Rooms /> },
@@ -45,6 +48,8 @@ import {
     { path: "detail-supervisors", element: <DetailSupervisor /> },
     { path: "subject", element: <Subject /> },
     { path: "exam-content", element: <ExamContent /> },
+    { path: "user", element: <AdminPage /> },
+
   ];
   
   export default adminRoutes;

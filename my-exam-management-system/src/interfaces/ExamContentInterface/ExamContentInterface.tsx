@@ -2,9 +2,8 @@ import { BaseResponse } from "@interfaces/InterfaceBaseResponse/InterfaceBaseRes
 
 export interface ExamContentInterface {
   id: string | number;
-  Name?: string;
   title?: string;
-  Status?: string;
+  status?: boolean;
 }
 
 export interface ApiExamContentResponse extends BaseResponse {
@@ -15,5 +14,5 @@ export interface ExamContentCreate {
   id: string | number;
   exam_subject_id: string;
   title?: string;
-  Status?: string;
+  status?: boolean;
 }
