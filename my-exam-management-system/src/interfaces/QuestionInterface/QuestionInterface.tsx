@@ -32,6 +32,16 @@ export interface QuestionDetailResponse {
   updated_at: string;
   deleted_at: string | null;
   current_version: Question[];
+    id:string;
+    questionNumber: number;
+    questionText: string;
+    image?: string;
+    answers: {
+        id: number;
+        text?: string; 
+        image?: string;
+        isCorrect?: boolean;
+    }[];
 }
 
 export interface ApiQuestionDetailResponse extends BaseResponse {

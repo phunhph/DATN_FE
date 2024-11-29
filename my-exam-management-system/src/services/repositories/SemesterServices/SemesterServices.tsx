@@ -200,7 +200,7 @@ export const getAllSemesterWithExamSubject = async () => {
     }
   }
 };
-export const getExamWithSubject = async () => {
+export const getExamWithSubject = async (id: string) => {
   try {
     const token = localStorage.getItem("token");
 
@@ -208,8 +208,8 @@ export const getExamWithSubject = async () => {
       Authorization: `Bearer ${token}`,
     };
 
-    const response: AxiosResponse<ApiExamWithSubjectResponse[]> =
-      await instance.get("api/admin/exam/exam-with-exam-subject", {
+    const response: AxiosResponse<ApiExamWithSubjectResponse> =
+      await instance.get(`api/admin/exam/exam-with-exam-subject/${id}`, {
         headers: headers,
       });
 

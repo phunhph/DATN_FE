@@ -256,6 +256,7 @@ const ManageReports: React.FC = () => {
 
     useEffect(() => {
         loadSemester()
+        document.documentElement.className = `admin-light`;
     }, [])
 
     return (

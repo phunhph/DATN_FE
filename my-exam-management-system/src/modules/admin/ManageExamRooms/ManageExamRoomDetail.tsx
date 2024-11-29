@@ -1,15 +1,14 @@
-import React, { useEffect, useState } from "react";
-import "./ManageExamRoomDetail.scss";
-import { Table } from "@components/Table/Table";
-import useAuth from "@hooks/AutherHooks";
-import { useLocation, useNavigate } from "react-router-dom";
-import { Notification } from "@components/index";
-import { ExamRoom } from "@interfaces/ExamRoomInterfaces/ExamRoomInterfaces";
-import { ErrorExamRoom } from "@interfaces/ExamRoomInterfaces/ErrorExamRoomInterfaces";
 import {
   editExamRoom,
-  // getExamRoomDetail,
+  getExamRoomDetail,
 } from "@/services/repositories/ExamRoomService/ExamRoomService";
+import { Notification } from "@components/index";
+import { Table } from "@components/Table/Table";
+import { useAdminAuth } from "@hooks/AutherHooks";
+import { ErrorExamRoom } from "@interfaces/ExamRoomInterfaces/ErrorExamRoomInterfaces";
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import "./ManageExamRoomDetail.scss";
 
 interface RoomDetailData {
   exam_id: string;
@@ -22,9 +21,9 @@ interface RoomDetailData {
 }
 
 const ManageExamRoomDetail = () => {
-  useAuth();
-  const navigate = useNavigate();
+  useAdminAuth();
   const location = useLocation();
+  const navigate = useNavigate();
   const room = location.state?.room;
 
   const [roomDetail, setRoomDetail] = useState<RoomDetailData | null>(null);
@@ -196,6 +195,10 @@ const ManageExamRoomDetail = () => {
     setEditMode(false);
     setErrors({});
   };
+  
+  useEffect(() => {
+    document.documentElement.className = `admin-light`;
+  }, [])
 
   if (loading) {
     return (
