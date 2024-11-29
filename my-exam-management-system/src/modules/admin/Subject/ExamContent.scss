@@ -1,5 +1,21 @@
 textarea.modal__input {
-  resize: vertical; 
-  min-height: 4rem; 
+  resize: none; 
+  min-height: 5rem; 
   height: auto; 
+}
+
+.table__icon-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.table__icon {
+  width: 2rem;
+  height: 2rem;
 }
