@@ -1,14 +1,22 @@
 import { Notification, PageTitle, Table, UploadFile } from "@/components";
-import { ExamContentCreate, ExamContentInterface } from "@/interfaces/ExamContentInterface/ExamContentInterface";
+import {
+  ExamContentCreate,
+  ExamContentInterface,
+} from "@/interfaces/ExamContentInterface/ExamContentInterface";
 import { ErrorSubject } from "@/interfaces/SubjectInterface/ErrorExamSubjectInterface";
-import { addExamContent, getAllExamContentByIdSubject, importFileExcelContent, updateExamContent } from "@/services/repositories/ExamContentService/ExamContentService";
+import {
+  addExamContent,
+  getAllExamContentByIdSubject,
+  importFileExcelContent,
+  updateExamContent,
+} from "@/services/repositories/ExamContentService/ExamContentService";
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
 const ExamContent: React.FC = () => {
   const location = useLocation();
   const { subject } = location.state || {};
-  
+
   const downloadSample = () => {
     const link = document.createElement("a");
     link.href = `public/excel/Exam-Content.xlsx`;
@@ -25,6 +33,9 @@ const ExamContent: React.FC = () => {
   const [formData, setFormData] = useState<ExamContentInterface>({
     id: "",
     title: "",
+
+    url_listening: "",
+    description: "",
     status: true,
   });
 
@@ -33,23 +44,36 @@ const ExamContent: React.FC = () => {
     setModalIsOpen(true);
     setErrors({});
     if (type === "add") {
-      setEditMode(false)
+      setEditMode(false);
     }
     if (!editMode) {
       setFormData({
         id: "",
         title: "",
+
+        url_listening: "",
+        description: "",
         status: true,
       });
     }
   };
 
-  const title = ['Mã nội dung thi', 'Tên nội dung thi', 'trạng thái', 'thao tác']
+  const title = [
+    "Mã nội dung thi",
+    "Tên nội dung thi",
+    "URL Audio bài nghe",
+    "Bài đọc",
+    "Trạng thái",
+    "Thao tác",
+  ];
 
   const openEditModal = (data: ExamContentInterface) => {
     setFormData({
       id: data.id,
       title: data.title,
+
+      url_listening: data.url_listening,
+      description: data.description,
       status: data.status,
     });
     setEditMode(true);
@@ -59,11 +83,14 @@ const ExamContent: React.FC = () => {
 
   const closeModal = () => {
     setModalIsOpen(false);
-    setEditMode(false)
+    setEditMode(false);
     if (!editMode) {
       setFormData({
         id: "",
         title: "",
+
+        url_listening: "",
+        description: "",
         status: true,
       });
     }
@@ -84,7 +111,7 @@ const ExamContent: React.FC = () => {
     if (file) {
       const data = await importFileExcelContent(file);
 
-      addNotification( data.message || "", data.success);
+      addNotification(data.message || "", data.success);
     }
   };
 
@@ -96,16 +123,19 @@ const ExamContent: React.FC = () => {
     return Object.keys(errors).length === 0;
   };
 
-  const createExamContent =  async() => {
+  const createExamContent = async () => {
     const newContent: ExamContentCreate = {
       exam_subject_id: subject.id,
       id: formData.id,
       title: formData.title,
+
+      url_listening: formData.url_listening,
+      description: formData.description,
       status: true,
     };
 
-    const result = await addExamContent(newContent)
-    if(result.success) {
+    const result = await addExamContent(newContent);
+    if (result.success) {
       setExamContent([...examContent, newContent]);
     }
 
@@ -115,9 +145,9 @@ const ExamContent: React.FC = () => {
   };
 
   const handleUpdateSubject = async () => {
-    console.log(formData);
-    const result = await updateExamContent(formData)
-    if(result.success){
+    console.log("formData", formData);
+    const result = await updateExamContent(formData);
+    if (result.success) {
       setExamContent((prevContents) =>
         prevContents.map((content) =>
           content.id === formData.id ? { ...formData } : content
@@ -139,6 +169,9 @@ const ExamContent: React.FC = () => {
       setFormData({
         id: "",
         title: "",
+
+        url_listening: "",
+        description: "",
         status: true,
       });
       closeModal();
@@ -155,66 +188,75 @@ const ExamContent: React.FC = () => {
     }));
   };
 
-   const handleUpdateStatus = (id: string) => {
-     setExamContent((prevContents) =>
-       prevContents.map((content) =>
-         content.id === id ? { ...content, Status: !content.status } : content
-       )
-     );
-     addNotification(`Trạng thái của môn thi đã được thay đổi.`, true);
-   };
+  const handleUpdateStatus = (id: string) => {
+    setExamContent((prevContents) =>
+      prevContents.map((content) =>
+        content.id === id ? { ...content, Status: !content.status } : content
+      )
+    );
+    addNotification(`Trạng thái của môn thi đã được thay đổi.`, true);
+  };
 
-   const handleStatusChange = (id: string) => {
-     if (confirm("Are you sure you want to change the status?")) {
-       handleUpdateStatus(id);
-     }
-   };
-
+  const handleStatusChange = (id: string) => {
+    if (confirm("Are you sure you want to change the status?")) {
+      handleUpdateStatus(id);
+    }
+  };
   const [examContent, setExamContent] = useState<ExamContentInterface[]>([]);
 
-  const formatDataSubject = (data: ExamContentInterface[] | ExamContentInterface) => {
+  const formatDataSubject = (
+    data: ExamContentInterface[] | ExamContentInterface
+  ) => {
     if (Array.isArray(data)) {
       return data.map((e) => ({
         id: e.id,
         title: e.title,
-        status: e.status
+
+        url_listening: e.url_listening,
+        description: e.description,
+        status: e.status,
       }));
     } else if (data && typeof data === "object") {
       return [
         {
           id: data.id,
           title: data.title,
-          status: data.status
+
+          url_listening: data.url_listening,
+          description: data.description,
+          status: data.status,
         },
       ];
     }
 
     return [];
   };
-   const onload = async () => {
+  const onload = async () => {
     const result = await getAllExamContentByIdSubject(subject.id);
-      if(result.success){
-        const data = formatDataSubject(result.data)
-        setExamContent(data)
-      }
-   }
+    if (result.success) {
+      const data = formatDataSubject(result.data);
+      setExamContent(data);
+      console.log(data);
+    }
+  };
   useEffect(() => {
     if (subject) {
-      onload()
+      onload();
     }
   }, [subject]);
 
   return (
     <div className="examContent__container">
-      <PageTitle theme="light" showBack={true}>Quản lý nội dung thi</PageTitle>
+      <PageTitle theme="light" showBack={true}>
+        Quản lý nội dung thi
+      </PageTitle>
       <Table
-      title={title}
+        title={title}
         tableName={`Nội dung thi của môn ${subject?.name || ""}`}
         data={examContent}
         actions_add={{ name: "Thêm mới", onClick: () => openModal("add") }}
         actions_edit={{
           name: "Chỉnh sửa",
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           onClick: (content: any) => {
             if (content) {
               openEditModal(content);
@@ -273,6 +315,27 @@ const ExamContent: React.FC = () => {
                         placeholder="Nhập tên"
                       />
                       {errors.name && <p className="error">{errors.name}</p>}
+                    </label>
+                    <label className="modal__label">
+                      URL bài nghe: <br />
+                      <input
+                        type="text"
+                        name="url_listening"
+                        className="modal__input"
+                        value={formData.url_listening}
+                        onChange={handleChange}
+                        placeholder="Nhập URL bài nghe"
+                      />
+                    </label>
+                    <label className="modal__label">
+                      Nội dung bài đọc: <br />
+                      <textarea
+                        name="description"
+                        className="modal__input"
+                        value={formData.description}
+                        onChange={handleChange}
+                        placeholder="Nhập nội dung bài đọc"
+                      />
                     </label>
                   </div>
 
