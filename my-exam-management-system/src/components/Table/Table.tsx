@@ -126,10 +126,30 @@ export const Table = <T extends Record<string, any>>({
       );
     } else if (key === "image") {
       return <img src={value.image} alt="Image" className="table-image" />;
+    } else if (key === "url_listening") {
+      return (
+        <div className="audio-cell">
+          <audio id={`audio-${value.id}`} src={value.url_listening}></audio>
+          <button
+            className="play-audio-button"
+            onClick={() => {
+              const audioElement = document.getElementById(
+                `audio-${value.id}`
+              ) as HTMLAudioElement;
+              if (audioElement) {
+                audioElement.play();
+              }
+            }}
+          >
+            🎧
+          </button>
+        </div>
+      );
     } else {
       return highlightText(String(value[key]));
     }
   };
+
 
   return (
     <div className="table-container">
