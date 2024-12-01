@@ -52,7 +52,7 @@ export interface ExamRoomAPIUpdate {
   exam_session_id?: string | number | undefined;
   exam_subject_id?: string | number | undefined;
 }
-interface ExamRoomUpdate {
+export interface ExamRoomUpdate {
   id: string;
   name: string;
   exam_room_detail: {
@@ -61,8 +61,7 @@ interface ExamRoomUpdate {
     exam_session_id: string;
   };
 }
-
-interface Session {
+export interface Session {
   id: string;
   name: string;
   time_start: string;

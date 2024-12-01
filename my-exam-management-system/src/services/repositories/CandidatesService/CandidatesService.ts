@@ -206,14 +206,17 @@ export const addCandidate = async (data: CreateCandidate) => {
   }
 };
 
-export const getExamByIdCode = async (id: string, code: string):Promise<ApiCandidateResponse__ > => {
+export const getExamByIdCode = async (
+  id: string,
+  code: string
+): Promise<ApiCandidateResponse__> => {
   try {
     const token = localStorage.getItem("token");
-   
+
     const data = {
-      "id_subject": id,
-      "idCode": code
-  }
+      id_subject: id,
+      idCode: code,
+    };
 
     const headers = {
       Authorization: `Bearer ${token}`,
@@ -228,8 +231,8 @@ export const getExamByIdCode = async (id: string, code: string):Promise<ApiCandi
       }
     );
     console.log(response);
-    
-    return response.data
+
+    return response.data;
   } catch (error) {
     if (error instanceof AxiosError && error.response) {
       const { data } = error.response;
@@ -238,7 +241,7 @@ export const getExamByIdCode = async (id: string, code: string):Promise<ApiCandi
       return {
         success: false,
         message: errorMessage,
-       status:500,
+        status: 500,
       };
     } else {
       const generalError =
@@ -247,11 +250,11 @@ export const getExamByIdCode = async (id: string, code: string):Promise<ApiCandi
       return {
         success: false,
         message: generalError,
-        status:500,
+        status: 500,
       };
     }
   }
-}
+};
 
 export const CandidateById = async (
   id: string
@@ -263,15 +266,12 @@ export const CandidateById = async (
       Authorization: `Bearer ${token}`,
     };
 
-    const response: AxiosResponse<ApiCandidateInFoResponse> = await instance.get(
-      `/api/client/info/${id}`,
-      {
+    const response: AxiosResponse<ApiCandidateInFoResponse> =
+      await instance.get(`/api/client/info/${id}`, {
         headers: headers,
-      }
-    );
+      });
 
     return response.data;
-      
   } catch (error) {
     if (error instanceof AxiosError && error.response) {
       const { data } = error.response;
@@ -291,5 +291,53 @@ export const CandidateById = async (
         status: 500,
       };
     }
+  }
+};
+
+export const exportCandidateExcel = async (action: string, id: string) => {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token)
+      return {
+        success: false,
+        message: "Token không tồn tại",
+      };
+
+    const formData = new FormData();
+    formData.append("action", action);
+    formData.append("id", id);
+
+    const response = await instance.post(
+      "/api/admin/candidate/export-excel-password-candidate",
+      formData, // Sử dụng FormData thay vì object
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept:
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        },
+        responseType: "blob",
+      }
+    );
+
+    // Tạo và download file
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "danh_sach_ung_vien.xlsx";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    return {
+      success: true,
+      message: "Xuất file thành công",
+    };
+  } catch (error: any) {
+    console.error("Export error:", error);
+    return {
+      success: false,
+      message: "Lỗi khi xuất file",
+    };
   }
 };
