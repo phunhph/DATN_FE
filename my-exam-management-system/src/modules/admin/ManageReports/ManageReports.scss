@@ -1,11 +1,12 @@
 @use "@scss/mixin.scss" as m;
 
 .report {
+    margin-top: 1rem;
     &__container {
         flex-grow: 1;
         h2 {
             margin-bottom: 1rem;
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             font-weight: 600;
             text-align: center;
         }
@@ -60,19 +61,24 @@
 
         &-pie {
             padding: 1rem;
-            width: 45%;
+            width: 30%;
             background-color: #fff;
             border-radius: 10px;
             box-shadow: 0px 0.125rem 0.3125rem 0px black;
         }
 
-        &-line {
+        &-bar {
             padding: 1rem;
-            width: 50%;
+            width: 35%;
             background-color: #fff;
             border-radius: 10px;
-            box-shadow: 0px 2px 0.3125rem 0px black;
+            box-shadow: 0px 0.125rem 0.3125rem 0px black;
+
         }
+    }
+    &__chart2 {
+        display: flex;
+        gap: 1rem;
     }
 
     &__table-container {
@@ -82,7 +88,7 @@
     }
 
     &__statistic {
-        margin: 1rem 0 5rem 0;
+        margin: 1rem 0 1rem 0;
         padding: 1rem 0 2rem 0;
         background-color: #fff;
         border-radius: 10px;
@@ -134,12 +140,17 @@
                 overflow: hidden;
             }
 
-            &-line {
+            &-bar {
                 width: min(100%, max(360px, 100%));
                 min-height: 300px;
                 margin: 0 auto;
                 overflow: hidden;
             }
+        }
+        &__chart2 {
+            flex-direction: column;
+            align-items: center;
+            justify-content: start;
         }
     }
 }

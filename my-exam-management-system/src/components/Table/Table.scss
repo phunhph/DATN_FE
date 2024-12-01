@@ -121,6 +121,7 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        max-width: 200px;
        
       }
     }
@@ -193,4 +194,21 @@
     }
   }
 }
+.audio-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .play-audio-button {
+    background: none;
+    border: none;
+    font-size: 1.5rem; 
+    cursor: pointer;
+
+    &:hover {
+      color: #007bff; 
+    }
+  }
+}
+
 
