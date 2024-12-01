@@ -1,193 +1,273 @@
 import { Button, GridItem, PageTitle } from '@/components'
 import './ManageStatus.scss'
-import { useEffect, useState } from 'react';
-import { roomStatus, studentStatus } from './ManageStatus.type';
+import { useEffect, useState, useRef, useCallback } from 'react'
+import { roomStatus, studentStatus } from './ManageStatus.type'
+import Echo from "laravel-echo"
 
-
+const API_BASE_URL = 'http://localhost:8000/api'
+const PUSHER_KEY = 'be4763917dd3628ba0fe'
+const PUSHER_CLUSTER = 'ap1'
 
 const ManageStatus = () => {
-	const [roomStatusList, setRoomStatusList] = useState<roomStatus[]>([])
-	const [studentStatusList, setStudentStatusList] = useState<studentStatus[]>([])
-	const [openStudentStatus, setOpenStudentStatus] = useState<boolean>(false)
-	console.log(studentStatusList.length)
-	const vietnamTime = new Date().toLocaleString("vi-VN", {
-		timeZone: "Asia/Ho_Chi_Minh",
-		year: "numeric",
-		month: "2-digit",
-		day: "2-digit",
-		hour: "2-digit",
-		minute: "2-digit",
-		second: "2-digit"
-	  });
-	console.log(vietnamTime)
+    const [roomStatusList, setRoomStatusList] = useState<roomStatus[]>([])
+    const [studentStatusList, setStudentStatusList] = useState<studentStatus[]>([])
+    const [openStudentStatus, setOpenStudentStatus] = useState(false)
+    const [currentRoomId, setCurrentRoomId] = useState<string | null>(null)
+    const [studentStatusCounts, setStudentStatusCounts] = useState({
+        total: 0,
+        notStarted: 0,
+        inProgress: 0, 
+        completed: 0,
+        forbidden: 0
+    })
+    const submittedStudents = useRef<Record<string, boolean>>({})
+    const echoInstance = useRef<Echo | null>(null)
 
-	const getListOfStudentStatus = (roomID: String) => {
-		//api get student
-		console.log(roomID)
-		const studentMockList: studentStatus[] = [
-			{
-				id: "st1",
-				image:"https://media.printables.com/media/prints/609705/images/4843766_f3a15f19-e7ee-4661-b553-2533084ac8fa_dcb27d2e-db17-433d-8f60-1d129843482d/th-387312948.png",
-				studentName:"Phạm Quang Đăng",
-				studentStatus: 2,
-				timeStart:"20:05:04 27/10/2024"
-			},
-			{
-				id: "st2",
-				image:"https://pbs.twimg.com/profile_images/1833615485562474496/1TzLCnyn_400x400.jpg",
-				studentName:"Nguyễn Mỹ Anh",
-				studentStatus: 0,
-				timeStart:"20:05:04 27/10/2024"
-			},
-			{
-				id: "st3",
-				image:"https://media.printables.com/media/prints/609705/images/4843766_f3a15f19-e7ee-4661-b553-2533084ac8fa_dcb27d2e-db17-433d-8f60-1d129843482d/th-387312948.png",
-				studentName:"Nguyễn Đức Phú",
-				studentStatus: 1,
-				timeStart:"20:05:04 27/10/2024"
-			}
-		]
+    const getAuthToken = useCallback(() => {
+        const tokenData = localStorage.getItem('token')
+        return tokenData ? JSON.parse(tokenData).token : null
+    }, [])
 
-		setStudentStatusList(studentMockList)
-		setOpenStudentStatus(true)
-	}
+    const calculateStudentStatusCounts = useCallback((students: studentStatus[]) => {
+        const counts = {
+            total: students.length,
+            notStarted: students.filter(student => student.studentStatus === 0).length,
+            inProgress: students.filter(student => student.studentStatus === 1).length,
+            completed: students.filter(student => student.studentStatus === 2).length,
+            forbidden: students.filter(student => student.studentStatus === 3).length
+        }
+        setStudentStatusCounts(counts)
+    }, [])
 
-	const returnToRoomList = () => {
-		setOpenStudentStatus(false)
-		setStudentStatusList([])
-	}
+    const updateStudentStatus = useCallback(async (studentId: string, status: number) => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/candidate/${studentId}/update-status/${status}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getAuthToken()}`
+                },
+                body: JSON.stringify({
+                    id: studentId,
+                    status,
+                    _method: 'PUT'
+                })
+            })
+            if (!response.ok) throw new Error('Failed to update status')
+        } catch (error) {
+            console.error('Error updating student status:', error)
+        }
+    }, [getAuthToken])
 
-	useEffect(() => {
-		//api get list
-		const mockList: roomStatus[] = [
-			{
-				id: "1",
-				room: "Room 101",
-				subject: "Mathematics",
-				totalStudent: 30,
-				studentAttendingExam: 28,
-				studentForbidded: 2
-			},
-			{
-				id: "2",
-				room: "Room 102",
-				subject: "Physics",
-				totalStudent: 25,
-				studentAttendingExam: 24,
-				studentForbidded: 1
-			},
-			{
-				id: "3",
-				room: "Room 103",
-				subject: "Chemistry",
-				totalStudent: 20,
-				studentAttendingExam: 19,
-				studentForbidded: 1
-			},
-			{
-				id: "4",
-				room: "Room 104",
-				subject: "English",
-				totalStudent: 40,
-				studentAttendingExam: 38,
-				studentForbidded: 2
-			},
-			{
-				id: "5",
-				room: "Room 105",
-				subject: "History",
-				totalStudent: 15,
-				studentAttendingExam: 14,
-				studentForbidded: 1
-			},
-			{
-				id: "6",
-				room: "Room 106",
-				subject: "Geography",
-				totalStudent: 18,
-				studentAttendingExam: 17,
-				studentForbidded: 1
-			}
-		]
-		setRoomStatusList(mockList)
-	}, [])
+    const updateStudentListStatus = useCallback((studentId: string, newStatus: number) => {
+        setStudentStatusList(prevList => {
+            const updatedList = prevList.map(student => 
+                student.id === studentId ? { ...student, studentStatus: newStatus } : student
+            )
+            calculateStudentStatusCounts(updatedList)
+            return updatedList
+        })
+    }, [calculateStudentStatusCounts])
 
-	
-	useEffect(() => {
-		document.documentElement.className = `admin-light`;
-	  }, [])
-	  
-	return (
-		<>
-			<div className='admin-status__container'>
-				{/* Room list */}
-				{ !openStudentStatus && roomStatusList.length > 0 && (
-					<>
-					<PageTitle theme='light'>Trạng thái phòng thi</PageTitle>
-					<div className='admin-status__group'>
-						{roomStatusList.length > 0 && roomStatusList.map(roomStatus => (
-							<GridItem key={roomStatus.id} className='admin-status__item cursor-default'>
-								<div>
-									<h2>Phòng thi: {roomStatus.room}</h2>
-								</div>
-								<div>
-									<p>Môn thi: {roomStatus.subject}</p>
-									<p>Tổng thí sinh: {roomStatus.totalStudent}</p>
-									<p>Số thí sinh đang thi: {roomStatus.studentAttendingExam}</p>
-									<p>Số thí sinh cấm thi: {roomStatus.studentForbidded}</p>
-								</div>
-								<div>
-									<Button className='admin-status__detail-btn' onClick={() => getListOfStudentStatus("avv")}>Chi tiết</Button>
-								</div>
-							</GridItem>
-						))}
-					</div>
-					</>
-				)}
+    const initializeEcho = useCallback(() => {
+        if (!echoInstance.current) {
+            try {
+                echoInstance.current = new Echo({
+                    broadcaster: 'pusher',
+                    key: PUSHER_KEY,
+                    cluster: PUSHER_CLUSTER,
+                    forceTLS: true,
+                    authEndpoint: `${API_BASE_URL}/custom-broadcasting/auth-admin`,
+                    auth: {
+                        headers: {
+                            'Authorization': `Bearer ${getAuthToken()}`,
+                        }
+                    },
+                    withCredentials: true,
+                })
+            } catch (error) {
+                console.error('Echo initialization error:', error)
+            }
+        }
+        return echoInstance.current
+    }, [getAuthToken])
 
-				{/* Student list */}
-				{ openStudentStatus && studentStatusList.length > 0 && (
-					<>
-					<PageTitle theme='light' >Trạng thái thí sinh</PageTitle>
-					<button className="btn-return" onClick={returnToRoomList}><img src="/Back.svg" alt="Back" /></button>
-					<div className='admin-status__group'>
-						{ studentStatusList.map(studentStatus => (
-							<GridItem key={studentStatus.id} className='admin-status__item cursor-default'>
-								<div>
-									<img className='admin-status__student-image' src={studentStatus.image} alt={studentStatus.studentName}></img>
-								</div>
-								<div>
-									<h2>Phòng thi: {studentStatus.studentName}</h2>
-								</div>
-								<div>
-									<p>Thời gian bắt đầu: {studentStatus.timeStart ? studentStatus.timeStart : "Không khả dụng"}</p>
-									{studentStatus.studentStatus == 0 && <p className='status-yellow'>Trạng thái thí sinh: Đang thi</p>}
-									{studentStatus.studentStatus == 1 && <p className='status-green'>Trạng thái thí sinh: Đã hoàn thành</p>}
-									{studentStatus.studentStatus == 2 && <p className='status-red'>Trạng thái thí sinh: Cấm thi</p>}
-								</div>
-							</GridItem>
-						))}
-					</div>
-					</>
-				)}
-				
-				{/* No data */}
-				{ !openStudentStatus  && roomStatusList.length == 0 && (
-					<>
-					<PageTitle theme='light' >Trạng thái phòng thi</PageTitle>
-					<p className='no-data'>Không có dữ liệu</p>
-					</>
-				)}
-				{ openStudentStatus  && studentStatusList.length == 0 && (
-					<>
-					<PageTitle theme='light' >Trạng thái thí sinh</PageTitle>
-					<button className="btn-return" onClick={returnToRoomList}><img src="/Back.svg" alt="Back" /></button>
-					<p className='no-data'>Không có dữ liệu</p>
-					</>
-				)}
-			</div>
-		</>
-	)
+    const setupWebSocketListeners = useCallback((echo: Echo, roomID: string) => {
+        const channel = echo.join(`presence-room.${roomID}`)
+
+        channel.here((users) => {
+            setStudentStatusList(prevList => {
+                const updatedList = prevList.map(student => {
+                    const isCurrentlyTakingExam = users.some(user => user.id === student.id)
+                    return isCurrentlyTakingExam ? { ...student, studentStatus: 1 } : student
+                })
+                calculateStudentStatusCounts(updatedList)
+                return updatedList
+            })
+        })
+
+        channel.joining((user) => {
+            updateStudentListStatus(user.id, 1)
+            updateStudentStatus(user.id, 1)
+        })
+
+        channel.leaving((user) => {
+            if (!submittedStudents.current[user.id]) {
+                updateStudentListStatus(user.id, 4)
+                updateStudentStatus(user.id, 4)
+            }
+        })
+
+        channel.listen('.student.submitted', (data) => {
+            submittedStudents.current[data.id] = true
+            updateStudentListStatus(data.id, 2)
+            updateStudentStatus(data.id, 2)
+        })
+    }, [calculateStudentStatusCounts, updateStudentStatus, updateStudentListStatus])
+
+    const getListOfStudentStatus = useCallback(async (roomID: string) => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/room-status/rooms/${roomID}/students`)
+            const studentStatuses = await response.json()
+            setStudentStatusList(studentStatuses)
+            calculateStudentStatusCounts(studentStatuses)
+
+            const echo = initializeEcho()
+            if (echo) {
+                setupWebSocketListeners(echo, roomID)
+                setCurrentRoomId(roomID)
+                setOpenStudentStatus(true)
+            }
+        } catch (error) {
+            console.error('Error fetching student statuses:', error)
+        }
+    }, [calculateStudentStatusCounts, initializeEcho, setupWebSocketListeners])
+
+    const returnToRoomList = useCallback(() => {
+        if (currentRoomId && echoInstance.current) {
+            echoInstance.current.leave(`presence-room.${currentRoomId}`)
+        }
+        setOpenStudentStatus(false)
+        setStudentStatusList([])
+        setCurrentRoomId(null)
+    }, [currentRoomId])
+
+    useEffect(() => {
+        const fetchRoomStatuses = async () => {
+            try {
+                const response = await fetch(`${API_BASE_URL}/room-status/rooms`)
+                const roomStatuses = await response.json()
+                setRoomStatusList(roomStatuses)
+            } catch (error) {
+                console.error('Error fetching room statuses:', error)
+            }
+        }
+        fetchRoomStatuses()
+    }, [])
+
+    useEffect(() => {
+        document.documentElement.className = 'admin-light'
+        return () => {
+            if (echoInstance.current) {
+                echoInstance.current.disconnect()
+            }
+        }
+    }, [])
+
+    const renderStatusText = (status: number) => {
+        const statusMap = {
+            0: <span className='status-yellow'>Chưa thi</span>,
+            1: <span className='status-yellow'>Đang thi</span>,
+            2: <span className='status-green'>Đã hoàn thành</span>,
+            3: <span className='status-red'>Cấm thi</span>,
+            4: <span className='status-red'>Mất kết nối</span>
+        }
+        return statusMap[status as keyof typeof statusMap]
+    }
+
+    return (
+        <div className='admin-status__container'>
+            {!openStudentStatus && roomStatusList.length > 0 && (
+                <>
+                    <PageTitle theme='light'>Trạng thái phòng thi</PageTitle>
+                    <div className='admin-status__group'>
+                        {roomStatusList.map(room => (
+                            <GridItem key={room.id} className='admin-status__item cursor-default'>
+                                <div>
+                                    <h2>Phòng thi: {room.room}</h2>
+                                </div>
+                                <div>
+                                    <p>Môn thi: {room.subject}</p>
+                                    <p>Tổng thí sinh: {room.totalStudent}</p>
+                                </div>
+                                <div>
+                                    <Button 
+                                        className='admin-status__detail-btn'
+                                        onClick={() => getListOfStudentStatus(room.id)}
+                                    >
+                                        Chi tiết
+                                    </Button>
+                                </div>
+                            </GridItem>
+                        ))}
+                    </div>
+                </>
+            )}
+
+            {openStudentStatus && studentStatusList.length > 0 && (
+                <>
+                    <PageTitle theme='light'>Trạng thái thí sinh</PageTitle>
+                    <div className="student-status-summary">
+                        <p>Tổng số: {studentStatusCounts.total}</p>
+                        <p>Chưa thi: {studentStatusCounts.notStarted}</p>
+                        <p>Đang thi: {studentStatusCounts.inProgress}</p>
+                        <p>Đã hoàn thành: {studentStatusCounts.completed}</p>
+                        {/* <p>Cấm thi: {studentStatusCounts.forbidden}</p> */}
+                    </div>
+                    <button className="btn-return" onClick={returnToRoomList}>
+                        <img src="/Back.svg" alt="Back" />
+                    </button>
+                    <div className='admin-status__group'>
+                        {studentStatusList.map(student => (
+                            <GridItem key={student.id} className='admin-status__item cursor-default'>
+                                <div>
+                                    <img 
+                                        className='admin-status__student-image'
+                                        src={student.image}
+                                        alt={student.studentName}
+                                    />
+                                </div>
+                                <div>
+                                    <h2>{student.studentName}</h2>
+                                </div>
+                                <div>
+                                    <p>Thời gian bắt đầu: {student.timeStart || "Không khả dụng"}</p>
+                                    <p>Trạng thái: {renderStatusText(student.studentStatus)}</p>
+                                </div>
+                            </GridItem>
+                        ))}
+                    </div>
+                </>
+            )}
+
+            {!openStudentStatus && roomStatusList.length === 0 && (
+                <>
+                    <PageTitle theme='light'>Trạng thái phòng thi</PageTitle>
+                    <p className='no-data'>Không có dữ liệu</p>
+                </>
+            )}
+
+            {openStudentStatus && studentStatusList.length === 0 && (
+                <>
+                    <PageTitle theme='light'>Trạng thái thí sinh</PageTitle>
+                    <button className="btn-return" onClick={returnToRoomList}>
+                        <img src="/Back.svg" alt="Back" />
+                    </button>
+                    <p className='no-data'>Không có dữ liệu</p>
+                </>
+            )}
+        </div>
+    )
 }
 
 export default ManageStatus
