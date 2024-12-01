@@ -21,6 +21,10 @@ import {
   Question___,
 } from "@/interfaces/CandidateInterface/CandidateInterface";
 import { finish, submitStemp } from "@/services/repositories/ExamSubjectService/ExamSubjectService";
+import Echo from "laravel-echo";
+import Pusher from "pusher-js";
+
+window.Pusher = Pusher;
 
 type Props = {};
 
@@ -797,7 +801,82 @@ const Exam: React.FC<Props> = () => {
     finish_(data);
     setHandin(false);
     setSubmitted(true);
+
+    // thay code bằng id học sinh
+    let code = "03cc7093-61d2-3f63-ad0e-0d0d24ca8ab5";
+    studentSubmitted(code);
   };
+
+  const studentSubmitted = async (studentId: string) => {
+    try {
+        const response = await fetch(
+            `http://localhost:8000/api/candidate/${studentId}/finish`,
+            {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getAuthToken()}`
+                },
+                body: JSON.stringify({
+                    id: studentId,
+                    _method: 'PUT'
+                })
+            }
+        );
+        
+        if (!response.ok) {
+            throw new Error('Failed to update status');
+        }
+    } catch (error) {
+        console.error('Error updating student status:', error);
+    }
+}
+
+  const roomId = '1';
+
+  const getAuthToken = () => {
+    const tokenData = localStorage.getItem('token_client');
+    return tokenData ? JSON.parse(tokenData).token : null;
+}
+
+  useEffect(() => {
+    let echoInstance = null;
+  
+    try {
+      echoInstance = new Echo({
+        broadcaster: 'pusher',
+        key: 'be4763917dd3628ba0fe',
+        cluster: 'ap1',
+        forceTLS: true,
+        authEndpoint: 'http://localhost:8000/api/custom-broadcasting/auth-client',
+        auth: {
+          headers: {
+            'Authorization': `Bearer ${getAuthToken()}`,
+          }
+        },
+        withCredentials: true,
+      });
+  
+      // Join presence channel
+      const channel = echoInstance.join(`presence-room.${roomId}`);
+  
+      channel.error((error) => {
+        console.error('Lỗi xảy ra:', error);
+      });
+  
+      return () => {
+        try {
+          if (echoInstance && echoInstance.leave) {
+            echoInstance.leave(`presence-room.${roomId}`);
+          }
+        } catch (cleanupError) {
+          console.error('Error during channel cleanup:', cleanupError);
+        }
+      };
+    } catch (error) {
+      console.error('Error initializing Echo or joining presence channel:', error);
+    }
+  }, [roomId]);
 
   useEffect(() => {
     setCurrentView("Trắc nghiệm");
