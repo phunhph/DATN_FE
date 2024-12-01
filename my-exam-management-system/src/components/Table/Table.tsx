@@ -113,7 +113,7 @@ export const Table = <T extends Record<string, any>>({
     }
   }, [data]);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  
   const renderCellValue = (key: keyof T, value: any) => {
     if (key === "status") {
       return (
@@ -126,28 +126,44 @@ export const Table = <T extends Record<string, any>>({
       );
     } else if (key === "image") {
       return <img src={value.image} alt="Image" className="table-image" />;
-    } else if (key === "url_listening") {
-      return (
-        <div className="audio-cell">
-          <audio id={`audio-${value.id}`} src={value.url_listening}></audio>
-          <button
-            className="play-audio-button"
-            onClick={() => {
-              const audioElement = document.getElementById(
-                `audio-${value.id}`
-              ) as HTMLAudioElement;
-              if (audioElement) {
-                audioElement.play();
-              }
-            }}
-          >
-            🎧
-          </button>
-        </div>
-      );
-    } else {
-      return highlightText(String(value[key]));
-    }
+    } else 
+     if (key === "url_listening") {
+       return (
+         <div className="audio-cell">
+           <audio
+             id={`audio-${value.id}`}
+             src={value.url_listening}
+             style={{ display: "none" }}
+           ></audio>
+           <button
+             className="play-audio-button"
+             onClick={() => {
+               const audioElement = document.getElementById(
+                 `audio-${value.id}`
+               ) as HTMLAudioElement;
+
+               if (audioElement) {
+                 if (audioElement.paused) {
+                   audioElement.play().catch((error) => {
+                     console.error("Error playing audio:", error);
+                     alert(
+                       "Không thể phát âm thanh. Định dạng không được hỗ trợ."
+                     );
+                   });
+                 } else {
+                   audioElement.pause();
+                   audioElement.currentTime = 0; 
+                 }
+               }
+             }}
+           >
+             🎧
+           </button>
+         </div>
+       );
+     } else {
+       return highlightText(String(value[key]));
+     }
   };
 
 
