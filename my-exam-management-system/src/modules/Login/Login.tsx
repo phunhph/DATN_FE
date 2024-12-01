@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Notification } from "../../components";
 import "./login.scss";
-import { login } from "@/services/repositories/AutherService/autherService";
-import { useToken } from "@/contexts";
+import { login, loginClient } from "@/services/repositories/AutherService/autherService";
+import { useClientToken } from "@/contexts";
+import { Notification } from "@/components";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -12,7 +13,7 @@ const Login: React.FC = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [emailError, setEmailError] = useState<string | null>(null);
   const [passwordError, setPasswordError] = useState<string | null>(null);
-  const { tokenRep, expiresAt, setToken } = useToken();
+  const { tokenRep, expiresAt, setToken } = useClientToken();
   const [notifications, setNotifications] = useState<
     Array<{ message: string; isSuccess: boolean }>
   >([]);
@@ -30,19 +31,21 @@ const Login: React.FC = () => {
   const loginServices = async (email: string, password: string) => {
     setLoading(true);
     try {
-      const user = await login(email, password);
+      const user = await loginClient(email, password);
       if (user.status !== 200) {
         addNotification(user.warning, user.success);
       } else {
         const { token, data, expires_at } = user;
+        console.log(user);
+
         setToken(token, data, new Date(expires_at * 1000));
         const data_ = {
           token: user.token,
           expires_at: user.expires_at,
         };
-        localStorage.setItem("token", JSON.stringify(data_));
-        localStorage.setItem("data", JSON.stringify(user.data));
-        navigate("/admin");
+        localStorage.setItem("token_client", JSON.stringify(data_));
+        localStorage.setItem("data_client", JSON.stringify(user.data));
+        navigate("/client");
       }
     } catch (error) {
       addNotification("Đăng nhập thất bại, vui lòng thử lại.", false);
@@ -79,7 +82,7 @@ const Login: React.FC = () => {
     if (tokenRep && expiresAt) {
       const now = new Date();
       if (now < expiresAt) {
-        navigate("/admin");
+        navigate("/client");
       } else {
         setToken(null, null, null);
       }
@@ -92,54 +95,71 @@ const Login: React.FC = () => {
 
   return (
     <div className="login-container">
-      <div className="login-box">
-        <h1>Hệ thống quản trị</h1>
-        <p>Vui lòng nhập thông tin</p>
-        <form className="form-login" onSubmit={handleSubmit}>
-          <div className="input-group">
-            <label htmlFor="username">Tài khoản</label>
-            <input
-              type="text"
-              id="username"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Nhập tài khoản"
+      <div className="content_Login">
+        <div className="left">
+          <div className="logo">EASY EXAM</div>
+          <h1>Chào mừng đến với EASY EXAM!</h1>
+          <p>Thi trắc nghiệm online, điểm cao ngất ngưỡng!</p>
+          <div className="video-placeholder">
+            {/* <button className="play-button">▶</button> */}
+            <DotLottieReact
+              src="/public/image/Animation - 1732722005771.lottie"
+              loop
+              autoplay
             />
-            {emailError && <span className="error-message">{emailError}</span>}
           </div>
-          <div className="input-group">
-            <label htmlFor="password">Mật khẩu</label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Nhập mật khẩu"
-              autoComplete="current-password"
-            />
-            {passwordError && (
-              <span className="error-message">{passwordError}</span>
-            )}
-          </div>
-          <div className="form-options">
-            <div className="remember-me">
+        </div>
+        <div className="right">
+          <h2>ĐĂNG NHẬP</h2>
+          <p>Đăng nhập để làm bài thi ngay!</p>
+          <form className="form-login" onSubmit={handleSubmit}>
+            <div className="input-group">
+              <label htmlFor="username">Tài khoản</label>
               <input
-                type="checkbox"
-                id="rememberMe"
-                checked={rememberMe}
-                onChange={(e) => setRememberMe(e.target.checked)}
+                type="text"
+                id="username"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Nhập tài khoản"
               />
-              <label htmlFor="rememberMe">Nhớ mật khẩu</label>
+              {emailError && <span className="error-message">{emailError}</span>}
             </div>
-            <div className="forgot-password" onClick={handleForgotPassword}>
-              Quên mật khẩu?
+
+            <div className="input-group">
+              <label htmlFor="password">Mật khẩu</label>
+              <input
+                type="password"
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Nhập mật khẩu"
+                autoComplete="current-password"
+              />
+              {passwordError && (
+                <span className="error-message">{passwordError}</span>
+              )}
             </div>
-          </div>
-          <button type="submit" className="submit-btn" disabled={loading}>
-            {loading ? "Đang đăng nhập..." : "Đăng nhập"}
-          </button>
-        </form>
+            <div className="form-options">
+              <div className="remember-me">
+                <input
+                  type="checkbox"
+                  id="rememberMe"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                />
+                <label htmlFor="rememberMe">Nhớ mật khẩu</label>
+              </div>
+              <div className="forgot-password" onClick={handleForgotPassword}>
+                Quên mật khẩu?
+              </div>
+            </div>
+            <button type="submit" className="submit-btn" disabled={loading}>
+              {loading ? "Đang đăng nhập..." : "Đăng nhập"}
+            </button>
+          </form>
+        </div>
       </div>
+
       <Notification
         notifications={notifications}
         clearNotifications={clearNotifications}

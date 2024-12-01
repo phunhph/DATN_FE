@@ -11,3 +11,19 @@ export type Semester = {
 export interface ApiSemesterResponse extends BaseResponse {
   data: Semester[];
 }
+
+export type ExamWithSubject = {
+  examId?: string; 
+  examName?: string; 
+  subjectName?: string; 
+  subjectCode?: string; 
+  questionCount?: number; 
+  startDate?: string; 
+  endDate?: string; 
+  subjectCountInExam?: number; 
+  percentage?: number; 
+};
+
+export interface ApiExamWithSubjectResponse extends BaseResponse {
+  data: ExamWithSubject[];
+}

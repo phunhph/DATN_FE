@@ -111,6 +111,12 @@ const ManageStatus = () => {
 		]
 		setRoomStatusList(mockList)
 	}, [])
+
+	
+	useEffect(() => {
+		document.documentElement.className = `admin-light`;
+	  }, [])
+	  
 	return (
 		<>
 			<div className='admin-status__container'>

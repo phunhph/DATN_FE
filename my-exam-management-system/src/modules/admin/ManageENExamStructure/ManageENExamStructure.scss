@@ -1,8 +1,7 @@
+@use "@scss/mixin" as m;
 .Structure {
   width: 100%;
   margin: auto;
-  padding: 20px;
-  border-radius: 5px;
 
   &__title {
     // border-bottom: 0.0625rem solid black;
@@ -17,9 +16,10 @@
   &__content {
     border: 1px solid #fffefe;
     // background-color: #d9d9d9;
-    margin-top: 40px;
+    margin-top: 16px;
     border-radius: 10px;
     height: auto;
+    background-color: white;
     box-shadow: 0px 0.125rem 0.3125rem 0px black;
   }
 
@@ -54,9 +54,11 @@
   }
   .form-group1 {
     label {
+      display: inline-block;
       margin-bottom: 10px;
       font-weight: bold;
       font-size: 1.275rem;
+      width: 180px;
     }
 
     input,
@@ -67,11 +69,9 @@
       margin-left: 10px;
     }
 
-    // span {
-    //   margin-top: 5px;
-    //   font-size: 1.275rem;
-    //   color: #fff6f6;
-    // }
+    span {
+      margin-left: 8px;
+    }
   }
   //dsmodule
   .form-row {
@@ -86,23 +86,26 @@
     }
   }
 
-  hr {
-    margin: 20px 0;
-  }
   &__item {
-    border: 1px solid #ccc;
-    // background-color: #d9d9d9;
+    background-color: white;
     margin-top: 40px;
+    padding-top: 8px;
     border-radius: 10px;
     height: auto;
+    box-shadow: 0px 0.125rem 0.3125rem 0px black;
+    h3 {
+      margin-left: 16px;
+      margin-top: 8px;
+      font-weight: 600;
+    }
   }
-  h3 {
+  h4 {
     font-weight: bold;
     font-size: 1.275rem;
     color: #000;
     margin-bottom: 0.625rem;
     margin-left: 10px;
-    margin-top: 20px;
+    margin-top: 10px;
   }
 
   .module {
@@ -110,17 +113,14 @@
     // border: 1px solid #ddd;
     border-radius: 4px;
     margin-bottom: 10px;
-    width: 98%;
-    margin-left: 10px;
+    width:100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     &__item {
-      width: 99%;
-      border: 1px solid #000;
-      border-radius: 10px;
-      box-shadow: 0px 0.125rem 0.3125rem 0px black;
+      width: calc(100% - 32px);
+      border-bottom: 1px solid #0000004b;
       margin-bottom: 20px;
       min-height: 370px;
       max-height: 370px;
@@ -152,7 +152,7 @@
       input {
         // width: 10%;
         padding: 8px;
-        margin-bottom: 10px;
+        // margin-bottom: 10px;
         border: 1px solid #ccc;
         border-radius: 4px;
       }
@@ -195,13 +195,12 @@
   width: 100%;
   margin-bottom: 10px;
   button {
-    border: 1px solid rgb(125, 234, 125);
-    background-color: rgb(120, 245, 120);
+    background-color: var(--primary80);
     height: 30px;
-    width: 10%;
+    line-height: 16px;
+    width: 80px;
     border-radius: 10px;
-    margin-top: 10px;
-    color: #000;
+    margin-bottom: 16px;
   }
 }
 // .input__number {
@@ -216,4 +215,46 @@
   font-size: 0.875rem;
   margin-top: 0.25rem;
   display: block;
+}
+
+@include m.responsive-to(lg) {
+  .form-row{
+    flex-direction: column;
+  }
+}
+@include m.responsive-to(md) {
+  .Structure {
+    .module__title {
+      & .lever {
+        width:100px;
+        margin-left: 0;
+      }
+      & .quantity {
+        width:100px;
+        margin-left: 0;
+      }
+      & .number {
+        width:120px;
+        margin-left: 16px;
+        &.grid_input {
+          width:120px;
+        }
+      }
+    }
+    .module__item {
+      h1 {
+        text-align: center;
+      }
+    }
+  }
+}
+@include m.responsive-to(sm) {
+  .form-group1{
+    label {
+      display: block;
+    }
+    input {
+      margin-left: 0 !important;
+    }
+  }
 }

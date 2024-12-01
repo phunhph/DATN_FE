@@ -27,15 +27,16 @@
       display: block;
       width: 20px;
       margin: 0 0.75rem;
-      filter: brightness(0) saturate(100%) invert(23%) sepia(11%) saturate(871%)
-        hue-rotate(214deg) brightness(95%) contrast(86%);
+      filter: brightness(0) saturate(100%) invert(92%) sepia(56%) saturate(1750%) hue-rotate(226deg) brightness(87%) contrast(97%);
     }
     &__link {
       height: inherit;
       display: flex;
       align-items: center;
+      border-radius: 10px;
       &.active {
-        background: none;
+        background-color: var(--secondary20);
+        filter: brightness(0) saturate(100%) invert(34%) sepia(59%) saturate(1497%) hue-rotate(244deg) brightness(85%) contrast(88%);
       }
     }
   }

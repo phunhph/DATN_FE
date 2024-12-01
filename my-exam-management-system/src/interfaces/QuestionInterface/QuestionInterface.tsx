@@ -32,6 +32,16 @@ export interface QuestionDetailResponse {
   updated_at: string;
   deleted_at: string | null;
   current_version: Question[];
+    id:string;
+    questionNumber: number;
+    questionText: string;
+    image?: string;
+    answers: {
+        id: number;
+        text?: string; 
+        image?: string;
+        isCorrect?: boolean;
+    }[];
 }
 
 export interface ApiQuestionDetailResponse extends BaseResponse {
@@ -57,4 +67,22 @@ export interface APIresultOfCandidate {
             [key:string]: number;
         }
     }
+export interface ApiQuestionResponse extends BaseResponse {
+  data: Question[];
+}
+
+export interface QuestionDetailResponse {
+  id: string;
+  exam_content_id: string;
+  current_version_id: number | string;
+  status: number;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | null;
+  current_version: Question[];
+}
+
+
+export interface ApiQuestionDetailResponse extends BaseResponse {
+  data?: QuestionDetailResponse;
 }

@@ -6,6 +6,8 @@ export interface Exam {
   time_start: string;
   time_end: string;
   status?: boolean;
+  url_listening?: string;
+  description?: string;
 }
 
 export interface ApiExamResponse extends BaseResponse {

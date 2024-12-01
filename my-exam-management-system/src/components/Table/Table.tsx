@@ -184,69 +184,75 @@ export const Table = <T extends Record<string, any>>({
         </div>
         <TableSearch onSearch={setSearchQuery} />
       </div>
-      <table id="custom-table" className="custom-table">
-        <thead>
-          <tr>
-            {title.map((header, index) => (
-              <th key={index} onClick={() => handleSort(dataKeys[index])}>
-                {header}{" "}
-                {sortKey === dataKeys[index]
-                  ? sortOrder === "asc"
-                    ? "▲"
-                    : "▼"
-                  : ""}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {hasData ? (
-            paginatedData.length > 0 ? (
-              paginatedData.map((item, index) => (
-                <tr key={index}>
-                  {dataKeys.map((key) => (
-                    <td key={String(key)}>{renderCellValue(key, item)}</td>
-                  ))}
-                  <td className="table-button-group">
-                    {actions_edit && (
-                      <button
-                        className="table-button"
-                        onClick={() => actions_edit.onClick?.(item)}
-                      >
-                        {actions_edit.name}
-                      </button>
-                    )}
-                    {actions_detail && (
-                      <button
-                        className="table-button"
-                        onClick={() =>
-                          actions_detail.onClick?.(
-                            item.id != undefined ? item.id : item.idcode
-                          )
-                        }
-                      >
-                        {actions_detail.name}
-                      </button>
-                    )}
+      <div style={{ overflow: "hidden", overflowX: "auto" }}>
+        <table id="custom-table" className="custom-table">
+          <thead>
+            <tr>
+              {title.map((header, index) => (
+                <th key={index} onClick={() => handleSort(dataKeys[index])}>
+                  {header}{" "}
+                  {sortKey === dataKeys[index]
+                    ? sortOrder === "asc"
+                      ? "▲"
+                      : "▼"
+                    : ""}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {hasData ? (
+              paginatedData.length > 0 ? (
+                paginatedData.map((item, index) => (
+                  <tr key={index}>
+                    {dataKeys.map((key) => (
+                      <td key={String(key)}>{renderCellValue(key, item)}</td>
+                    ))}
+                    {actions_edit || actions_detail ? (
+                      <>
+                        <td className="table-button-group">
+                          {actions_edit && (
+                            <button
+                              className="table-button"
+                              onClick={() => actions_edit.onClick?.(item)}
+                            >
+                              {actions_edit.name}
+                            </button>
+                          )}
+                          {actions_detail && (
+                            <button
+                              className="table-button"
+                              onClick={() =>
+                                actions_detail.onClick?.(
+                                  item.id != undefined ? item.id : item.idcode
+                                )
+                              }
+                            >
+                              {actions_detail.name}
+                            </button>
+                          )}
+                        </td>
+                      </>
+                    ) : (<></>)}
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={title.length} className="no-data-message">
+                    Không có dữ liệu
                   </td>
                 </tr>
-              ))
+              )
             ) : (
               <tr>
                 <td colSpan={title.length} className="no-data-message">
                   Không có dữ liệu
                 </td>
               </tr>
-            )
-          ) : (
-            <tr>
-              <td colSpan={title.length} className="no-data-message">
-                Không có dữ liệu
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+            )}
+          </tbody>
+        </table>
+      </div>
       <Pagination
         totalItems={sortedData.length}
         currentPage={currentPage}
