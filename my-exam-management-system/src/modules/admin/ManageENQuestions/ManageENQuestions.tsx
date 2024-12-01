@@ -104,6 +104,7 @@ const ManageENQuestions = () => {
   };
 
   const createQuestion_ = async (formData: Question) => {
+    formData.level = "easy";
     const result = await createQuestion(formData)
     if (result.success && result.data) {
       console.log(result.data);
