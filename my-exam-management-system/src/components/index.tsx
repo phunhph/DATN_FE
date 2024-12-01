@@ -23,6 +23,7 @@ import Slideshow from "./Slideshow/Slideshow";
 import validation from "./Form/validation";
 import PieChartComponent from "./Chart/PieChart/PieChart";
 import LineChartComponent from "./Chart/LineChart/LineChart";
+import BarChartComponent from "./Chart/Barchart/BarChart";
 
 export {
   Button,
@@ -49,5 +50,6 @@ export {
   CVO,
   validation,
   PieChartComponent,
-  LineChartComponent
+  LineChartComponent,
+  BarChartComponent
 };

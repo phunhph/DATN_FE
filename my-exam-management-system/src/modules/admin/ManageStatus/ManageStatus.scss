@@ -91,3 +91,10 @@
 		grid-template-columns: 1fr;
 	}
 }
+
+.student-status-summary {
+	margin-top: 10px;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 20px;
+}

@@ -1,29 +1,70 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./QuestionDetail.scss";
 import { Notification } from "../../../components";
+import { useLocation } from "react-router-dom";
+import { getQuestionById, updateQuestion } from "@/services/repositories/QuestionServices/QuestionServices";
+import {
+    Question,
+    QuestionDetailResponse,
+} from "@/interfaces/QuestionInterface/QuestionInterface";
+
+interface answer {
+    current_version_id: string;
+    created_at: string;
+    level: string;
+}
 
 const QuestionDetail = () => {
-    // Mock data for demonstration
-    const questions = {
-        id: "Q12345",
-        Title: "What is the capital of France?",
-        Level: "Medium",
-        Answer_P: "Paris",
-        Answer_F1: "London",
-        Answer_F2: "Berlin",
-        Answer_F3: "Madrid",
-        Image_Title: "images/question.jpg", // Replace with a real image URL
-        Image_P: "images/paris.jpg", // Replace with a real image URL
-        Image_F1: "images/london.jpg", // Replace with a real image URL
-        Image_F2: "images/berlin.jpg", // Replace with a real image URL
-        Image_F3: "images/madrid.jpg", // Replace with a real image URL
-        Status: true,
+    const [questions, setQuestions] = useState<Question>();
+    const [answer, setAnswer] = useState<answer[]>([]);
+    const location = useLocation();
+    const { id, content } = location.state || {};
+
+    const getQuestionByid = async (id: string) => {
+        const result = await getQuestionById(id);
+        if (result.success && result.data) {
+            formatDataQuestion(result.data);
+        }
     };
 
-    const answer = {
-        current_version_id: "V1",
-        created_at: "2024-10-10",
+    const formatDataQuestion = (data: QuestionDetailResponse) => {
+        let question: Question = {} as Question;
+        const version: answer[] = [];
+
+        data.current_version.forEach((e) => {
+            version.push({
+                current_version_id: e.version ?? "",
+                created_at: e.created_at ?? "",
+                level: e.level ?? "",
+            });
+            console.log(e);
+
+            if (e.id == data.current_version_id) {
+                question = {
+                    id: e.question_id ?? "-",
+                    exam_content_id: e.exam_content_id ?? content,
+                    title: e.title ?? "",
+                    answer_P: e.answer_P ?? "",
+                    answer_F1: e.answer_F1 ?? "",
+                    answer_F2: e.answer_F2 ?? "",
+                    answer_F3: e.answer_F3 ?? "",
+                    level: e.level ?? "",
+                    image_title: e.image_title ?? "",
+                    image_P: e.image_P ?? "",
+                    image_F1: e.image_F1 ?? "",
+                    image_F2: e.image_F2 ?? "",
+                    image_F3: e.image_F3 ?? "",
+                };
+            }
+        });
+
+        setAnswer(version);
+        setQuestions(question);
     };
+
+    useEffect(() => {
+        getQuestionByid(id);
+    }, []);
 
     const [errors, setErrors] = useState<ErrorQuestions>({});
     const [notifications, setNotifications] = useState<
@@ -39,37 +80,25 @@ const QuestionDetail = () => {
     };
     const [modalIsOpen, setModalIsOpen] = useState(false);
 
-    const [formData, setFormData] = useState<formDataQuestion>({
+    const [formData, setFormData] = useState<Question>({
         id: "",
-        questionLevel: "",
-        questionContent: "",
-        correctAnswer: "",
-        fileQuestionContent: null,
-        wrongAnswer1: "",
-        wrongAnswer2: "",
-        wrongAnswer3: "",
-        fileCorrectAnswer: null,
-        fileWrongAnswer1: null,
-        fileWrongAnswer2: null,
-        fileWrongAnswer3: null,
+        title: "",
+        exam_content_id: "",
+        answer_P: "",
+        answer_F1: "",
+        answer_F2: "",
+        answer_F3: "",
+        level: "easy",
+        image_title: null,
+        image_P: null,
+        image_F1: null,
+        image_F2: null,
+        image_F3: null,
     });
 
-    const [modalType, setModalType] = useState<"add" | "edit" | "file" | string | undefined>("add");
-
-    interface formDataQuestion {
-        id: string;
-        questionLevel: string;
-        questionContent: string;
-        correctAnswer: string;
-        fileQuestionContent?: string | null;
-        wrongAnswer1: string;
-        wrongAnswer2: string;
-        wrongAnswer3: string;
-        fileCorrectAnswer?: string | null;
-        fileWrongAnswer1?: string | null;
-        fileWrongAnswer2?: string | null;
-        fileWrongAnswer3?: string | null;
-    }
+    const [modalType, setModalType] = useState<
+        "add" | "edit" | "file" | string | undefined
+    >("add");
 
     interface ErrorQuestions {
         id?: string;
@@ -87,33 +116,47 @@ const QuestionDetail = () => {
     const openEdit = () => {
         setModalIsOpen(true);
         setErrors({});
-
+        setFormData({
+            id: questions?.id ?? '',
+            title: questions?.title ?? '',
+            exam_content_id: questions?.exam_content_id ?? '',
+            answer_P: questions?.answer_P ?? '',
+            answer_F1: questions?.answer_F1 ?? '',
+            answer_F2: questions?.answer_F2 ?? '',
+            answer_F3: questions?.answer_F3 ?? '',
+            level: questions?.level ?? 'easy',
+            image_title: questions?.image_title ?? null,
+            image_P: questions?.image_P ?? null,
+            image_F1: questions?.image_F1 ?? null,
+            image_F2: questions?.image_F2 ?? null,
+            image_F3: questions?.image_F3 ?? null,
+        });
     };
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (validate()) {
-            if (editMode) {
-                alert("Cập nhật câu hỏi thành công!");
-            }
-            setFormData({
-                id: "",
-                questionLevel: "",
-                questionContent: "",
-                correctAnswer: "",
-                fileQuestionContent: null,
-                wrongAnswer1: "",
-                wrongAnswer2: "",
-                wrongAnswer3: "",
-                fileCorrectAnswer: null,
-                fileWrongAnswer1: null,
-                fileWrongAnswer2: null,
-                fileWrongAnswer3: null,
-            });
+            console.log(formData);
+
+            handleUpdateQuestion(formData);
             closeModal();
         }
     };
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+
+    const handleUpdateQuestion = async (question: Question) => {
+        const result = await updateQuestion(question);
+        if (result) {
+            console.log(result);
+            //  cập nhập dữ liệu cho questions và answer
+            addNotification("Thêm mới thành ", result.success)
+        }
+
+        addNotification("Thêm mưới thất", result.success)
+    }
+
+    const handleChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => {
         const { name, value } = e.target;
         setFormData((prevFormData) => ({
             ...prevFormData,
@@ -124,22 +167,26 @@ const QuestionDetail = () => {
     const validate = (): boolean => {
         const errors: ErrorQuestions = {};
         if (!formData.id) errors.id = "Mã câu hỏi không được để trống.";
-        if (!formData.questionLevel)
+        if (!formData.level)
             errors.questionLevel = "Mức độ câu hỏi không được để trống.";
-        if (!formData.questionContent)
+        if (!formData.title)
             errors.questionContent = "Nội dung câu hỏi không được để trống.";
-        if (!formData.correctAnswer)
+        if (!formData.answer_P)
             errors.correctAnswer = "Đáp án đúng không được để trống.";
-        if (!formData.wrongAnswer1)
+        if (!formData.answer_F1)
             errors.wrongAnswer1 = "Đáp án sai 1 không được để trống.";
-        if (!formData.wrongAnswer2)
+        if (!formData.answer_F2)
             errors.wrongAnswer2 = "Đáp án sai 2 không được để trống.";
-        if (!formData.wrongAnswer3)
+        if (!formData.answer_F3)
             errors.wrongAnswer3 = "Đáp án sai 3 không được để trống.";
         setErrors(errors);
         return Object.keys(errors).length === 0;
     };
 
+  useEffect(() => {
+    document.documentElement.className = `admin-light`;
+  }, [])
+  
     return (
         <div className="Questions__detail__container">
             <div className="Questions__detail__title">
@@ -148,57 +195,69 @@ const QuestionDetail = () => {
             <main>
                 {/* Hiển thị chi tiết thông tin câu hỏi */}
                 <div className="detail_question">
-                    <h3>Mã câu hỏi: <span>{questions.id}</span></h3>
-                    <h3>Nội dung câu hỏi: <span>{questions.Title}</span></h3>
-                    {questions.Image_Title && (
+                    <h3>
+                        Mã câu hỏi: <span>{questions?.id}</span>
+                    </h3>
+                    <h3>
+                        Nội dung câu hỏi: <span>{questions?.title}</span>
+                    </h3>
+                    {questions?.image_title && (
                         <div>
                             <h3>Hình ảnh câu hỏi:</h3>
                             <img
-                                src={`http://example.com/${questions.Image_Title}`}
+                                src={`http://example.com/${questions.image_title}`}
                                 alt="Hình ảnh câu hỏi"
                                 className="question-image"
                             />
                         </div>
                     )}
-                    <h3>Đáp án đúng: <span>{questions.Answer_P}</span></h3>
-                    {questions.Image_P && (
+                    <h3>
+                        Đáp án đúng: <span>{questions?.answer_P}</span>
+                    </h3>
+                    {questions?.image_P && (
                         <div>
                             <h3>Hình ảnh đáp án đúng:</h3>
                             <img
-                                src={`http://example.com/${questions.Image_P}`}
+                                src={`http://example.com/${questions.image_P}`}
                                 alt="Hình ảnh đáp án đúng"
                                 className="answer-image"
                             />
                         </div>
                     )}
-                    <h3>Đáp án sai 1: <span>{questions.Answer_F1}</span></h3>
-                    {questions.Image_F1 && (
+                    <h3>
+                        Đáp án sai 1: <span>{questions?.answer_F1}</span>
+                    </h3>
+                    {questions?.image_F1 && (
                         <div>
                             <h3>Hình ảnh đáp án sai 1:</h3>
                             <img
-                                src={`http://example.com/${questions.Image_F1}`}
+                                src={`http://example.com/${questions.image_F1}`}
                                 alt="Hình ảnh đáp án sai 1"
                                 className="answer-image"
                             />
                         </div>
                     )}
-                    <h3>Đáp án sai 2: <span>{questions.Answer_F2}</span></h3>
-                    {questions.Image_F2 && (
+                    <h3>
+                        Đáp án sai 2: <span>{questions?.answer_F2}</span>
+                    </h3>
+                    {questions?.image_F2 && (
                         <div>
                             <h3>Hình ảnh đáp án sai 2:</h3>
                             <img
-                                src={`http://example.com/${questions.Image_F2}`}
+                                src={`http://example.com/${questions.image_F2}`}
                                 alt="Hình ảnh đáp án sai 2"
                                 className="answer-image"
                             />
                         </div>
                     )}
-                    <h3>Đáp án sai 3: <span>{questions.Answer_F3}</span></h3>
-                    {questions.Image_F3 && (
+                    <h3>
+                        Đáp án sai 3: <span>{questions?.answer_F3}</span>
+                    </h3>
+                    {questions?.image_F3 && (
                         <div>
                             <h3>Hình ảnh đáp án sai 3:</h3>
                             <img
-                                src={`http://example.com/${questions.Image_F3}`}
+                                src={`http://example.com/${questions.image_F3}`}
                                 alt="Hình ảnh đáp án sai 3"
                                 className="answer-image"
                             />
@@ -207,12 +266,11 @@ const QuestionDetail = () => {
                     <button className="" onClick={openEdit}>
                         Sửa
                     </button>
-
                 </div>
                 {/* Hiển thị thông tin bảng so sánh các phiên bản */}
                 <div className="question_active">
                     <h3>Bảng so sánh các phiên bản</h3>
-                    <table className="version_table" >
+                    <table className="version_table">
                         <thead>
                             <tr>
                                 <th>Phiên bản</th>
@@ -221,11 +279,15 @@ const QuestionDetail = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>{answer.current_version_id}</td>
-                                <td>{questions.Level}</td>
-                                <td>{new Date(answer.created_at || "").toLocaleDateString()}</td>
-                            </tr>
+                            {answer.map((item, index) => (
+                                <tr key={index}>
+                                    <td>{item?.current_version_id}</td>
+                                    <td>{item?.level}</td>
+                                    <td>
+                                        {new Date(item?.created_at || "").toLocaleDateString()}
+                                    </td>
+                                </tr>
+                            ))}
                         </tbody>
                     </table>
                 </div>
@@ -266,8 +328,13 @@ const QuestionDetail = () => {
                                         Mức độ câu hỏi: <br />
                                         <select
                                             name="questionLevel"
-                                            value={formData.questionLevel}
-                                            onChange={(e) => setFormData({ ...formData, questionLevel: e.target.value })}
+                                            value={formData.level}
+                                            onChange={(e) =>
+                                                setFormData({
+                                                    ...formData,
+                                                    level: e.target.value,
+                                                })
+                                            }
                                             className="subject__select1"
                                         >
                                             <option value="Dễ">Dễ</option>
@@ -275,17 +342,18 @@ const QuestionDetail = () => {
                                             <option value="Khó">Khó</option>
                                         </select>
                                         {errors.questionLevel && (
-                                            <span className="error_question">{errors.questionLevel}</span>
+                                            <span className="error_question">
+                                                {errors.questionLevel}
+                                            </span>
                                         )}
                                     </label>
-
                                 </div>
                                 <div className="model1__question">
                                     <label className="modal1__label">
                                         Nội dung câu hỏi: <br />
                                         <textarea
                                             name="questionContent"
-                                            value={formData.questionContent}
+                                            value={formData.title}
                                             onChange={handleChange}
                                             className="modal1__input"
                                             placeholder="Nhập nội dung"
@@ -317,7 +385,7 @@ const QuestionDetail = () => {
                                             <textarea
                                                 name="correctAnswer"
                                                 onChange={handleChange}
-                                                value={formData.correctAnswer}
+                                                value={formData.answer_P}
                                                 className="input__input"
                                                 placeholder="Nhận đáp án đúng"
                                             />
@@ -345,7 +413,7 @@ const QuestionDetail = () => {
                                             Đáp án sai 1: <br />
                                             <textarea
                                                 name="wrongAnswer1"
-                                                value={formData.wrongAnswer1}
+                                                value={formData.answer_F1}
                                                 onChange={handleChange}
                                                 className="input__input"
                                                 placeholder="Nhập đáp sai 1"
@@ -376,7 +444,7 @@ const QuestionDetail = () => {
                                             Đáp án sai 2: <br />
                                             <textarea
                                                 name="wrongAnswer2"
-                                                value={formData.wrongAnswer2}
+                                                value={formData.answer_F2}
                                                 onChange={handleChange}
                                                 className="input__input"
                                                 placeholder="Nhập đáp sai 1"
@@ -405,7 +473,7 @@ const QuestionDetail = () => {
                                             Đáp án sai 3: <br />
                                             <textarea
                                                 name="wrongAnswer3"
-                                                value={formData.wrongAnswer3}
+                                                value={formData.answer_F3}
                                                 onChange={handleChange}
                                                 className="input__input"
                                                 placeholder="Nhập đáp sai 1"
@@ -442,7 +510,6 @@ const QuestionDetail = () => {
                                     </button>
                                 </div>
                             </form>
-
                         </div>
                     </div>
                 </div>

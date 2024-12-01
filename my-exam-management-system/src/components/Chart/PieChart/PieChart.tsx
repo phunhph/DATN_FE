@@ -7,9 +7,11 @@ Chart.register(PieController, ArcElement, Tooltip, Legend);
 
 interface PieChartProps {
     data: { label: string; percentage: number }[];
+    id: string;
+    title:string;
 }
 
-const PieChartComponent: React.FC<PieChartProps> = ({ data }) => {
+const PieChartComponent: React.FC<PieChartProps> = ({ data, id, title }) => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const chartInstance = useRef<Chart<'pie'> | null>(null);
 
@@ -37,6 +39,10 @@ const PieChartComponent: React.FC<PieChartProps> = ({ data }) => {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
+                        title: {
+                            display: true,
+                            text: title
+                        },
                         legend: {
                             position: 'top',
                         },
@@ -62,7 +68,7 @@ const PieChartComponent: React.FC<PieChartProps> = ({ data }) => {
         };
     }, [data]);
 
-    return <canvas id='piechart' ref={canvasRef} />;
+    return <canvas id={id} ref={canvasRef} />;
 };
 
 export default PieChartComponent;

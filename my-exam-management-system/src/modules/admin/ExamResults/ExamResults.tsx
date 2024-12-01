@@ -218,6 +218,7 @@ const ExamResults = () => {
 
     useEffect(() => {
         loadSemester()
+        document.documentElement.className = `admin-light`;
     }, [])
     return (
         <>
@@ -272,6 +273,7 @@ const ExamResults = () => {
             </ChildContainer>
             {studentScores && (
                 <Table
+                    title={["Mã thí sinh", "Môn thi", "Điểm"]}
                     data={studentScores}
                     tableName="Bảng điểm thí sinh"
                     action_dowload={{ name: "Download", onClick: downloadSample }}

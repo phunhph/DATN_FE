@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import "./ManageENExamStructure.scss";
-import { Notification } from "../../../components";
+import { Button, Notification } from "../../../components";
 import {
   ModuleStructure,
+  reqStructure,
   totalStructure,
 } from "@/interfaces/ManageStructureInterfaces/ManageStructureInterfaces";
 import {  getAllSemesterWithExamSubject } from "@/services/repositories/SemesterServices/SemesterServices";
@@ -12,6 +13,7 @@ import { ExamSubject } from "@/interfaces/SubjectInterface/ExamSubjectInterface"
 import {
   getAllStrutureByIdSubject,
   getFinalStructure,
+  SubmitStructure,
 } from "@/services/repositories/StructureServices/StructureDetailServices";
 
 interface Errors {
@@ -70,7 +72,7 @@ const ManageENExamStructure = () => {
     if (!thoiGianLamBai || +thoiGianLamBai <= 0)
       newErrors.thoiGianLamBai = "Thời gian làm bài phải lớn hơn 0.";
 
-    let totalQuestions = 0;
+    let totalQuestions = 0;   
 
     modules.forEach((module, moduleIndex) => {
       module.levels.forEach((level, levelIndex) => {
@@ -89,8 +91,8 @@ const ManageENExamStructure = () => {
       });
     });
 
-    if (totalQuestions > +tongSoCauHoi) {
-      newErrors.tongSoCauHoi = `Tổng số câu hỏi không được lớn hơn ${tongSoCauHoi}.`;
+    if (+tongSoCauHoi > totalQuestions) {
+      newErrors.tongSoCauHoi = `Số câu hỏi phải lớn hơn 0 và không được vượt quá tổng số câu hỏi (${totalQuestions}).`;
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -105,8 +107,25 @@ const ManageENExamStructure = () => {
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     if (validateForm()) {
-      setErrors({}); // Reset errors
+      submit();
+      setErrors({});
+
     }
+  };
+
+  const submit = async () => {
+    const body: reqStructure = {
+      time: thoiGianLamBai,
+      total: tongSoCauHoi,
+      modules: modules,
+      checkCreateStruct: checkCreateStruct,
+      subject: monThi,
+      exam: kyThi,
+    };
+    const data = await SubmitStructure(body);
+    console.log("Submitted Modules:", data);
+    addNotification("Submit sucssecfully", true);
+    setCheckCreateStruct(true);
   };
 
   const groupByTitle = (data: totalStructure[]): ModuleStructure[] => {
@@ -223,6 +242,7 @@ const ManageENExamStructure = () => {
 
   useEffect(() => {
     onLoad();
+    document.documentElement.className = `admin-light`;
   }, []);
   return (
     <div className="Structure">
@@ -287,7 +307,6 @@ const ManageENExamStructure = () => {
         </div>
       </div>
 
-      <hr />
       <div className="Structure__item">
         <h3>Danh sách module</h3>
         <form onSubmit={handleSubmit}>
@@ -297,14 +316,14 @@ const ManageENExamStructure = () => {
               <div className="module__item" key={moduleIndex}>
                 <h1>{module.title}</h1>
                 <div className="module__title">
-                  <h3 className="lever">Mức độ</h3>
-                  <h3 className="quantity">Số lượng</h3>
-                  <h3 className="number">Số câu trong đề</h3>
+                  <h4 className="lever">Nội dung thi</h4>
+                  <h4 className="quantity">Số lượng</h4>
+                  <h4 className="number">Số câu</h4>
                 </div>
                 {module.levels.map((level, levelIndex) => (
                   <div className="module__title" key={levelIndex}>
-                    <h3 className="lever">{level.level}</h3>
-                    <h3 className="quantity">{level.total}</h3>
+                    <h4 className="lever">{level.level}</h4>
+                    <h4 className="quantity">{level.total}</h4>
                     <div className="number grid_input">
                       <input
                         type="number"
@@ -331,7 +350,7 @@ const ManageENExamStructure = () => {
             {/* Bạn có thể thêm code logic render module */}
           </div>
           <div className="Button__capnhap">
-            <button type="submit">Submit</button>
+            <Button type="submit">Submit</Button>
           </div>
         </form>
       </div>
