@@ -130,35 +130,49 @@ export const Table = <T extends Record<string, any>>({
      if (key === "url_listening") {
        return (
          <div className="audio-cell">
-           <audio
-             id={`audio-${value.id}`}
-             src={value.url_listening}
-             style={{ display: "none" }}
-           ></audio>
-           <button
-             className="play-audio-button"
-             onClick={() => {
-               const audioElement = document.getElementById(
-                 `audio-${value.id}`
-               ) as HTMLAudioElement;
-
-               if (audioElement) {
-                 if (audioElement.paused) {
-                   audioElement.play().catch((error) => {
-                     console.error("Error playing audio:", error);
-                     alert(
-                       "Không thể phát âm thanh. Định dạng không được hỗ trợ."
-                     );
+           {value.url_listening ? (
+             <>
+               <audio
+                 id={`audio-${value.id}`}
+                 src={value.url_listening}
+                 style={{ display: "none" }}
+               ></audio>
+               <button
+                 className="play-audio-button"
+                 onClick={() => {
+                   const allAudioElements = document.querySelectorAll("audio");
+                   allAudioElements.forEach((audio) => {
+                     if (!audio.paused) {
+                       audio.pause();
+                       (audio as HTMLAudioElement).currentTime = 0;
+                     }
                    });
-                 } else {
-                   audioElement.pause();
-                   audioElement.currentTime = 0; 
-                 }
-               }
-             }}
-           >
-             🎧
-           </button>
+
+                   const audioElement = document.getElementById(
+                     `audio-${value.id}`
+                   ) as HTMLAudioElement;
+
+                   if (audioElement) {
+                     if (audioElement.paused) {
+                       audioElement.play().catch((error) => {
+                         console.error("Error playing audio:", error);
+                         alert(
+                           "Không thể phát âm thanh. Định dạng không được hỗ trợ."
+                         );
+                       });
+                     } else {
+                       audioElement.pause();
+                       audioElement.currentTime = 0;
+                     }
+                   }
+                 }}
+               >
+                 🎧
+               </button>
+             </>
+           ) : (
+             <span></span>
+           )}
          </div>
        );
      } else {
