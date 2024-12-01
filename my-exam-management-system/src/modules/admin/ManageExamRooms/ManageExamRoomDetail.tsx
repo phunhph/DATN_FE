@@ -18,14 +18,24 @@ import { ErrorExamRoom } from "@interfaces/ExamRoomInterfaces/ErrorExamRoomInter
 import "./ManageExamRoomDetail.scss";
 
 const ManageExamRoomDetail = () => {
+  interface ExamSubjectType {
+    id: string;
+    name: string;
+  }
+
+  interface ExamSessionType {
+    id: string;
+    name: string;
+    time_start: string;
+    time_end: string;
+  }
+
   useAdminAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const room = location.state?.room;
 
-  const [roomDetail, setRoomDetail] = useState<ExamRoomDetailTables | null>(
-    null
-  );
+  const [roomDetail, setRoomDetail] = useState<ExamRoomDetailTables[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
   const [notifications, setNotifications] = useState<
@@ -42,14 +52,10 @@ const ManageExamRoomDetail = () => {
       exam_room_detail: {
         id: "",
         exam_room_id: "",
-        exam_subject_id: "",
         exam_session_id: "",
-        exam_date: "",
       },
     },
-    exam: [],
     exam_sessions: [],
-    exam_subjects: [],
   });
 
   const title = [
@@ -61,7 +67,6 @@ const ManageExamRoomDetail = () => {
     "Thời gian kết thúc",
     "Thao tác",
   ];
-
   const addNotification = (message: string, isSuccess: boolean) => {
     setNotifications((prev) => [...prev, { message, isSuccess }]);
   };
@@ -81,21 +86,32 @@ const ManageExamRoomDetail = () => {
       const result = await getExamRoomDetail(room.id);
 
       if (result.success && result.data) {
-        const { examRoom, exam_sessions, exam_subjects } = result.data;
+        const { examRoom, exam_room_details, exam_sessions, exam_subjects } =
+          result.data;
 
-        const formattedData = {
-          exam_id: examRoom.id,
-          name: examRoom.name,
-          exam_session_name: exam_sessions[0]?.name || "Chưa có ca thi",
-          exam_subject_name: exam_subjects[0]?.name || "Chưa có môn thi",
-          exam_session_time_start:
-            exam_sessions[0]?.time_start || "Chưa có thời gian",
-          exam_session_time_end:
-            exam_sessions[0]?.time_end || "Chưa có thời gian",
-        };
+        // Format dữ liệu giữ nguyên các trường như cũ
+        const formattedData = exam_room_details.map((detail: any) => {
+          const subject = exam_subjects.find(
+            (subject: ExamSubjectType) =>
+              subject.id.toString() === detail.exam_subject_id.toString()
+          );
+
+          const session = exam_sessions.find(
+            (session: ExamSessionType) =>
+              session.id.toString() === detail.exam_session_id.toString()
+          );
+
+          return {
+            exam_id: examRoom.id,
+            name: examRoom.name,
+            exam_session_name: session?.name || "Chưa có ca thi",
+            exam_subject_name: subject?.name || "Chưa có môn thi",
+            exam_session_time_start: session?.time_start || "Chưa có thời gian",
+            exam_session_time_end: session?.time_end || "Chưa có thời gian",
+          } as ExamRoomDetailTables; // Thêm type assertion
+        });
 
         setRoomDetail(formattedData);
-        // setFormData(formattedData);
         setError("");
       } else {
         setError(result.message || "Lỗi khi lấy thông tin phòng thi");
@@ -119,7 +135,7 @@ const ManageExamRoomDetail = () => {
     const newErrors: ErrorExamRoom = {};
 
     if (formData && !formData.exam_room.name) {
-      newErrors.name = "Tên ca thi không được để trống";
+      newErrors.name = "Tên phòng thi không được để trống";
     }
 
     setErrors(newErrors);
@@ -129,18 +145,14 @@ const ManageExamRoomDetail = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // Log toàn bộ dữ liệu form để kiểm tra
-    const data = {
-      name: formData?.exam_room.name,
-      exam_id: formData?.exam_room.exam_id,
-      exam_session_id: formData?.exam_room.exam_room_detail.exam_session_id,
-      exam_subject_id: formData?.exam_room.exam_room_detail.exam_subject_id,
-    };
-    console.log("Form Data Before Submit:");
-
     if (!validate() || !formData) {
       return;
     }
+
+    const data = {
+      name: formData.exam_room.name,
+      exam_session_id: formData.exam_room.exam_room_detail.exam_session_id,
+    };
 
     try {
       const result = await editExamRoom(formData.exam_room.id, data);
@@ -162,12 +174,10 @@ const ManageExamRoomDetail = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    console.log("Changing:", name, value); // Log để debug
 
     setFormData((prev) => {
       if (!prev) return prev;
 
-      // Tạo bản sao của prev để tránh mutate state
       const updatedFormData = { ...prev };
 
       switch (name) {
@@ -175,20 +185,11 @@ const ManageExamRoomDetail = () => {
           updatedFormData.exam_room.name = value;
           break;
 
-        case "exam":
-          updatedFormData.exam_room.exam_id = value;
-          break;
-
         case "exam_sessions":
           updatedFormData.exam_room.exam_room_detail.exam_session_id = value;
           break;
-
-        case "exam_subjects":
-          updatedFormData.exam_room.exam_room_detail.exam_subject_id = value;
-          break;
       }
 
-      console.log("Updated formData:", updatedFormData); // Log để debug
       return updatedFormData;
     });
   };
@@ -246,13 +247,12 @@ const ManageExamRoomDetail = () => {
         <Table
           title={title}
           tableName="Chi tiết phòng thi"
-          data={[roomDetail]}
+          data={Array.isArray(roomDetail) ? roomDetail : []}
           actions_edit={{
             name: "Chỉnh sửa",
             onClick: (exam) => {
               if (exam) {
                 console.log("log exam: ", exam.exam_id);
-
                 openEditModal(exam);
               }
             },
@@ -285,24 +285,6 @@ const ManageExamRoomDetail = () => {
                     {errors.name && <p className="error">{errors.name}</p>}
                   </label>
 
-                  {/* Select kỳ thi */}
-                  <label className="modal__label">
-                    Kỳ thi:
-                    <select
-                      name="exam"
-                      className="modal__input"
-                      value={formData?.exam_room.exam_id || ""}
-                      onChange={handleChange}
-                    >
-                      <option value="">Chọn kỳ thi</option>
-                      {formData?.exam?.map((exam) => (
-                        <option key={exam.id} value={exam.id}>
-                          {exam.name}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-
                   {/* Select ca thi */}
                   <label className="modal__label">
                     Ca thi:
@@ -319,27 +301,6 @@ const ManageExamRoomDetail = () => {
                       {formData?.exam_sessions?.map((session) => (
                         <option key={session.id} value={session.id}>
                           {session.name}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-
-                  {/* Select môn thi */}
-                  <label className="modal__label">
-                    Môn thi:
-                    <select
-                      name="exam_subjects"
-                      className="modal__input"
-                      value={
-                        formData?.exam_room.exam_room_detail.exam_subject_id ||
-                        ""
-                      }
-                      onChange={handleChange}
-                    >
-                      <option value="">Chọn môn thi</option>
-                      {formData?.exam_subjects?.map((subject) => (
-                        <option key={subject.id} value={subject.id}>
-                          {subject.name}
                         </option>
                       ))}
                     </select>

@@ -1,5 +1,4 @@
 import { BaseResponse } from "../InterfaceBaseResponse/InterfaceBaseResponse";
-import { Session } from "../SessionInterface/SessionInterface";
 import { ExamSubject } from "../SubjectInterface/ExamSubjectInterface";
 import { ExamRoomDetailInterface } from "./ExamRoomDetailInterfaces";
 import { Exam } from "../ExamInterface/ExamInterface";
@@ -39,12 +38,6 @@ export interface UpdateExamRoom {
   exam_subjects: ExamSubject[];
 }
 
-export interface ExamRoomUpdate {
-  id: string | number;
-  exam_id: string;
-  name: string;
-  exam_room_detail: ExamRoomDetailInterface;
-}
 export interface ExamRoomDetailTables {
   exam_id: string | number;
   name: string;
@@ -54,8 +47,24 @@ export interface ExamRoomDetailTables {
   exam_session_time_end: string;
 }
 export interface ExamRoomAPIUpdate {
-  name: string | undefined;
-  exam_id: string | undefined;
-  exam_session_id: string | number | undefined;
-  exam_subject_id: string | number | undefined;
+  name?: string | undefined;
+  exam_id?: string | undefined;
+  exam_session_id?: string | number | undefined;
+  exam_subject_id?: string | number | undefined;
+}
+interface ExamRoomUpdate {
+  id: string;
+  name: string;
+  exam_room_detail: {
+    id: string;
+    exam_room_id: string;
+    exam_session_id: string;
+  };
+}
+
+interface Session {
+  id: string;
+  name: string;
+  time_start: string;
+  time_end: string;
 }
