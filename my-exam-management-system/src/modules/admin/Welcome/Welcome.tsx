@@ -10,8 +10,8 @@ const Welcome: React.FC = () => {
   }, [])
   
     return (
-        <div>
-            <h1>Chào mừng đến với hệ thống quản lý thi!</h1>
+        <div className="welcome" style={{ height:"100%",display:"flex", justifyContent:"center", alignItems:"center"}}>
+            <h1 className="welcom-title" style={{fontSize:"1.25rem"}}>Chào mừng đến với hệ thống quản lý thi Swift Exam!</h1>
         </div>
     );
 };

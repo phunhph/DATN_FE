@@ -22,7 +22,6 @@ import {
   QuestionDetail,
   ExamResults,
   ManageStatus,
-  AdminPage
 } from "../modules/admin/index";
 
 
@@ -49,7 +48,6 @@ const adminRoutes = [
   { path: "detail-supervisors", element: <DetailSupervisor /> },
   { path: "subject", element: <Subject /> },
   { path: "exam-content", element: <ExamContent /> },
-  { path: "user", element: <AdminPage /> },
 
 ];
 

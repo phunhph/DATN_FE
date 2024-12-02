@@ -18,7 +18,7 @@ export const ToggleSwitch = ({ id, toggleState, onToggle, className }: ToggleSwi
             e.stopPropagation()
             onToggle(id)
         }}>
-        <input type="checkbox" className="switch-input" checked={toggleState}></input>
+        <input type="checkbox" className="switch-input" checked={toggleState} readOnly ></input>
             <span className="slider round"></span>
     </label>
 );
