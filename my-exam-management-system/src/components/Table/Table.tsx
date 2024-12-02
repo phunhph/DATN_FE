@@ -3,6 +3,7 @@ import { TableSearch } from "../TableSearch/TableSearch";
 import "./Table.scss";
 import { Pagination } from "../Pagination/Pagination";
 import { ToggleSwitch } from "../ToggleSwitch/ToggleSwitch";
+import Notification from "../Notification/Notification";
 
 interface TableAction {
   name: string;
@@ -113,6 +114,17 @@ export const Table = <T extends Record<string, any>>({
     }
   }, [data]);
 
+   const [notifications, setNotifications] = useState<
+     Array<{ message: string; isSuccess: boolean }>
+   >([]);
+
+   const addNotification = (message: string, isSuccess: boolean) => {
+     setNotifications((prev) => [...prev, { message, isSuccess }]);
+   };
+
+   const clearNotifications = () => {
+     setNotifications((prev) => prev.slice(1));
+   };
   
   const renderCellValue = (key: keyof T, value: any) => {
     if (key === "status") {
@@ -126,58 +138,58 @@ export const Table = <T extends Record<string, any>>({
       );
     } else if (key === "image") {
       return <img src={value.image} alt="Image" className="table-image" />;
-    } else 
-     if (key === "url_listening") {
-       return (
-         <div className="audio-cell">
-           {value.url_listening ? (
-             <>
-               <audio
-                 id={`audio-${value.id}`}
-                 src={value.url_listening}
-                 style={{ display: "none" }}
-               ></audio>
-               <button
-                 className="play-audio-button"
-                 onClick={() => {
-                   const allAudioElements = document.querySelectorAll("audio");
-                   allAudioElements.forEach((audio) => {
-                     if (!audio.paused) {
-                       audio.pause();
-                       (audio as HTMLAudioElement).currentTime = 0;
-                     }
-                   });
+    } else if (key === "url_listening") {
+      return (
+        <div className="audio-cell">
+          {value.url_listening ? (
+            <>
+              <audio
+                id={`audio-${value.id}`}
+                src={value.url_listening}
+                style={{ display: "none" }}
+              ></audio>
+              <button
+                className="play-audio-button"
+                onClick={() => {
+                  const allAudioElements = document.querySelectorAll("audio");
+                  allAudioElements.forEach((audio) => {
+                    if (!audio.paused) {
+                      audio.pause();
+                      (audio as HTMLAudioElement).currentTime = 0;
+                    }
+                  });
 
-                   const audioElement = document.getElementById(
-                     `audio-${value.id}`
-                   ) as HTMLAudioElement;
+                  const audioElement = document.getElementById(
+                    `audio-${value.id}`
+                  ) as HTMLAudioElement;
 
-                   if (audioElement) {
-                     if (audioElement.paused) {
-                       audioElement.play().catch((error) => {
-                         console.error("Error playing audio:", error);
-                         alert(
-                           "Không thể phát âm thanh. Định dạng không được hỗ trợ."
-                         );
-                       });
-                     } else {
-                       audioElement.pause();
-                       audioElement.currentTime = 0;
-                     }
-                   }
-                 }}
-               >
-                 🎧
-               </button>
-             </>
-           ) : (
-             <span></span>
-           )}
-         </div>
-       );
-     } else {
-       return highlightText(String(value[key]));
-     }
+                  if (audioElement) {
+                    if (audioElement.paused) {
+                      audioElement.play().catch((error) => {
+                        console.error("Error playing audio:", error);
+                        addNotification(
+                          "Không thể phát âm thanh. Định dạng không được hỗ trợ.",
+                          false
+                        );
+                      });
+                    } else {
+                      audioElement.pause();
+                      audioElement.currentTime = 0;
+                    }
+                  }
+                }}
+              >
+                🎧
+              </button>
+            </>
+          ) : (
+            <span>Không có âm thanh</span>
+          )}
+        </div>
+      );
+    } else {
+      return highlightText(String(value[key]));
+    }
   };
 
 
@@ -283,7 +295,9 @@ export const Table = <T extends Record<string, any>>({
                           )}
                         </td>
                       </>
-                    ) : (<></>)}
+                    ) : (
+                      <></>
+                    )}
                   </tr>
                 ))
               ) : (
@@ -311,6 +325,10 @@ export const Table = <T extends Record<string, any>>({
         onItemsPerPageChange={setItemsPerPage}
       />
       {children}
+      <Notification
+        notifications={notifications}
+        clearNotifications={clearNotifications}
+      />
     </div>
   );
 };
