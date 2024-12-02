@@ -166,9 +166,9 @@ const QuestionDetail = () => {
 
     const validate = (): boolean => {
         const errors: ErrorQuestions = {};
-        if (!formData.id) errors.id = "Mã câu hỏi không được để trống.";
-        if (!formData.level)
-            errors.questionLevel = "Mức độ câu hỏi không được để trống.";
+        // if (!formData.id) errors.id = "Mã câu hỏi không được để trống.";
+        // if (!formData.level)
+        //     errors.questionLevel = "Mức độ câu hỏi không được để trống.";
         if (!formData.title)
             errors.questionContent = "Nội dung câu hỏi không được để trống.";
         if (!formData.answer_P)
@@ -183,10 +183,10 @@ const QuestionDetail = () => {
         return Object.keys(errors).length === 0;
     };
 
-  useEffect(() => {
-    document.documentElement.className = `admin-light`;
-  }, [])
-  
+    useEffect(() => {
+        document.documentElement.className = `admin-light`;
+    }, [])
+
     return (
         <div className="Questions__detail__container">
             <div className="Questions__detail__title">
@@ -274,7 +274,7 @@ const QuestionDetail = () => {
                         <thead>
                             <tr>
                                 <th>Phiên bản</th>
-                                <th>Mức độ</th>
+                                {/* <th>Mức độ</th> */}
                                 <th>Ngày tạo</th>
                             </tr>
                         </thead>
@@ -282,7 +282,7 @@ const QuestionDetail = () => {
                             {answer.map((item, index) => (
                                 <tr key={index}>
                                     <td>{item?.current_version_id}</td>
-                                    <td>{item?.level}</td>
+                                    {/* <td>{item?.level}</td> */}
                                     <td>
                                         {new Date(item?.created_at || "").toLocaleDateString()}
                                     </td>
@@ -324,7 +324,7 @@ const QuestionDetail = () => {
                                         )}
                                     </label>
 
-                                    <label className="modal1__label">
+                                    {/* <label className="modal1__label">
                                         Mức độ câu hỏi: <br />
                                         <select
                                             name="questionLevel"
@@ -346,7 +346,7 @@ const QuestionDetail = () => {
                                                 {errors.questionLevel}
                                             </span>
                                         )}
-                                    </label>
+                                    </label> */}
                                 </div>
                                 <div className="model1__question">
                                     <label className="modal1__label">
