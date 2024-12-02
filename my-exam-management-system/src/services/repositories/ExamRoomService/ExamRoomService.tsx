@@ -259,7 +259,10 @@ export const getExamRoomDetail = async (id: any) => {
     };
   }
 };
-export const getDataSelectUpdate = async (id: any) => {
+export const getDataSelectUpdate = async (
+  room: any,
+  exam_subject_id: string
+) => {
   const token = localStorage.getItem("token");
 
   if (!token) {
@@ -275,22 +278,39 @@ export const getDataSelectUpdate = async (id: any) => {
     };
 
     const response = await instance.get(
-      `/api/admin/exam-room/data-select-update/${id}`,
-      {
-        headers: headers,
-      }
+      `/api/admin/exam-room/data-select-update/${room.id}/${exam_subject_id}`,
+      { headers }
     );
+
+    // Format lại data theo cấu trúc formData để hiển thị đúng trong form
+    let examDate = "";
+    if (response.data.data.exam_date) {
+      const date = new Date(response.data.data.exam_date);
+      examDate = date.toISOString().split("T")[0]; // Format YYYY-MM-DD cho input type="date"
+    }
 
     return {
       success: response.data.success,
       data: {
-        exam_room: response.data.data.exam_room,
-        exam: response.data.data.exam,
-        exam_subjects: response.data.data.exam_subjects,
-        exam_sessions: response.data.data.exam_sessions,
+        exam_room: {
+          id: room.id,
+          exam_id: room.exam_id,
+          name: room.name,
+          exam_room_detail: {
+            id: "",
+            exam_room_id: room.id,
+            exam_session_id: response.data.data.exam_session?.id || "",
+            exam_date: examDate,
+            exam_subject_id: exam_subject_id,
+          },
+        },
+        exam_sessions: response.data.data.exam_session
+          ? [response.data.data.exam_session]
+          : [],
       },
     };
   } catch (error: any) {
+    console.error("Error in getDataSelectUpdate:", error);
     return {
       success: false,
       message: error.response?.data.message || "Lỗi không xác định",

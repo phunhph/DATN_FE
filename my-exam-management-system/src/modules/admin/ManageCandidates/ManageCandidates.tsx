@@ -13,7 +13,6 @@ import {
   getAllWithStatusTrue,
   CandidateInExamRoom,
   addCandidate,
-  exportCandidateExcel,
 } from "@/services/repositories/CandidatesService/CandidatesService";
 import { getExamRoomsInExams } from "@/services/repositories/ExamRoomService/ExamRoomService";
 
@@ -222,19 +221,6 @@ const ManageCandidates: React.FC = () => {
 
     return randomLetters + randomNumber;
   }
-  const handleExportExcel = async () => {
-    if (selectedRoomId) {
-      const result = await exportCandidateExcel(
-        "exam_room",
-        selectedRoomId.toString()
-      );
-      if (result.success) {
-        addNotification("Xuất file thành công!", true);
-      } else {
-        addNotification(result.message, false);
-      }
-    }
-  };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -371,38 +357,6 @@ const ManageCandidates: React.FC = () => {
           }}
         />
       </div>
-      {/* Thêm vào sau div className="candidate__select" và trước Table */}
-      <div>
-        <button
-          onClick={() => {
-            if (selectedExamId) {
-              exportCandidateExcel("exam", selectedExamId).then((result) => {
-                if (result.success) {
-                  addNotification("Xuất file thành công!", true);
-                } else {
-                  addNotification(result.message, false);
-                }
-              });
-            }
-          }}
-        >
-          Xuất theo kỳ thi
-        </button>
-
-        <button
-          onClick={() =>
-            exportCandidateExcel("", "").then((result) => {
-              if (result.success) {
-                addNotification("Xuất file thành công!", true);
-              } else {
-                addNotification(result.message, false);
-              }
-            })
-          }
-        >
-          Xuất tất cả
-        </button>
-      </div>
       <Table
         title={title}
         tableName="Thí sinh"
@@ -412,10 +366,7 @@ const ManageCandidates: React.FC = () => {
           name: "Upload file",
           onClick: () => openModal("file"),
         }}
-        action_dowload={{
-          name: "Tải xuống",
-          onClick: handleExportExcel,
-        }}
+        action_dowload={{ name: "Tải mẫu", onClick: downloadSample }}
         actions_detail={{
           name: "Chi tiết",
           onClick: (candidate) => {
