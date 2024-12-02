@@ -4,10 +4,13 @@ import { ErrorCandidate } from "@/interfaces/CandidateInterface/ErrorCandidateIn
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import "./DetailCandidates.scss";
-import { DetailCandidate } from "@/services/repositories/CandidatesService/CandidatesService";
+import {
+  DetailCandidate,
+  toggleActiveStatus,
+} from "@/services/repositories/CandidatesService/CandidatesService";
 
 const DetailCandidates: React.FC = () => {
-  const title = ["Phòng thi", "Môn thi", "Trạng thái"];
+  const title = ["Môn thi", "Trạng thái"];
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const [candidates, setCandidates] = useState<Candidate[]>([]);
@@ -21,12 +24,16 @@ const DetailCandidates: React.FC = () => {
         if (result.success) {
           const data = result.data.data;
           setCandidates(data.candidate);
-          const datakey = data.actives.map((active) => ({
-            exam_room_name: data.candidate.exam_room.name,
-            subject_name: active.exam_subject.name,
-            status: active.status,
+
+          // Format lại data cho table
+          const datakey = data.exam_subject.map((subject) => ({
+            subject_name: subject.name,
+            status: data.actives.some(
+              (active) => active.exam_subject_id === subject.id && active.status
+            )
+              ? "Đang hoạt động"
+              : "Không hoạt động",
           }));
-          console.log(datakey);
 
           setDataTable(datakey);
         } else {
@@ -105,9 +112,26 @@ const DetailCandidates: React.FC = () => {
     addNotification(`Trạng thái của môn thi đã được thay đổi.`, true);
   };
 
-  const handleStatusChange = (id: string) => {
-    if (confirm("Are you sure you want to change the status?")) {
-      handleUpdateStatus(id);
+  const handleStatusChange = async (data: any) => {
+    try {
+      const result = await toggleActiveStatus(
+        data._metadata.exam_subject_id,
+        data._metadata.idcode
+      );
+
+      if (result.success) {
+        addNotification(result.message, true);
+        // Tải lại data
+        const idcode = queryParams.get("idcode");
+        if (idcode) {
+          callAPI(idcode);
+        }
+      } else {
+        addNotification(result.message, false);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      addNotification("Có lỗi xảy ra khi cập nhật trạng thái", false);
     }
   };
   const CandidateInfo: React.FC<{ candidate: Candidate }> = ({ candidate }) => {

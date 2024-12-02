@@ -293,51 +293,44 @@ export const CandidateById = async (
     }
   }
 };
-
-export const exportCandidateExcel = async (action: string, id: string) => {
+export const toggleActiveStatus = async (
+  exam_subject_id: string,
+  idcode: string
+) => {
   try {
     const token = localStorage.getItem("token");
-    if (!token)
+
+    if (!token) {
       return {
         success: false,
-        message: "Token không tồn tại",
+        message: "Token không tồn tại. Vui lòng đăng nhập.",
       };
+    }
 
-    const formData = new FormData();
-    formData.append("action", action);
-    formData.append("id", id);
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
 
     const response = await instance.post(
-      "/api/admin/candidate/export-excel-password-candidate",
-      formData, // Sử dụng FormData thay vì object
+      "/api/admin/active/toggle",
       {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept:
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        },
-        responseType: "blob",
-      }
+        exam_subject_id,
+        idcode,
+      },
+      { headers }
     );
-
-    // Tạo và download file
-    const url = window.URL.createObjectURL(new Blob([response.data]));
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "danh_sach_ung_vien.xlsx";
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
 
     return {
       success: true,
-      message: "Xuất file thành công",
+      message: "Cập nhật trạng thái thành công",
+      data: response.data,
     };
   } catch (error: any) {
-    console.error("Export error:", error);
+    console.error("Error toggling active status:", error);
     return {
       success: false,
-      message: "Lỗi khi xuất file",
+      message: error.response?.data?.message || "Lỗi không xác định",
+      error: error.response?.data?.error,
     };
   }
 };
