@@ -4,7 +4,7 @@ import { useEffect, useState, useRef, useCallback } from 'react'
 import { roomStatus, studentStatus } from './ManageStatus.type'
 import Echo from "laravel-echo"
 
-const API_BASE_URL = 'http://localhost:8000/api'
+const API_BASE_URL = 'http://datn_be.com/api'
 const PUSHER_KEY = 'be4763917dd3628ba0fe'
 const PUSHER_CLUSTER = 'ap1'
 
