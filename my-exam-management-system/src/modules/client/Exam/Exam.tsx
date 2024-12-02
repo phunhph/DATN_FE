@@ -795,7 +795,7 @@ const Exam: React.FC<Props> = () => {
   const studentSubmitted = async (studentId: string) => {
     try {
         const response = await fetch(
-            `http://localhost:8000/api/candidate/${studentId}/finish`,
+            `http://datn_be.com/api/candidate/${studentId}/finish`,
             {
                 method: 'PUT',
                 headers: {
@@ -817,7 +817,7 @@ const Exam: React.FC<Props> = () => {
     }
 }
 
-  const roomId = '1';
+  const roomId = '501';
 
   const getAuthToken = () => {
     const tokenData = localStorage.getItem('token_client');
@@ -833,7 +833,7 @@ const Exam: React.FC<Props> = () => {
         key: 'be4763917dd3628ba0fe',
         cluster: 'ap1',
         forceTLS: true,
-        authEndpoint: 'http://localhost:8000/api/custom-broadcasting/auth-client',
+        authEndpoint: 'http://datn_be.com/api/custom-broadcasting/auth-client',
         auth: {
           headers: {
             'Authorization': `Bearer ${getAuthToken()}`,
