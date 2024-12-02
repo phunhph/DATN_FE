@@ -86,7 +86,7 @@ const ManageENQuestions = () => {
 
   const validate = (): boolean => {
     const errors: ErrorQuestions = {};
-    if (!formData.id) errors.id = "Mã câu hỏi không được để trống.";
+
     if (!formData.level)
       errors.questionLevel = "Mức độ câu hỏi không được để trống.";
     if (!formData.title)
@@ -290,6 +290,7 @@ const ManageENQuestions = () => {
     if (dataSubject.success) {
       const subjectsWithoutId: ExamSubject[] = dataSubject.data;
       const subjectId = String(subjectsWithoutId[0].id);
+      getAllExamContent(subjectId);
       setMonThi(subjectId);
       setExamSubject(subjectsWithoutId);
     } else {
@@ -455,7 +456,7 @@ const ManageENQuestions = () => {
               ) : (
                 <form className="modal1__form" onSubmit={handleSubmit}>
                   <div className="modal1__firstline">
-                    <label className="modal1__label">
+                    {/* <label className="modal1__label">
                       Mã câu hỏi: <br />
                       <input
                         type="text"
@@ -468,7 +469,7 @@ const ManageENQuestions = () => {
                       {errors.id && (
                         <span className="error_question">{errors.id}</span>
                       )}
-                    </label>
+                    </label> */}
 
                     {/* <label className="modal1__label">
                       Mức độ câu hỏi: <br />
