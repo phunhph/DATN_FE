@@ -38,7 +38,7 @@ const UploadFile: React.FC<UploadFileProps> = ({ onFileSelect }) => {
     <div className="modal__file-content">
       <p>Hãy chọn file từ máy tính của bạn.</p>
       <div className="file-upload-container">
-        <form onSubmit={handleSubmit}>
+        <form className="file-upload-form" onSubmit={handleSubmit}>
           <input 
             type="file" 
             id="fileInput" 

@@ -1,12 +1,8 @@
-// src/App.tsx
-import React from 'react';
-
-const Semester: React.FC = () => {
-    return (
-        <div>
-            <h1>Chào mừng đến với hệ thống quản lý thi!</h1>
-        </div>
-    );
-};
-
-export default Semester;
+export type SemesterType = {
+    semesterName: string;
+    semesterCode: string;
+    semesterStart: string;
+    semesterEnd: string;
+    semesterStatus: boolean;
+}
+export type SemesterFormMode = "add" | "update";

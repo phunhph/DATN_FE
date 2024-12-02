@@ -1,0 +1,100 @@
+@use "@scss/mixin.scss" as m;
+
+.admin-status {
+	&__container {
+		flex-grow: 1;
+	}
+
+	&__group {
+		margin-top: 1rem;
+		display: grid;
+		gap: 1rem;
+		grid-template-columns: repeat(5, 1fr);
+		margin-bottom: 5rem;
+	}
+
+	&__item {
+		h2 {
+			font-size: 1.5rem;
+			font-weight: 600;
+			margin-bottom: 0.5rem;
+		}
+
+		p {
+			height: 3rem;
+		}
+	}
+
+	&__detail-btn {
+		margin: 1.25rem 0;
+		width: 100%;
+		color: #fff;
+		background-color: #7367f0;
+		border-color: #7367f0;
+		transition: background-color 0.3s ease;
+
+		&:hover {
+			background-color: #5c61e6;
+			border-color: #5c61e6;
+		}
+	}
+	&__student-image {
+		margin-bottom: 1rem;
+		width: 100%;
+		height: 100%;
+		object-fit: contain;
+	}
+
+}
+
+.status {
+	&-red {
+		color: red;
+	}
+	&-yellow {
+		color: #ff7900;
+	}
+	&-green {
+		color: green;
+	}
+}
+
+.btn-return{
+	margin-top: 1rem;
+}
+
+.no-data {
+	margin-top: 1rem;
+	text-align: center;
+}
+
+@include m.responsive-to(2xl) {
+	.admin-status__group {
+		grid-template-columns: repeat(4, 1fr);
+	}
+}
+
+@include m.responsive-to(lg) {
+	.admin-status__group {
+		grid-template-columns: repeat(3, 1fr);
+	}
+}
+
+@include m.responsive-to(md) {
+	.admin-status__group {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@include m.responsive-to(sm) {
+	.admin-status__group {
+		grid-template-columns: 1fr;
+	}
+}
+
+.student-status-summary {
+	margin-top: 10px;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 20px;
+}

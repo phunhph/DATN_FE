@@ -6,23 +6,28 @@ import { ToggleSwitch } from "../ToggleSwitch/ToggleSwitch";
 
 interface TableAction {
   name: string;
-  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void; // Thay đổi kiểu tham số
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onClick?: (type: "add" | "edit" | "file" | string | any | null) => void;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface TableProps<T extends Record<string, any>> {
   data: T[];
+  title: string[];
   tableName: string;
   actions_add?: TableAction;
   actions_edit?: TableAction;
   actions_detail?: TableAction;
   action_dowload?: TableAction;
   action_upload?: TableAction;
-  action_status?: (id: string) => void; // Có thể truyền hoặc không
-  children?: string; 
+  action_status?: (id: string) => void;
+  children?: string | React.ReactNode;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const Table = <T extends Record<string, any>>({
   data,
+  title,
   tableName,
   actions_add,
   actions_edit,
@@ -30,7 +35,7 @@ export const Table = <T extends Record<string, any>>({
   action_dowload,
   action_upload,
   action_status,
-  children
+  children,
 }: TableProps<T>) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortKey, setSortKey] = useState<keyof T | null>(null);
@@ -40,7 +45,7 @@ export const Table = <T extends Record<string, any>>({
   const [items, setItems] = useState(data);
 
   const hasData = items.length > 0;
-  const keys = hasData ? (Object.keys(items[0]) as (keyof T)[]) : [];
+  const dataKeys = hasData ? (Object.keys(items[0]) as (keyof T)[]) : [];
 
   const searchedData = useMemo(() => {
     if (!searchQuery) return items;
@@ -60,26 +65,25 @@ export const Table = <T extends Record<string, any>>({
     });
   }, [searchedData, sortKey, sortOrder]);
 
-  // Phân trang dữ liệu
   const paginatedData = useMemo(() => {
     const start = (currentPage - 1) * itemsPerPage;
     const end = Math.min(start + itemsPerPage, sortedData.length);
     return sortedData.slice(start, end);
   }, [sortedData, currentPage, itemsPerPage]);
 
-  // Hàm để thay đổi toggle state cho item
   const handleToggle = (id: string) => {
     if (action_status) {
       action_status(id);
-      setItems((prevItems) =>
-        prevItems.map((item) =>
-          item.id === id ? { ...item, Status: item.Status === 'true' ? 'false' : 'true' } : item
-        )
-      );
+      // setItems((prevItems) =>
+      //   prevItems.map((item) =>
+      //     item.id === id
+      //       ? { ...item, status: item.status === "true" ? "false" : "true" }
+      //       : item
+      //   )
+      // );
     }
   };
 
-  // Hàm sắp xếp
   const handleSort = (key: keyof T) => {
     if (sortKey === key) {
       setSortOrder(sortOrder === "asc" ? "desc" : "asc");
@@ -109,24 +113,87 @@ export const Table = <T extends Record<string, any>>({
     }
   }, [data]);
 
+  
+  const renderCellValue = (key: keyof T, value: any) => {
+    if (key === "status") {
+      return (
+        <ToggleSwitch
+          key={value.id}
+          id={value.id}
+          toggleState={value.status}
+          onToggle={handleToggle}
+        />
+      );
+    } else if (key === "image") {
+      return <img src={value.image} alt="Image" className="table-image" />;
+    } else 
+     if (key === "url_listening") {
+       return (
+         <div className="audio-cell">
+           <audio
+             id={`audio-${value.id}`}
+             src={value.url_listening}
+             style={{ display: "none" }}
+           ></audio>
+           <button
+             className="play-audio-button"
+             onClick={() => {
+               const audioElement = document.getElementById(
+                 `audio-${value.id}`
+               ) as HTMLAudioElement;
+
+               if (audioElement) {
+                 if (audioElement.paused) {
+                   audioElement.play().catch((error) => {
+                     console.error("Error playing audio:", error);
+                     alert(
+                       "Không thể phát âm thanh. Định dạng không được hỗ trợ."
+                     );
+                   });
+                 } else {
+                   audioElement.pause();
+                   audioElement.currentTime = 0; 
+                 }
+               }
+             }}
+           >
+             🎧
+           </button>
+         </div>
+       );
+     } else {
+       return highlightText(String(value[key]));
+     }
+  };
+
+
   return (
     <div className="table-container">
       <div className="table-header">
         <h1>{tableName}</h1>
         <div className="table-button-group">
           {action_upload && (
-            <button className="table-button" onClick={action_upload.onClick}>
+            <button
+              className="table-button"
+              onClick={() => action_upload.onClick?.("file")}
+            >
               <img src="/Lấy file.svg" alt="Upload file" />
             </button>
           )}
           {action_dowload && (
-            <button className="table-button" onClick={action_dowload.onClick}>
+            <button
+              className="table-button"
+              onClick={() => action_dowload.onClick?.("")}
+            >
               <img src="/Tải xuống.svg" alt="Tải xuống" />
               Tải xuống
             </button>
           )}
           {actions_add && (
-            <button className="table-button" onClick={actions_add.onClick}>
+            <button
+              className="table-button"
+              onClick={() => actions_add.onClick?.("add")}
+            >
               {actions_add.name}
             </button>
           )}
@@ -153,73 +220,75 @@ export const Table = <T extends Record<string, any>>({
         </div>
         <TableSearch onSearch={setSearchQuery} />
       </div>
-      <table id="custom-table" className="custom-table">
-        <thead>
-          <tr>
-            {keys.map((key) => (
-              <th key={String(key)} onClick={() => handleSort(key)}>
-                {String(key)}{" "}
-                {sortKey === key ? (sortOrder === "asc" ? "▲" : "▼") : ""}
-              </th>
-            ))}
-            {actions_edit || actions_detail ? <th>Thao tác</th> : <th></th>}
-          </tr>
-        </thead>
-        <tbody>
-          {hasData ? (
-            paginatedData.length > 0 ? (
-              paginatedData.map((item, index) => (
-                <tr key={index}>
-                  {keys.map((key) => (
-                    <td key={String(key)}>
-                      {String(key) === "Status" ? (
-                        <ToggleSwitch
-                          key={item.id}
-                          id={item.id}
-                          toggleState={item.Status}
-                          onToggle={handleToggle}
-                        />
-                      ) : (
-                        highlightText(String(item[key]))
-                      )}
-                    </td>
-                  ))}
-                  <td className="table-button-group">
-                    {actions_edit && (
-                      <button
-                        className="table-button"
-                        onClick={(event) => actions_edit.onClick?.(event)}
-                      >
-                        {actions_edit.name}
-                      </button>
-                    )}
-                    {actions_detail && (
-                      <button
-                        className="table-button"
-                        onClick={(event) => actions_detail.onClick?.(event)}
-                      >
-                        {actions_detail.name}
-                      </button>
-                    )}
+      <div style={{ overflow: "hidden", overflowX: "auto" }}>
+        <table id="custom-table" className="custom-table">
+          <thead>
+            <tr>
+              {title.map((header, index) => (
+                <th key={index} onClick={() => handleSort(dataKeys[index])}>
+                  {header}{" "}
+                  {sortKey === dataKeys[index]
+                    ? sortOrder === "asc"
+                      ? "▲"
+                      : "▼"
+                    : ""}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {hasData ? (
+              paginatedData.length > 0 ? (
+                paginatedData.map((item, index) => (
+                  <tr key={index}>
+                    {dataKeys.map((key) => (
+                      <td key={String(key)}>{renderCellValue(key, item)}</td>
+                    ))}
+                    {actions_edit || actions_detail ? (
+                      <>
+                        <td className="table-button-group">
+                          {actions_edit && (
+                            <button
+                              className="table-button"
+                              onClick={() => actions_edit.onClick?.(item)}
+                            >
+                              {actions_edit.name}
+                            </button>
+                          )}
+                          {actions_detail && (
+                            <button
+                              className="table-button"
+                              onClick={() =>
+                                actions_detail.onClick?.(
+                                  item.id != undefined ? item.id : item.idcode
+                                )
+                              }
+                            >
+                              {actions_detail.name}
+                            </button>
+                          )}
+                        </td>
+                      </>
+                    ) : (<></>)}
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={title.length} className="no-data-message">
+                    Không có dữ liệu
                   </td>
                 </tr>
-              ))
+              )
             ) : (
               <tr>
-                <td colSpan={keys.length + 1} className="no-data-message">
+                <td colSpan={title.length} className="no-data-message">
                   Không có dữ liệu
                 </td>
               </tr>
-            )
-          ) : (
-            <tr>
-              <td colSpan={keys.length + 1} className="no-data-message">
-                Không có dữ liệu
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+            )}
+          </tbody>
+        </table>
+      </div>
       <Pagination
         totalItems={sortedData.length}
         currentPage={currentPage}

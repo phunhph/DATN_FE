@@ -2,10 +2,19 @@
     width: 100%;
     height: fit-content;
     border-bottom:1px solid black;
+    display: flex;
+    align-items: center; 
+  justify-content: space-between;
 }
 .defaultH1 {
-    font-size: 2rem;
+    font-size: 1.5rem;
     line-height: 2.4rem;
     font-weight: bold;
-    // text-transform: uppercase;
+    margin: 0;
 }
+.back {
+  background: none; 
+  border: none; 
+  cursor: pointer; 
+}
+

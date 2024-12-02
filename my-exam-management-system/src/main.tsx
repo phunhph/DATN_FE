@@ -1,15 +1,22 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
-import "@scss/theme.scss"
 import { RouterProvider } from "react-router-dom";
 import { routes } from "./routes";
-import { TokenProvider} from "./contexts/AutherContext";
+import { ThemeProvider } from "@contexts/index";
+import {
+  AdminTokenProvider,
+  ClientTokenProvider,
+} from "./contexts/AutherContext";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <TokenProvider>
+  <AdminTokenProvider>
+    <ClientTokenProvider>
       <React.StrictMode>
-        <RouterProvider router={routes}></RouterProvider>
+        <ThemeProvider>
+          <RouterProvider router={routes}></RouterProvider>
+        </ThemeProvider>
       </React.StrictMode>
-  </TokenProvider>
+    </ClientTokenProvider>
+  </AdminTokenProvider>
 );
