@@ -262,9 +262,7 @@ const ManageExamRoomDetail: React.FC = () => {
     setCurrentSubjectId(""); // Reset subject_id khi đóng modal
   };
 
-  useEffect(() => {
-    document.documentElement.className = `admin-light`;
-  }, []);
+ 
 
   if (loading) {
     return (

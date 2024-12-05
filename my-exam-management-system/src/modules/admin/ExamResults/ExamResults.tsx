@@ -218,7 +218,6 @@ const ExamResults = () => {
 
     useEffect(() => {
         loadSemester()
-        document.documentElement.className = `admin-light`;
     }, [])
     return (
         <>

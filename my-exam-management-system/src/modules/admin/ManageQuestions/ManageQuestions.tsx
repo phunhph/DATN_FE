@@ -247,9 +247,7 @@ const ManageQuestions = () => {
         alert("path dowload")
     }
 
-    useEffect(() => {
-        document.documentElement.className = `admin-light`;
-      }, [])
+
       
     return (
         <div className="Questions__container">

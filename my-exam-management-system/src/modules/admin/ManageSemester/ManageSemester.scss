@@ -98,7 +98,7 @@
     }
 
     &:focus {
-      border-color: #7367f0;
+      border-color: var(--primary80);
       border-width: 2px;
     }
   }
@@ -127,10 +127,8 @@
   gap: 1rem;
 }
 
-button.submit-btn.btn {
+button.base-btn.btn {
   padding: 0.5rem 1rem;
-  border: 1px solid black;
-  border-radius: 0.5rem;
   min-width: 2rem;
   min-height: 2rem;
   text-align: center;
@@ -147,52 +145,24 @@ button.submit-btn.btn {
 
     &:hover {
       background-color: var(--primary);
-      border-color: #5c61e6;
     }
   }
 
   &-reset {
-    transition: background-color 0.3s ease;
-    color: black;
-    border: 1px solid black;
-
-    &:hover {
-      background-color: #f3f4f6;
-    }
+    color: white;
   }
 
   &-submit {
     color: #fff;
-    background-color: #7367f0;
-    border-color: #7367f0;
-    transition: background-color 0.3s ease;
-
-    &:hover {
-      background-color: #5c61e6;
-      border-color: #5c61e6;
-    }
   }
 
   &-del {
     transition: background-color 0.3s ease;
-    color: black;
-    border: 1px solid black;
-
-    &:hover {
-      background-color: #f3f4f6;
-    }
+    color: white;
   }
 
   &-update {
     color: #fff;
-    background-color: var(--primary80);
-    border-color: var(--primary80);
-    transition: background-color 0.3s ease;
-
-    &:hover {
-      background-color: var(--primary);
-      border-color: var(--primary);
-    }
   }
 }
 

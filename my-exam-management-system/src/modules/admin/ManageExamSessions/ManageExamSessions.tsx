@@ -188,9 +188,7 @@ const ManageExamSessions = () => {
     document.body.removeChild(link);
   };
 
-  useEffect(() => {
-    document.documentElement.className = `admin-light`
-  }, [])
+
   
   return (
     <div className="examSessions__container">
@@ -306,8 +304,8 @@ const ManageExamSessions = () => {
                     {errors.time_end && <span>{errors.time_end.message}</span>}
                   </div>
                 </div>
-                <div className="form__group">
-                  <Button type="submit" className="btn">
+                <div className="form__group" style={{alignItems:"end"}}>
+                  <Button type="submit" className="btn" style={{width:"6.5rem", color:"white"}}>
                     {isEditing ? "Cập nhật" : "Thêm mới"}
                   </Button>
                 </div>

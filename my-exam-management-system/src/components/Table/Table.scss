@@ -185,8 +185,7 @@
     gap: 1rem;
   }
   &:hover{
-    border-color: var(--primary80);
-    background-color: var(--primary);
+    background-color: var(--primary80);
     color:white;
     & > img {
       filter: brightness(0) saturate(100%) invert(100%) sepia(15%) saturate(0%) hue-rotate(341deg) brightness(106%) contrast(101%);

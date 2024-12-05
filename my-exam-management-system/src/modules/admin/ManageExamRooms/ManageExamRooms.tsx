@@ -180,9 +180,7 @@ const ManageExamRooms = () => {
     );
   };
 
-  useEffect(() => {
-    document.documentElement.className = `admin-light`;
-  }, [])
+
   
   return (
     <div className="examRooms__container">

@@ -4,7 +4,6 @@ import React, { useEffect } from 'react';
 const ManageReadings: React.FC = () => {
     
   useEffect(() => {
-    document.documentElement.className = `admin-light`;
   }, [])
   
     return (

@@ -325,7 +325,6 @@ const ManageENQuestions = () => {
 
   useEffect(() => {
     onLoad();
-    document.documentElement.className = `admin-light`;
   }, []);
 
   return (

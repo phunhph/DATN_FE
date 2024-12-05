@@ -166,7 +166,6 @@ const ManageStatus = () => {
     }, [])
 
     useEffect(() => {
-        document.documentElement.className = 'admin-light'
         return () => {
             if (echoInstance.current) {
                 echoInstance.current.disconnect()

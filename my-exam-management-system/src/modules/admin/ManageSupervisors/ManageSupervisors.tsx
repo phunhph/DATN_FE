@@ -202,9 +202,7 @@ const ManageSupervisors = () => {
     }
   };
   
-  useEffect(() => {
-    document.documentElement.className = `admin-light`;
-  }, [])
+
   
 
   return (

@@ -5,9 +5,7 @@ import React, { useEffect } from 'react';
 const Welcome: React.FC = () => {
     useAdminAuth();
     
-  useEffect(() => {
-    document.documentElement.className = `admin-light`;
-  }, [])
+
   
     return (
         <div className="welcome" style={{ height:"100%",display:"flex", justifyContent:"center", alignItems:"center"}}>
