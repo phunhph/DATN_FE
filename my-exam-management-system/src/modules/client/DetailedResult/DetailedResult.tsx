@@ -12,7 +12,7 @@ type Props = {};
 const DetailedResult: React.FC<Props> = () => {
 
     //Mock API Câu hỏi thuộc bài thi này
-    const [questions, setQuestions] = useState<Question[]>([
+    const [questions, setQuestions] = useState<any[]>([
         {
             questionNumber: 1,
             questionText: "What is the capital of France?",
@@ -217,7 +217,7 @@ const DetailedResult: React.FC<Props> = () => {
         },
     ]);
 
-    const [readingQuestions, setReadingQuestions] = useState<Question[]>([
+    const [readingQuestions, setReadingQuestions] = useState<any[]>([
         {
             questionNumber: 1,
             questionText: "Most people prefer preparing meals at home rather than eating out.",
@@ -276,7 +276,7 @@ const DetailedResult: React.FC<Props> = () => {
         },
     ])
 
-    const [listeningQuestions, setListeningQuestions] = useState<Question[]>([
+    const [listeningQuestions, setListeningQuestions] = useState<any[]>([
         {
             questionNumber: 1,
             questionText: "Where is the woman from?",
@@ -405,7 +405,7 @@ const DetailedResult: React.FC<Props> = () => {
     };
 
 
-    const chunkQuestions = (questions: Question[], size: number) => {
+    const chunkQuestions = (questions: any[], size: number) => {
         const result = [];
         for (let i = 0; i < questions.length; i += size) {
             result.push(questions.slice(i, i + size));
@@ -474,7 +474,7 @@ const DetailedResult: React.FC<Props> = () => {
                                 </div>
                             )}
                             <div className="exam__answer">
-                                {question.answers.map((ans, index) => {
+                                {question.answers.map((ans:any, index:any) => {
                                     const isSelected = resultOfCandidate.answers.multipleChoice[question.questionNumber] === ans.id;
                                     return (
                                         <div key={ans.id} className={`exam__answer-box ${isSelected ? (ans.isCorrect ? "selected" : "wrong-answer") : ""}`}>
@@ -506,7 +506,7 @@ const DetailedResult: React.FC<Props> = () => {
                         <div key={question.questionNumber} className='exam__question-radio' ref={el => readingRefs.current[question.questionNumber - 1] = el}>
                             <div>{question.questionText}</div>
                             <div>
-                                {question.answers.map((answer, index) => {
+                                {question.answers.map((answer:any, index:any) => {
                                     const isSelected = resultOfCandidate.answers.reading[question.questionNumber] === answer.id;
                                     return (
                                         <label key={answer.id} htmlFor={`radioSelect-${question.questionNumber}-${index}`} className="exam__question-label">
@@ -548,7 +548,7 @@ const DetailedResult: React.FC<Props> = () => {
                                 </div>
                             )}
                             <div className="exam__answer">
-                                {question.answers.map((ans, index) => {
+                                {question.answers.map((ans:any, index:any) => {
                                     const isSelected = resultOfCandidate.answers.listening[question.questionNumber] === ans.id;
                                     return (
                                         <div key={ans.id} className={`exam__answer-box ${isSelected ? (ans.isCorrect ? "selected" : "wrong-answer") : ""}`}>
@@ -582,7 +582,7 @@ const DetailedResult: React.FC<Props> = () => {
                                     <div className="question__row" key={rowIndex}>
                                         {row.map((question) => {
                                             const selectedAnswerId = resultOfCandidate.answers.multipleChoice[question.questionNumber];
-                                            const userAnswer = question.answers.find((ans) => ans.id === selectedAnswerId);
+                                            const userAnswer = question.answers.find((ans:any) => ans.id === selectedAnswerId);
                                             const isCorrect = userAnswer ? userAnswer.isCorrect : null;
 
                                             return (
@@ -615,7 +615,7 @@ const DetailedResult: React.FC<Props> = () => {
                                     <div className="question__row" key={rowIndex}>
                                         {row.map((question) => {
                                             const selectedAnswerId = resultOfCandidate.answers.reading[question.questionNumber];
-                                            const userAnswer = question.answers.find((ans) => ans.id === selectedAnswerId);
+                                            const userAnswer = question.answers.find((ans:any) => ans.id === selectedAnswerId);
                                             const isCorrect = userAnswer ? userAnswer.isCorrect : null;
 
                                             return (
@@ -648,7 +648,7 @@ const DetailedResult: React.FC<Props> = () => {
                                     <div className="question__row" key={rowIndex}>
                                         {row.map((question) => {
                                             const selectedAnswerId = resultOfCandidate.answers.listening[question.questionNumber];
-                                            const userAnswer = question.answers.find((ans) => ans.id === selectedAnswerId);
+                                            const userAnswer = question.answers.find((ans:any) => ans.id === selectedAnswerId);
                                             const isCorrect = userAnswer ? userAnswer.isCorrect : null;
 
                                             return (

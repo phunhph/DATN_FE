@@ -377,7 +377,7 @@ const Subject: React.FC = () => {
                         placeholder="Nhập mã môn thi"
                         readOnly={editMode}
                       />
-                      {errors.id && <p className="error">{errors.id}</p>}
+                      {errors.id && <p className="subject-error">{errors.id}</p>}
                     </label>
                     <label className="modal__label">
                       Tên môn thi: <br />
@@ -389,7 +389,7 @@ const Subject: React.FC = () => {
                         onChange={handleChange}
                         placeholder="Nhập tên môn thi"
                       />
-                      {errors.name && <p className="error">{errors.name}</p>}
+                      {errors.name && <p className="subject-error">{errors.name}</p>}
                     </label>
                   </div>
                   <div className="modal__button">

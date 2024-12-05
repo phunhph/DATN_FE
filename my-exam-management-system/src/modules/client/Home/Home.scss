@@ -66,6 +66,12 @@
   height: 100%;
 }
 
+.home-error {
+  color: red;
+  font-size: 1rem;
+  font-weight: normal;
+}
+
 @include m.responsive-to(xl){
   .group__contentt {
     grid-template-columns: repeat(3, 1fr);

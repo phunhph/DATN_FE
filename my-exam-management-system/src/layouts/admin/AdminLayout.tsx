@@ -41,16 +41,6 @@ const AdminLayout = () => {
     }
   }, []);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      document.documentElement.className = "admin-light";
-    }, 1000);
-    if(document.documentElement.className == "app-light" || document.documentElement.className == "app-dark") {
-      clearInterval(interval)
-    }
-
-    return () => clearInterval(interval);
-  }, []);
   return (
     <>
       <div className="layout__container">

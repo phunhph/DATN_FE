@@ -9,7 +9,7 @@ import { getExamWithSubject } from "@/services/repositories/SemesterServices/Sem
 import { ExamWithSubject } from "@/interfaces/SemesterInterface/SemestertInterface";
 
 const Home = () => {
-  useClientAuth();
+  // useClientAuth();
   const [examData, setExamData] = useState<ExamWithSubject[]>([]);
 
   const [isLoading, setIsLoading] = useState(true);
@@ -25,7 +25,7 @@ const Home = () => {
     const fetchExams = async () => {
       setIsLoading(true);
       try {
-        const data = JSON.parse(localStorage.getItem("clientData") ?? '');
+        const data = JSON.parse(localStorage.getItem("clientData") || '');
 
         const response = await getExamWithSubject(data.id_exam);
         
@@ -66,7 +66,7 @@ const Home = () => {
           {isLoading ? (
             <p>Đang tải dữ liệu...</p>
           ) : error ? (
-            <p className="error">{error}</p>
+            <p className="home-error">{error}</p>
           ) : examData.length === 0 ? (
             <p>Không có kỳ thi nào được tìm thấy.</p>
           ) : (
