@@ -15,37 +15,37 @@ const Scores = () => {
     subjectScore: number,
     result: string,
   }
- 
+
   const [studentScoreList, setStudentScoreList] = useState<Score[]>([]);
 
-  const getScores = async(id: string) => {
-   const result = await getScoreboard(id);
-   if(result.data) {
-    format(result.data)
-   }
+  const getScores = async (id: string) => {
+    const result = await getScoreboard(id);
+    if (result.data) {
+      format(result.data)
+    }
   }
 
-  const format = (score: SemScoreBoardster[]) => {  
-    const result:Score[] = [];
-    score.map((e)=>{
+  const format = (score: SemScoreBoardster[]) => {
+    const result: Score[] = [];
+    score.map((e) => {
       const data: Score = {
         id: e.exam_id,
-        semesterCode:e.exam_id,
-        semesterName:e.exam_name,
-        subjectCode:e.subject_id,
-        subjectName:e.subject_name,
+        semesterCode: e.exam_id,
+        semesterName: e.exam_name,
+        subjectCode: e.subject_id,
+        subjectName: e.subject_name,
         subjectScore: e.point,
-        result: e.point>=5? 'Đạt':'Không Đạt'
+        result: e.point >= 5 ? 'Đạt' : 'Không Đạt'
 
       }
       result.push(data)
     })
-    
+
     setStudentScoreList(result)
   }
 
   useEffect(() => {
-    const data = JSON.parse(localStorage.getItem("clientData") ?? '');
+    const data = JSON.parse(localStorage.getItem("clientData") || '');
     getScores(data.idcode);
   });
   const handleresult = (id: string) => {
@@ -69,7 +69,8 @@ const Scores = () => {
           title={title}
           tableName="Bảng điểm"
           data={studentScoreList}
-          action_result={handleresult}
+        // action_result={handleresult}
+
         ></Table>
       </div>
     </>
