@@ -334,3 +334,83 @@ export const toggleActiveStatus = async (
     };
   }
 };
+export const exportExcelCandidate = async (action?: string, id?: string) => {
+  try {
+    const token = localStorage.getItem("token");
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    };
+
+    const response = await instance.post(
+      "/api/admin/candidate/export-excel-password-candidate",
+      { action, id },
+      {
+        headers,
+        responseType: "blob", // Quan trọng để nhận file
+      }
+    );
+
+    // Tạo file Excel để download
+    const blob = new Blob([response.data], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `danh_sach_ung_vien_${new Date().toISOString()}.xlsx`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+
+    return {
+      success: true,
+      message: "Xuất file Excel thành công",
+    };
+  } catch (error) {
+    if (error instanceof AxiosError && error.response) {
+      const { data } = error.response;
+      return {
+        success: false,
+        message: data.message || "Lỗi khi xuất file Excel",
+        status: error.response.status,
+      };
+    }
+    return {
+      success: false,
+      message: "Đã xảy ra lỗi không xác định",
+      status: 500,
+    };
+  }
+};
+export const importCandidates = async (file: File) => {
+  try {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const token = localStorage.getItem("token");
+    const response = await instance.post(
+      "/api/admin/candidate/import-excel-candidate",
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    return {
+      success: response.data.success,
+      message: response.data.message || "Import thành công",
+      data: response.data.data,
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.response?.data?.message || "Lỗi khi import",
+      errors: error.response?.data?.errors,
+    };
+  }
+};

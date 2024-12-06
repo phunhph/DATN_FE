@@ -13,6 +13,8 @@ import {
   getAllWithStatusTrue,
   CandidateInExamRoom,
   addCandidate,
+  exportExcelCandidate,
+  importCandidates,
 } from "@/services/repositories/CandidatesService/CandidatesService";
 import { getExamRoomsInExams } from "@/services/repositories/ExamRoomService/ExamRoomService";
 
@@ -317,6 +319,86 @@ const ManageCandidates: React.FC = () => {
       handleUpdateStatus(id);
     }
   };
+  const handleExportAll = async () => {
+    try {
+      const response = await exportExcelCandidate("", "");
+      if (response.success) {
+        addNotification("Xuất file Excel thành công", true);
+      } else {
+        addNotification(response.message || "Xuất file thất bại", false);
+      }
+    } catch (error) {
+      addNotification("Đã xảy ra lỗi khi xuất file", false);
+    }
+  };
+
+  const handleExportByExam = async () => {
+    if (!selectedExamId) {
+      addNotification("Vui lòng chọn kỳ thi", false);
+      return;
+    }
+    try {
+      const response = await exportExcelCandidate("exam", selectedExamId);
+      if (response.success) {
+        addNotification("Xuất file Excel thành công", true);
+      } else {
+        addNotification(response.message || "Xuất file thất bại", false);
+      }
+    } catch (error) {
+      addNotification("Đã xảy ra lỗi khi xuất file", false);
+    }
+  };
+
+  const handleExportByRoom = async () => {
+    if (!selectedRoomId) {
+      addNotification("Vui lòng chọn phòng thi", false);
+      return;
+    }
+    try {
+      const response = await exportExcelCandidate(
+        "exam_room",
+        selectedRoomId.toString()
+      );
+      if (response.success) {
+        addNotification("Xuất file Excel thành công", true);
+      } else {
+        addNotification(response.message || "Xuất file thất bại", false);
+      }
+    } catch (error) {
+      addNotification("Đã xảy ra lỗi khi xuất file", false);
+    }
+  };
+
+  const handleFileDrop = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const fileInput = e.currentTarget.querySelector(
+      'input[type="file"]'
+    ) as HTMLInputElement;
+    const file = fileInput?.files?.[0];
+
+    if (!file) {
+      addNotification("Vui lòng chọn file", false);
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const response = await importCandidates(file);
+      if (response.success) {
+        addNotification("Import thành công", true);
+        if (selectedRoomId) {
+          handleChangeRoom(selectedRoomId);
+        }
+        fileInput.value = "";
+      } else {
+        addNotification(response.message || "Import thất bại", false);
+      }
+    } catch (error: any) {
+      addNotification(error.response?.data?.message || "Lỗi khi import", false);
+    }
+  };
 
   return (
     <div className="candidate__admin-container">
@@ -357,6 +439,13 @@ const ManageCandidates: React.FC = () => {
           }}
         />
       </div>
+      <button onClick={handleExportAll}>Xuất tất cả</button>
+      <button onClick={handleExportByExam}>Xuất theo kỳ thi</button>
+      <button onClick={handleExportByRoom}>Xuất theo phòng</button>
+      <form onSubmit={handleFileDrop}>
+        <input type="file" accept=".xlsx,.xls" />
+        <button type="submit">Import</button>
+      </form>
       <Table
         title={title}
         tableName="Thí sinh"
