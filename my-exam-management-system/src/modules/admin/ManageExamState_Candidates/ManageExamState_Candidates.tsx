@@ -3,9 +3,7 @@ import React, { useEffect } from 'react';
 
 const ManageExamState_Candidates: React.FC = () => {
     
-  useEffect(() => {
-    document.documentElement.className = `admin-light`;
-  }, [])
+
   
     return (
         <div>

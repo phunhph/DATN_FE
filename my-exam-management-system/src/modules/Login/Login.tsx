@@ -139,7 +139,7 @@ const Login: React.FC = () => {
                 <span className="error-message">{passwordError}</span>
               )}
             </div>
-            <div className="form-options">
+            {/* <div className="form-options">
               <div className="remember-me">
                 <input
                   type="checkbox"
@@ -152,7 +152,7 @@ const Login: React.FC = () => {
               <div className="forgot-password" onClick={handleForgotPassword}>
                 Quên mật khẩu?
               </div>
-            </div>
+            </div> */}
             <button type="submit" className="submit-btn" disabled={loading}>
               {loading ? "Đang đăng nhập..." : "Đăng nhập"}
             </button>

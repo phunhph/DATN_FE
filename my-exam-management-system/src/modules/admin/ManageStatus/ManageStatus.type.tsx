@@ -3,8 +3,10 @@ export interface roomStatus {
     room: string
     subject: string
     totalStudent: number
-    studentAttendingExam: number
-    studentForbidded: number
+    notStarted: number,
+    inProgress: number,
+    completed: number,
+    forbidden: number
 }
 
 export interface studentStatus {
@@ -13,4 +15,12 @@ export interface studentStatus {
     studentName: string;
     timeStart: string;
     studentStatus: number;
+}
+
+export interface statusCounts {
+    total: number;
+    notStarted: number;
+    inProgress: number;
+    completed: number;
+    forbidden: number;
 }

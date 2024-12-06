@@ -22,8 +22,11 @@ import {
   importFileExcel,
 } from "@/services/repositories/ExamSubjectService/ExamSubjectService";
 import { Semester } from "@/interfaces/SemesterInterface/SemestertInterface";
+import applyTheme from "@/SCSS/applyTheme";
 
 const Subject: React.FC = () => {
+  applyTheme()
+
   const [selectedExamId, setSelectedExamId] = useState<string>("");
 
   const [semesters, setSemesters] = useState<SemesterType[]>([]);
@@ -294,7 +297,6 @@ const Subject: React.FC = () => {
 
   useEffect(() => {
     onLoad();
-    document.documentElement.className = `admin-light`;
   }, []);
 
   return (
@@ -378,7 +380,7 @@ const Subject: React.FC = () => {
                         placeholder="Nhập mã môn thi"
                         readOnly={editMode}
                       />
-                      {errors.id && <p className="error">{errors.id}</p>}
+                      {errors.id && <p className="subject-error">{errors.id}</p>}
                     </label>
                     <label className="modal__label">
                       Tên môn thi: <br />
@@ -390,7 +392,7 @@ const Subject: React.FC = () => {
                         onChange={handleChange}
                         placeholder="Nhập tên môn thi"
                       />
-                      {errors.name && <p className="error">{errors.name}</p>}
+                      {errors.name && <p className="subject-error">{errors.name}</p>}
                     </label>
                   </div>
                   <div className="modal__button">

@@ -7,9 +7,10 @@ import { ExamSubject } from "@/interfaces/SubjectInterface/ExamSubjectInterface"
 import { getAllSemesterWithExamSubject } from "@/services/repositories/SemesterServices/SemesterServices";
 import { getAllExamSubjectByIdSemesterWithContent } from "@/services/repositories/ExamSubjectService/ExamSubjectService";
 import { createQuestion, getAllQuestionByIdContent } from "@/services/repositories/QuestionServices/QuestionServices";
-import { getAllExamContentByIdSubject } from "@/services/repositories/ExamContentService/ExamContentService";
+import { getAllExamContentByIdSubject, updateExamContent } from "@/services/repositories/ExamContentService/ExamContentService";
 import { ExamContentInterface } from "@/interfaces/ExamContentInterface/ExamContentInterface";
 import { Question } from "@/interfaces/QuestionInterface/QuestionInterface";
+import applyTheme from "@/SCSS/applyTheme";
 
 interface ErrorQuestions {
   [key: string]: string;
@@ -22,6 +23,8 @@ interface DataQuestion {
 }
 
 const ManageENQuestions = () => {
+  applyTheme()
+
   const [editMode, setEditMode] = useState(false);
   const [kyThi, setKyThi] = useState("");
   const [semester, setSemester] = useState<Semester[]>([]);
@@ -86,7 +89,7 @@ const ManageENQuestions = () => {
 
   const validate = (): boolean => {
     const errors: ErrorQuestions = {};
-    if (!formData.id) errors.id = "Mã câu hỏi không được để trống.";
+
     if (!formData.level)
       errors.questionLevel = "Mức độ câu hỏi không được để trống.";
     if (!formData.title)
@@ -104,6 +107,7 @@ const ManageENQuestions = () => {
   };
 
   const createQuestion_ = async (formData: Question) => {
+    formData.level = "easy";
     const result = await createQuestion(formData)
     if (result.success && result.data) {
       console.log(result.data);
@@ -162,10 +166,17 @@ const ManageENQuestions = () => {
   const download = () => {
     alert("Downloading...");
   };
-  const handlestatusChange = (id: string) => {
+  const handlestatusChange = async (id: string) => {
     const updatedData = dataHardCode.map((item) =>
       item.id === id ? { ...item, status: !item.status } : item
     );
+    console.log(dataHardCode)
+    updatedData.forEach( async (data) => {
+      const res = await updateExamContent(data)
+      if ( res.status == 200) {
+        addNotification("Đã thay đổi trạng thái", true)
+      }
+    });
   };
 
   const detailQuestion = (id: string) => {
@@ -215,27 +226,25 @@ const ManageENQuestions = () => {
   const formatDataQuestion = (data: unknown): DataQuestion[] => {
     if (Array.isArray(data)) {
       const formattedData: DataQuestion[] = [];
-
+  
       data.forEach((dataItem: unknown) => {
         if (typeof dataItem === "object" && dataItem !== null) {
-          console.log(dataItem);
-
           const { id, status, title } = dataItem as {
             id: string;
-            status: boolean;
+            status: number; // Assuming status is 0 or 1
             title: string;
           };
-
+  
           const question: DataQuestion = {
-            id: id,
-            title: title,
-            status: status,
+            id,
+            title,
+            status: status === 1, // Transform 1 to true and 0 to false
           };
-
+  
           formattedData.push(question);
         }
       });
-
+  
       return formattedData;
     } else {
       throw new Error("Data is not an array");
@@ -289,6 +298,7 @@ const ManageENQuestions = () => {
     if (dataSubject.success) {
       const subjectsWithoutId: ExamSubject[] = dataSubject.data;
       const subjectId = String(subjectsWithoutId[0].id);
+      getAllExamContent(subjectId);
       setMonThi(subjectId);
       setExamSubject(subjectsWithoutId);
     } else {
@@ -318,7 +328,6 @@ const ManageENQuestions = () => {
 
   useEffect(() => {
     onLoad();
-    document.documentElement.className = `admin-light`;
   }, []);
 
   return (
@@ -454,7 +463,7 @@ const ManageENQuestions = () => {
               ) : (
                 <form className="modal1__form" onSubmit={handleSubmit}>
                   <div className="modal1__firstline">
-                    <label className="modal1__label">
+                    {/* <label className="modal1__label">
                       Mã câu hỏi: <br />
                       <input
                         type="text"
@@ -467,7 +476,7 @@ const ManageENQuestions = () => {
                       {errors.id && (
                         <span className="error_question">{errors.id}</span>
                       )}
-                    </label>
+                    </label> */}
 
                     {/* <label className="modal1__label">
                       Mức độ câu hỏi: <br />

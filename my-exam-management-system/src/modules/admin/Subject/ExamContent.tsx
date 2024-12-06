@@ -4,6 +4,7 @@ import {
   ExamContentInterface,
 } from "@/interfaces/ExamContentInterface/ExamContentInterface";
 import { ErrorSubject } from "@/interfaces/SubjectInterface/ErrorExamSubjectInterface";
+import applyTheme from "@/SCSS/applyTheme";
 import {
   addExamContent,
   getAllExamContentByIdSubject,
@@ -14,6 +15,8 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
 const ExamContent: React.FC = () => {
+  applyTheme()
+
   const location = useLocation();
   const { subject } = location.state || {};
 
@@ -245,10 +248,7 @@ const ExamContent: React.FC = () => {
       onload();
     }
   }, [subject]);
-  
-  useEffect(() => {
-    document.documentElement.className = `admin-light`;
-  }, [])
+
   
 
   return (

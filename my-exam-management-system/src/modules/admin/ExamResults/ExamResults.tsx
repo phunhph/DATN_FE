@@ -7,6 +7,7 @@ import "@scss/theme.scss";
 import "./ExamResults.scss"
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
+import applyTheme from "@/SCSS/applyTheme";
 
 const ExamResults = () => {
     const [semesterList, setSemesterList] = useState<any>([]);
@@ -218,8 +219,9 @@ const ExamResults = () => {
 
     useEffect(() => {
         loadSemester()
-        document.documentElement.className = `admin-light`;
     }, [])
+
+    applyTheme()
     return (
         <>
             <PageTitle theme="light">Quản lý kết quả thi</PageTitle>

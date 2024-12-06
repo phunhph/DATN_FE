@@ -2,9 +2,13 @@ import React, { useEffect, useRef, useState } from "react";
 import "./ManageQuestion.scss";
 import { useNavigate } from "react-router-dom";
 import { Notification, Table } from "../../../components";
+import applyTheme from "@/SCSS/applyTheme";
+import { useAdminAuth } from "@/hooks";
 
 const ManageQuestions = () => {
-    // useAuth();
+    useAdminAuth();
+    applyTheme()
+
     const [editMode, setEditMode] = useState(false);
     const [errors, setErrors] = useState<ErrorQuestions>({});
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -247,9 +251,7 @@ const ManageQuestions = () => {
         alert("path dowload")
     }
 
-    useEffect(() => {
-        document.documentElement.className = `admin-light`;
-      }, [])
+
       
     return (
         <div className="Questions__container">

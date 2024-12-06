@@ -3,9 +3,7 @@ import React, { useEffect } from 'react';
 
 const ManageListenings: React.FC = () => {
     
-  useEffect(() => {
-    document.documentElement.className = `admin-light`;
-  }, [])
+
   
     return (
         <div>
