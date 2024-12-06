@@ -2,9 +2,10 @@ import { Table } from "@components/index";
 import "./Scores.scss";
 import { useEffect, useState } from "react";
 import { getScoreboard } from "@/services/repositories/scoreboard/scoreboardServices";
-import { SemScoreBoardster } from "@/interfaces/SemesterInterface/SemestertInterface";
+import { ApiScoreBoardResponse } from "@/interfaces/SemesterInterface/SemestertInterface";
 
 const Scores = () => {
+  
   //mock API
   interface Score {
     id: string,
@@ -20,14 +21,18 @@ const Scores = () => {
 
   const getScores = async (id: string) => {
     const result = await getScoreboard(id);
-    if (result.data) {
-      format(result.data)
-    }
-  }
 
-  const format = (score: SemScoreBoardster[]) => {
+    if (result.success && result.data.length > 0) {
+        format(result);
+    } else {
+        console.error(result.message);
+    }
+};
+
+
+  const format = (score: ApiScoreBoardResponse) => {
     const result: Score[] = [];
-    score.map((e) => {
+    score.data.map((e) => {
       const data: Score = {
         id: e.exam_id,
         semesterCode: e.exam_id,
