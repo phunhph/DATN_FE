@@ -15,6 +15,7 @@ import {
   getFinalStructure,
   SubmitStructure,
 } from "@/services/repositories/StructureServices/StructureDetailServices";
+import applyTheme from "@/SCSS/applyTheme";
 
 interface Errors {
   kyThi?: string;
@@ -25,6 +26,8 @@ interface Errors {
 }
 
 const ManageENExamStructure = () => {
+  applyTheme()
+
   const [kyThi, setKyThi] = useState("");
   const [semester, setSemester] = useState<Semester[]>([]);
   const [monThi, setMonThi] = useState("");

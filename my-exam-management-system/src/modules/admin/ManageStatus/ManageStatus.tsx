@@ -3,12 +3,15 @@ import './ManageStatus.scss'
 import { useEffect, useState, useRef, useCallback } from 'react'
 import { roomStatus, studentStatus } from './ManageStatus.type'
 import Echo from "laravel-echo"
+import applyTheme from '@/SCSS/applyTheme'
 
 const API_BASE_URL = 'http://datn_be.com/api'
 const PUSHER_KEY = 'be4763917dd3628ba0fe'
 const PUSHER_CLUSTER = 'ap1'
 
 const ManageStatus = () => {
+    applyTheme()
+
     const [roomStatusList, setRoomStatusList] = useState<roomStatus[]>([])
     const [studentStatusList, setStudentStatusList] = useState<studentStatus[]>([])
     const [openStudentStatus, setOpenStudentStatus] = useState(false)

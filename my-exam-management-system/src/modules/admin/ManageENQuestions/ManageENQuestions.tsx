@@ -10,6 +10,7 @@ import { createQuestion, getAllQuestionByIdContent } from "@/services/repositori
 import { getAllExamContentByIdSubject, updateExamContent } from "@/services/repositories/ExamContentService/ExamContentService";
 import { ExamContentInterface } from "@/interfaces/ExamContentInterface/ExamContentInterface";
 import { Question } from "@/interfaces/QuestionInterface/QuestionInterface";
+import applyTheme from "@/SCSS/applyTheme";
 
 interface ErrorQuestions {
   [key: string]: string;
@@ -22,6 +23,8 @@ interface DataQuestion {
 }
 
 const ManageENQuestions = () => {
+  applyTheme()
+
   const [editMode, setEditMode] = useState(false);
   const [kyThi, setKyThi] = useState("");
   const [semester, setSemester] = useState<Semester[]>([]);

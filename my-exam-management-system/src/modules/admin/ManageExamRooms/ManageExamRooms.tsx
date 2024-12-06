@@ -10,8 +10,11 @@ import { getAllSemester } from "@/services/repositories/SemesterServices/Semeste
 import { Semester } from "@/interfaces/SemesterInterface/SemestertInterface";
 import { getExamRoom } from "@/services/repositories/ExamRoomService/ExamRoomService";
 import { useNavigate } from "react-router-dom";
+import applyTheme from "@/SCSS/applyTheme";
 
 const ManageExamRooms = () => {
+  applyTheme()
+
   interface ApiResponse<T> {
     success: boolean;
     message?: string;
