@@ -45,9 +45,9 @@ const Scores = () => {
   }
 
   useEffect(() => {
-    const data = JSON.parse(localStorage.getItem("clientData") || '');
+    const data = JSON.parse(localStorage.getItem("clientData") || "{}");
     getScores(data.idcode);
-  });
+  }, []);
   const handleresult = (id: string) => {
     alert(id);
   };
