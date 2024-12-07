@@ -6,10 +6,15 @@ import { Semester } from "@/interfaces/SemesterInterface/SemestertInterface";
 import { ExamSubject } from "@/interfaces/SubjectInterface/ExamSubjectInterface";
 import { getAllSemesterWithExamSubject } from "@/services/repositories/SemesterServices/SemesterServices";
 import { getAllExamSubjectByIdSemesterWithContent } from "@/services/repositories/ExamSubjectService/ExamSubjectService";
-import { createQuestion, getAllQuestionByIdContent } from "@/services/repositories/QuestionServices/QuestionServices";
+import {
+  createQuestion,
+  getAllQuestionByIdContent,
+  importQuestions,
+} from "@/services/repositories/QuestionServices/QuestionServices";
 import { getAllExamContentByIdSubject } from "@/services/repositories/ExamContentService/ExamContentService";
 import { ExamContentInterface } from "@/interfaces/ExamContentInterface/ExamContentInterface";
 import { Question } from "@/interfaces/QuestionInterface/QuestionInterface";
+import { exportQuestions } from "../../../services/repositories/QuestionServices/QuestionServices";
 
 interface ErrorQuestions {
   [key: string]: string;
@@ -104,7 +109,7 @@ const ManageENQuestions = () => {
   };
 
   const createQuestion_ = async (formData: Question) => {
-    const result = await createQuestion(formData)
+    const result = await createQuestion(formData);
     if (result.success && result.data) {
       console.log(result.data);
 
@@ -112,23 +117,21 @@ const ManageENQuestions = () => {
         id: result.data.id,
         title: result.data.title,
         status: result.data.status,
-      }
-      setDataHardCode([...dataHardCode, data])
-
+      };
+      setDataHardCode([...dataHardCode, data]);
     }
     addNotification(result.message, result.success);
-  }
+  };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (validate()) {
       console.log(formData);
-      formData.exam_content_id = content
+      formData.exam_content_id = content;
       if (editMode) {
         alert("Cập nhật câu hỏi thành công!");
       } else {
-        createQuestion_(formData)
-
+        createQuestion_(formData);
       }
       setFormData({
         id: "",
@@ -305,7 +308,6 @@ const ManageENQuestions = () => {
 
     const subjectId = String(e.target.value);
     getAllExamContent(subjectId);
-
   };
 
   const handleOnChange_Context = async (
@@ -320,7 +322,54 @@ const ManageENQuestions = () => {
     onLoad();
     document.documentElement.className = `admin-light`;
   }, []);
+  const handleExportContent = async () => {
+    if (!content) {
+      addNotification("Vui lòng chọn nội dung môn thi", false);
+      return;
+    }
+    try {
+      const response = await exportQuestions(content);
+      if (response.success) {
+        addNotification("Xuất file Excel thành công", true);
+      } else {
+        addNotification(response.message || "Xuất file thất bại", false);
+      }
+    } catch (error) {
+      addNotification("Đã xảy ra lỗi khi xuất file", false);
+    }
+  };
 
+  const handleFileDrop = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const fileInput = e.currentTarget.querySelector(
+      'input[type="file"]'
+    ) as HTMLInputElement;
+    const file = fileInput?.files?.[0];
+
+    if (!file) {
+      addNotification("Vui lòng chọn file", false);
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("exam_content_id", content);
+
+    try {
+      const response = await importQuestions(formData);
+      if (response.success) {
+        addNotification("Import thành công", true);
+        if (content) {
+          getQuestionByIdContent(content);
+        }
+        fileInput.value = "";
+      } else {
+        addNotification(response.message || "Import thất bại", false);
+      }
+    } catch (error: any) {
+      addNotification(error.message || "Lỗi khi import", false);
+    }
+  };
   return (
     <div className="QuestionsEN__container">
       <div className="QuestionsEN__title">
@@ -384,6 +433,13 @@ const ManageENQuestions = () => {
           </div>
         </div>
       </div>
+      <div className="question__actions">
+        <button onClick={handleExportContent}>Xuất file Excel</button>
+        <form onSubmit={handleFileDrop}>
+          <input type="file" accept=".xlsx,.xls" />
+          <button type="submit">Import</button>
+        </form>
+      </div>
       <div className="subject__subjectt">
         <Table
           title={title}
@@ -423,8 +479,8 @@ const ManageENQuestions = () => {
                 {modalType === "edit"
                   ? "Chỉnh sửa câu hỏi"
                   : modalType === "file"
-                    ? "Tải lên file"
-                    : "Thêm mới câu hỏi"}
+                  ? "Tải lên file"
+                  : "Thêm mới câu hỏi"}
               </h2>
               {modalType === "file" ? (
                 <div className="modal__file-content">

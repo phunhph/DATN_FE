@@ -438,14 +438,31 @@ const ManageCandidates: React.FC = () => {
             console.log("selectedRoomOption: " + selectedRoomOption?.value);
           }}
         />
+        <h2>Xuất mật khẩu</h2>
+        <button
+          style={{ padding: 2, backgroundColor: "red", margin: 2 }}
+          onClick={handleExportAll}
+        >
+          Xuất tất cả
+        </button>
+        <button
+          style={{ padding: 2, backgroundColor: "red", margin: 2 }}
+          onClick={handleExportByExam}
+        >
+          Xuất theo kỳ thi
+        </button>
+        <button
+          style={{ padding: 2, backgroundColor: "red", margin: 2 }}
+          onClick={handleExportByRoom}
+        >
+          Xuất theo phòng
+        </button>
+        <form onSubmit={handleFileDrop}>
+          <input type="file" accept=".xlsx,.xls" />
+          <button type="submit">Import</button>
+        </form>
       </div>
-      <button onClick={handleExportAll}>Xuất tất cả</button>
-      <button onClick={handleExportByExam}>Xuất theo kỳ thi</button>
-      <button onClick={handleExportByRoom}>Xuất theo phòng</button>
-      <form onSubmit={handleFileDrop}>
-        <input type="file" accept=".xlsx,.xls" />
-        <button type="submit">Import</button>
-      </form>
+
       <Table
         title={title}
         tableName="Thí sinh"

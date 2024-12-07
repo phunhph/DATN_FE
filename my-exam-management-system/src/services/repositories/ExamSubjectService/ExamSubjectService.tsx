@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import{SubjectCreate,ApiExamSubjectResponse} from "@interfaces/SubjectInterface/ExamSubjectInterface";
+import {
+  SubjectCreate,
+  ApiExamSubjectResponse,
+} from "@interfaces/SubjectInterface/ExamSubjectInterface";
 import { instance } from "@/services/api/api";
 import { AxiosResponse, AxiosError } from "axios";
 
-export const getAllExamSubjectByIdSemester = async (
-  id: string
-) => {
+export const getAllExamSubjectByIdSemester = async (id: string) => {
   try {
     const token = localStorage.getItem("token");
 
@@ -20,12 +21,12 @@ export const getAllExamSubjectByIdSemester = async (
       }
     );
 
-    return  {
-        success: response.data.success,
-        message: "Subject fetched successfully",
-        data: response.data.data,
-        status: 200
-      }; 
+    return {
+      success: response.data.success,
+      message: "Subject fetched successfully",
+      data: response.data.data,
+      status: 200,
+    };
   } catch (error) {
     if (error instanceof AxiosError && error.response) {
       const { data } = error.response;
@@ -35,7 +36,7 @@ export const getAllExamSubjectByIdSemester = async (
         success: false,
         message: errorMessage,
         data: [],
-        status: 500
+        status: 500,
       };
     } else {
       const generalError =
@@ -45,7 +46,7 @@ export const getAllExamSubjectByIdSemester = async (
         success: false,
         message: generalError,
         data: [],
-        status: 500
+        status: 500,
       };
     }
   }
@@ -174,17 +175,17 @@ export const updateStatus = async (id: string) => {
 export const importFileExcel = async (file: FormData) => {
   try {
     const token = localStorage.getItem("token");
-    
+
     const headers = {
       Authorization: `Bearer ${token}`,
-      'Content-Type': 'multipart/form-data',
+      "Content-Type": "multipart/form-data",
     };
 
     const response: AxiosResponse<ApiExamSubjectResponse> = await instance.post(
       `/api/admin/exam-subjects/import`,
-      file, 
+      file,
       {
-        headers:headers
+        headers: headers,
       }
     );
     return response.data;
@@ -192,14 +193,15 @@ export const importFileExcel = async (file: FormData) => {
     if (error instanceof AxiosError && error.response) {
       const { data } = error.response;
       console.log(data);
-      const errorMessage = formatWarningMessage_(data.warning||data.message);
+      const errorMessage = formatWarningMessage_(data.warning || data.message);
       return {
         success: false,
         message: errorMessage,
         data: [],
       };
     } else {
-      const generalError = "An unknown error occurred while adding exam subject.";
+      const generalError =
+        "An unknown error occurred while adding exam subject.";
       return {
         success: false,
         message: generalError,
@@ -222,13 +224,13 @@ export const formatWarningMessage = (warning: WarningType): string => {
 };
 
 export const formatWarningMessage_ = (warning: WarningType): string => {
-  const errorMessagesMap: Record<number, Set<string>> = {}; 
+  const errorMessagesMap: Record<number, Set<string>> = {};
   if (Array.isArray(warning)) {
     return Object.entries(warning)
       .map(([key, errors]) => {
-        const rowIndex = parseInt(key) + 1; 
+        const rowIndex = parseInt(key) + 1;
         if (!errorMessagesMap[rowIndex]) {
-          errorMessagesMap[rowIndex] = new Set(); 
+          errorMessagesMap[rowIndex] = new Set();
         }
 
         if (Array.isArray(errors)) {
@@ -239,7 +241,9 @@ export const formatWarningMessage_ = (warning: WarningType): string => {
           errorMessagesMap[rowIndex].add(`Lỗi: ${String(errors)}`);
         }
 
-        return `Hàng ${rowIndex}: ${Array.from(errorMessagesMap[rowIndex]).join(' ')}`;
+        return `Hàng ${rowIndex}: ${Array.from(errorMessagesMap[rowIndex]).join(
+          " "
+        )}`;
       })
       .join("\n");
   } else if (typeof warning === "object" && warning !== null) {
@@ -257,7 +261,9 @@ export const formatWarningMessage_ = (warning: WarningType): string => {
           errorMessagesMap[parseInt(key) + 1].add(`Lỗi: ${String(errors)}`);
         }
 
-        return `Hàng ${parseInt(key) + 1}: ${Array.from(errorMessagesMap[parseInt(key) + 1]).join(', ')}`;
+        return `Hàng ${parseInt(key) + 1}: ${Array.from(
+          errorMessagesMap[parseInt(key) + 1]
+        ).join(", ")}`;
       })
       .join("\n");
   } else {
@@ -265,9 +271,7 @@ export const formatWarningMessage_ = (warning: WarningType): string => {
   }
 };
 
-export const getAllExamSubjectByIdSemesterWithContent = async (
-  id: string
-) => {
+export const getAllExamSubjectByIdSemesterWithContent = async (id: string) => {
   try {
     const token = localStorage.getItem("token");
 
@@ -282,12 +286,12 @@ export const getAllExamSubjectByIdSemesterWithContent = async (
       }
     );
 
-    return  {
-        success: response.data.success,
-        message: "Subject fetched successfully",
-        data: response.data.data,
-        status: 200
-      }; 
+    return {
+      success: response.data.success,
+      message: "Subject fetched successfully",
+      data: response.data.data,
+      status: 200,
+    };
   } catch (error) {
     if (error instanceof AxiosError && error.response) {
       const { data } = error.response;
@@ -297,7 +301,7 @@ export const getAllExamSubjectByIdSemesterWithContent = async (
         success: false,
         message: errorMessage,
         data: [],
-        status: 500
+        status: 500,
       };
     } else {
       const generalError =
@@ -307,15 +311,13 @@ export const getAllExamSubjectByIdSemesterWithContent = async (
         success: false,
         message: generalError,
         data: [],
-        status: 500
+        status: 500,
       };
     }
   }
 };
 
-export const submitStemp = async (
-  data: any
-) => {
+export const submitStemp = async (data: any) => {
   try {
     const token = localStorage.getItem("token");
 
@@ -331,13 +333,13 @@ export const submitStemp = async (
       }
     );
     console.log(response);
-    
-    return  {
-        success: response.data.success,
-        message: response.data.message,
-        data: response.data.data,
-        status: 200
-      }; 
+
+    return {
+      success: response.data.success,
+      message: response.data.message,
+      data: response.data.data,
+      status: 200,
+    };
   } catch (error) {
     if (error instanceof AxiosError && error.response) {
       const { data } = error.response;
@@ -347,7 +349,7 @@ export const submitStemp = async (
         success: false,
         message: errorMessage,
         data: [],
-        status: 500
+        status: 500,
       };
     } else {
       const generalError =
@@ -357,15 +359,13 @@ export const submitStemp = async (
         success: false,
         message: generalError,
         data: [],
-        status: 500
+        status: 500,
       };
     }
   }
 };
 
-export const finish = async (
-  data: any
-) => {
+export const finish = async (data: any) => {
   try {
     const token = localStorage.getItem("token");
 
@@ -381,13 +381,13 @@ export const finish = async (
       }
     );
     console.log(response);
-    
-    return  {
-        success: response.data.success,
-        message: response.data.message,
-        data: response.data.data,
-        status: 200
-      }; 
+
+    return {
+      success: response.data.success,
+      message: response.data.message,
+      data: response.data.data,
+      status: 200,
+    };
   } catch (error) {
     if (error instanceof AxiosError && error.response) {
       const { data } = error.response;
@@ -397,7 +397,7 @@ export const finish = async (
         success: false,
         message: errorMessage,
         data: [],
-        status: 500
+        status: 500,
       };
     } else {
       const generalError =
@@ -407,8 +407,83 @@ export const finish = async (
         success: false,
         message: generalError,
         data: [],
-        status: 500
+        status: 500,
       };
     }
+  }
+};
+export const exportExcelSubjects = async (action?: string, id?: string) => {
+  try {
+    const token = localStorage.getItem("token");
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    };
+
+    const response = await instance.post(
+      "/api/admin/exam-subjects/export-excel",
+      { action, id },
+      {
+        headers,
+        responseType: "blob",
+      }
+    );
+
+    const blob = new Blob([response.data], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `danh_sach_mon_thi_${new Date().toISOString()}.xlsx`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+
+    return {
+      success: true,
+      message: "Xuất file Excel thành công",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: "Đã xảy ra lỗi khi xuất file",
+    };
+  }
+};
+
+export const importExcelSubjects = async (formData: FormData) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await instance.post(
+      "/api/admin/exam-subjects/import-excel",
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    return {
+      success: response.data.success,
+      message: response.data.message || "Import thành công",
+      data: response.data.data,
+    };
+  } catch (error) {
+    if (error instanceof AxiosError && error.response) {
+      const { data } = error.response;
+      return {
+        success: false,
+        message: data.message || "Lỗi khi import",
+        errors: data.errors,
+      };
+    }
+    return {
+      success: false,
+      message: "Lỗi khi import",
+    };
   }
 };

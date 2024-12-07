@@ -1,4 +1,8 @@
-import { ApiQuestionDetailResponse, ApiQuestionResponse, Question } from "@/interfaces/QuestionInterface/QuestionInterface";
+import {
+  ApiQuestionDetailResponse,
+  ApiQuestionResponse,
+  Question,
+} from "@/interfaces/QuestionInterface/QuestionInterface";
 import { instance } from "@/services/api/api";
 import { AxiosResponse, AxiosError } from "axios";
 
@@ -134,7 +138,7 @@ export const createQuestion = async (data: Question) => {
       };
     }
   }
-}
+};
 
 export const getQuestionById = async (
   id: string
@@ -146,12 +150,10 @@ export const getQuestionById = async (
       Authorization: `Bearer ${token}`,
     };
 
-    const response: AxiosResponse<ApiQuestionDetailResponse> = await instance.get(
-      `/api/admin/questions/${id}`,
-      {
+    const response: AxiosResponse<ApiQuestionDetailResponse> =
+      await instance.get(`/api/admin/questions/${id}`, {
         headers: headers,
-      }
-    );
+      });
 
     return response.data;
   } catch (error) {
@@ -215,4 +217,69 @@ export const updateQuestion = async (data: Question) => {
       };
     }
   }
-}
+};
+// services/QuestionServices.ts
+export const exportQuestions = async (exam_content_id: string) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await instance.post(
+      "/api/admin/questions/export-excel",
+      { exam_content_id },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        responseType: "blob",
+      }
+    );
+
+    const blob = new Blob([response.data], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `danh_sach_cau_hoi_${new Date().toISOString()}.xlsx`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+
+    return {
+      success: true,
+      message: "Xuất file Excel thành công",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: "Đã xảy ra lỗi khi xuất file",
+    };
+  }
+};
+
+export const importQuestions = async (file: FormData) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await instance.post(
+      "/api/admin/questions/import-excel",
+      file,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return {
+      success: response.data.success,
+      message: response.data.message || "Import thành công",
+      data: response.data.data,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: "Lỗi khi import",
+    };
+  }
+};
