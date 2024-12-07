@@ -7,9 +7,12 @@ import { PieChartComponent } from '@/components';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import '@assets/font/Roboto-Regular-normal.js'
+import applyTheme from '@/SCSS/applyTheme';
 // import BarChartComponent from '@/components/Chart/Barchart/Barchart';
 
 const ManageReports: React.FC = () => {
+    applyTheme()
+
     const [semesterList, setSemesterList] = useState<any>([]);
     // const [subjectList, setSubjectList] = useState<any>([]);
     // const [ExamRoomList, setExamRoomList] = useState<any>([]);
@@ -348,7 +351,6 @@ const ManageReports: React.FC = () => {
 
     useEffect(() => {
         loadSemester()
-        document.documentElement.className = `admin-light`;
     }, [])
 
     return (
@@ -356,7 +358,7 @@ const ManageReports: React.FC = () => {
             <div className="report__container">
                 <PageTitle theme="light">Tổng quan</PageTitle>
 
-                <div className="report">
+                {/* <div className="report">
                     <div className="report__chart">
                         <div className="report__chart-pie">
                             <PieChartComponent id="piechart1" title="Tỉ lệ xếp hạng" data={APIReturnedReportData.pieChartData} />
@@ -405,10 +407,8 @@ const ManageReports: React.FC = () => {
                             </table>
                         </div>
                     </div>
-                </div>
-                <div className="report__file">
-                    <Button className={`report__file-btn `} onClick={handleExportPDF}>Xuất file PDF</Button>
-                </div>
+                </div> */}
+
                 <div className="report__filter">
                     <form className="report__filter-form">
                         <div className="report__container-child">
@@ -433,6 +433,9 @@ const ManageReports: React.FC = () => {
                             }} />
                         </div> */}
                     </form>
+                </div>
+                <div className="report__file">
+                    <Button className={`report__file-btn `} onClick={handleExportPDF}>Xuất file PDF</Button>
                 </div>
                 {touch && singleSemesterData && (
                     <div className="report">

@@ -10,8 +10,11 @@ import {
   addSupervisor,
   getAllSupervisors,
 } from "@/services/repositories/SupervisorsService/SupervisorsService";
+import applyTheme from "@/SCSS/applyTheme";
 
 const ManageSupervisors = () => {
+  applyTheme()
+
   const [supervisors, setSupervisors] = useState<Supervisor[]>([]);
 
   const [modalType, setModalType] = useState<"add" | "edit" | "file">("add");
@@ -202,9 +205,7 @@ const ManageSupervisors = () => {
     }
   };
   
-  useEffect(() => {
-    document.documentElement.className = `admin-light`;
-  }, [])
+
   
 
   return (

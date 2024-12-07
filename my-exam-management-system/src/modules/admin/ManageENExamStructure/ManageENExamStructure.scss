@@ -122,7 +122,7 @@
       width: calc(100% - 32px);
       border-bottom: 1px solid #0000004b;
       margin-bottom: 20px;
-      min-height: 370px;
+      // min-height: 370px;
       max-height: 370px;
       h1 {
         font-size: 20px;
@@ -196,6 +196,7 @@
   margin-bottom: 10px;
   button {
     background-color: var(--primary80);
+    color:white;
     height: 30px;
     line-height: 16px;
     width: 80px;

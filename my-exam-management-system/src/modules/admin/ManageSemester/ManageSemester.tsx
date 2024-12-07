@@ -6,9 +6,12 @@ import { SemesterFormMode, SemesterType } from "./Semester.type";
 import {useAdminAuth} from '@hooks/AutherHooks';
 import { addSemester, getAllSemester, removeSemester, updateSemester } from "@/services/repositories/SemesterServices/SemesterServices";
 import { Semester } from "@/interfaces/SemesterInterface/SemestertInterface";
+import applyTheme from "@/SCSS/applyTheme";
 
 const ManageSemester = () => {
   useAdminAuth();
+  applyTheme()
+
   const [openForm, setOpenForm] = useState<boolean>(false);
   const [animateOut, setAnimateOut] = useState<boolean>(false);
   const [formMode, setFormMode] = useState<SemesterFormMode>("add");
@@ -186,7 +189,6 @@ const ManageSemester = () => {
 
   useEffect(() => {
     onLoad()
-    document.documentElement.className = `admin-light`;
   }, [])
 
   return (

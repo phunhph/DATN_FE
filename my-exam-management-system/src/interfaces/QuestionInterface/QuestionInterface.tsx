@@ -32,41 +32,41 @@ export interface QuestionDetailResponse {
   updated_at: string;
   deleted_at: string | null;
   current_version: Question[];
-    id:string;
-    questionNumber: number;
-    questionText: string;
+  questionNumber: number;
+  questionText: string;
+  image?: string;
+  answers: {
+    id: number;
+    text?: string;
     image?: string;
-    answers: {
-        id: number;
-        text?: string; 
-        image?: string;
-        isCorrect?: boolean;
-    }[];
+    isCorrect?: boolean;
+  }[];
 }
 
 export interface ApiQuestionDetailResponse extends BaseResponse {
   data?: QuestionDetailResponse;
 }
 export interface ApiQuestionResponse {
-    data: Question[];
-    status: string;
-    success: boolean;
-    warning?: string;
+  data: Question[];
+  status: string;
+  success: boolean;
+  warning?: string;
 }
 
 export interface APIresultOfCandidate {
-    timeSpent: number;
-    answers: {
-        multipleChoice: {
-            [key:string]: number;
-        }
-        reading: {
-            [key:string]: number;
-        }
-        listening: {
-            [key:string]: number;
-        }
+  timeSpent: number;
+  answers: {
+    multipleChoice: {
+      [key: string]: number;
     }
+    reading: {
+      [key: string]: number;
+    }
+    listening: {
+      [key: string]: number;
+    }
+  }
+}
 export interface ApiQuestionResponse extends BaseResponse {
   data: Question[];
 }

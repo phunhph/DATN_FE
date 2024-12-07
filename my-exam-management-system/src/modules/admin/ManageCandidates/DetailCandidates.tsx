@@ -8,8 +8,11 @@ import {
   DetailCandidate,
   toggleActiveStatus,
 } from "@/services/repositories/CandidatesService/CandidatesService";
+import applyTheme from "@/SCSS/applyTheme";
 
 const DetailCandidates: React.FC = () => {
+  applyTheme()
+
   const title = ["Môn thi", "Trạng thái"];
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);

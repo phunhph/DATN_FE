@@ -6,10 +6,13 @@ import { useLocation, useParams } from "react-router-dom";
 import { PageTitle, UploadFile } from "@components/index";
 import { Supervisor } from "@/interfaces/SupervisorInterface/SupervisorInterface";
 import { ErrorSupervisor } from "@/interfaces/SupervisorInterface/ErrorSupervisorInterface";
+import applyTheme from "@/SCSS/applyTheme";
 
 type Props = {};
 
 const DetailSupervisor = (props: Props) => {
+  applyTheme()
+
   const title = [
     "Mã giảng viên",
     "Tên",
@@ -180,10 +183,7 @@ const DetailSupervisor = (props: Props) => {
     }
   };
   
-  useEffect(() => {
-    document.documentElement.className = `admin-light`;
-  }, [])
-  
+
 
   return (
     <div className="detailSupervisor__containter">

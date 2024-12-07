@@ -24,6 +24,14 @@ export type ExamWithSubject = {
   percentage?: number; 
 };
 
-export interface ApiExamWithSubjectResponse extends BaseResponse {
-  data: ExamWithSubject[];
+export interface ApiScoreBoardResponse extends BaseResponse {
+  data: SemScoreBoardster[];
+}
+
+export type SemScoreBoardster = {
+  exam_id: string;
+  exam_name: string;
+  point: number;
+  subject_id: string;
+  subject_name: string;
 }

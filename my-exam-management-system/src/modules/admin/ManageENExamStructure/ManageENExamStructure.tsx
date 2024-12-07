@@ -6,15 +6,16 @@ import {
   reqStructure,
   totalStructure,
 } from "@/interfaces/ManageStructureInterfaces/ManageStructureInterfaces";
-import {  getAllSemesterWithExamSubject } from "@/services/repositories/SemesterServices/SemesterServices";
+import { getAllSemesterWithExamSubject } from "@/services/repositories/SemesterServices/SemesterServices";
 import { Semester } from "@/interfaces/SemesterInterface/SemestertInterface";
-import {  getAllExamSubjectByIdSemesterWithContent } from "@/services/repositories/ExamSubjectService/ExamSubjectService";
+import { getAllExamSubjectByIdSemesterWithContent } from "@/services/repositories/ExamSubjectService/ExamSubjectService";
 import { ExamSubject } from "@/interfaces/SubjectInterface/ExamSubjectInterface";
 import {
   getAllStrutureByIdSubject,
   getFinalStructure,
   SubmitStructure,
 } from "@/services/repositories/StructureServices/StructureDetailServices";
+import applyTheme from "@/SCSS/applyTheme";
 
 interface Errors {
   kyThi?: string;
@@ -25,6 +26,8 @@ interface Errors {
 }
 
 const ManageENExamStructure = () => {
+  applyTheme()
+
   const [kyThi, setKyThi] = useState("");
   const [semester, setSemester] = useState<Semester[]>([]);
   const [monThi, setMonThi] = useState("");
@@ -72,7 +75,7 @@ const ManageENExamStructure = () => {
     if (!thoiGianLamBai || +thoiGianLamBai <= 0)
       newErrors.thoiGianLamBai = "Thời gian làm bài phải lớn hơn 0.";
 
-    let totalQuestions = 0;   
+    let totalQuestions = 0;
 
     modules.forEach((module, moduleIndex) => {
       module.levels.forEach((level, levelIndex) => {
@@ -173,7 +176,7 @@ const ManageENExamStructure = () => {
 
   const getStructureSubjiect = async (id: string) => {
     const data = await getAllStrutureByIdSubject(id);
-   
+
     if (data.success) {
       setTongSoCauHoi(data.data[0].quantity);
       setThoiGianLamBai(data.data[0].time);
@@ -184,14 +187,14 @@ const ManageENExamStructure = () => {
       setTongSoCauHoi(0);
       setThoiGianLamBai(0);
     }
-    
+
     const subjectDetail = await getFinalStructure(id);
     console.log(subjectDetail);
-    
-      if (subjectDetail.success) {
-        const data = groupByTitle(subjectDetail.data);
-        setModules(data);
-      }
+
+    if (subjectDetail.success) {
+      const data = groupByTitle(subjectDetail.data);
+      setModules(data);
+    }
   };
 
   const onLoad = async () => {
@@ -203,7 +206,7 @@ const ManageENExamStructure = () => {
         throw new Error("Failed to get exams.");
       }
       console.log(data);
-      
+
       setSemester(data.data);
       if (data.data.length === 0 || !data.data[0].id) {
         throw new Error("No valid exams found.");
@@ -216,7 +219,7 @@ const ManageENExamStructure = () => {
       const subjectId = String(subjects.data[0].id);
       await getStructureSubjiect(subjectId);
 
-      
+
     } catch (error) {
       console.error("Error in dataStart:", error);
     }
@@ -233,16 +236,15 @@ const ManageENExamStructure = () => {
     console.log(e.target.value);
     const subjectDetail = await getFinalStructure(e.target.value);
     console.log(subjectDetail);
-    
-      if (subjectDetail.success) {
-        const data = groupByTitle(subjectDetail.data);
-        setModules(data);
-      }
+
+    if (subjectDetail.success) {
+      const data = groupByTitle(subjectDetail.data);
+      setModules(data);
+    }
   };
 
   useEffect(() => {
     onLoad();
-    document.documentElement.className = `admin-light`;
   }, []);
   return (
     <div className="Structure">
@@ -314,7 +316,7 @@ const ManageENExamStructure = () => {
             {/* Phần này sẽ hiển thị các module đã chọn */}
             {modules.map((module, moduleIndex) => (
               <div className="module__item" key={moduleIndex}>
-                <h1>{module.title}</h1>
+                {/* <h1>{module.title}</h1> */}
                 <div className="module__title">
                   <h4 className="lever">Nội dung thi</h4>
                   <h4 className="quantity">Số lượng</h4>
@@ -322,7 +324,7 @@ const ManageENExamStructure = () => {
                 </div>
                 {module.levels.map((level, levelIndex) => (
                   <div className="module__title" key={levelIndex}>
-                    <h4 className="lever">{level.level}</h4>
+                    <h4 className="lever">{module.title}</h4>
                     <h4 className="quantity">{level.total}</h4>
                     <div className="number grid_input">
                       <input

@@ -49,6 +49,9 @@ export interface Candidate_all {
 
 export interface Question___ {
   id: string;
+  examContentId: string;
+  description?: string;
+  url_listening?: string;
   title: string;
   image_title?: string;
   answer: {

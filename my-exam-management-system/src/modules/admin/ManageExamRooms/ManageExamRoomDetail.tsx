@@ -13,6 +13,7 @@ import {
 } from "@/services/repositories/ExamRoomService/ExamRoomService";
 import { useAdminAuth } from "@hooks/AutherHooks";
 import { ErrorExamRoom } from "@interfaces/ExamRoomInterfaces/ErrorExamRoomInterfaces";
+import applyTheme from "@/SCSS/applyTheme";
 
 const ManageExamRoomDetail: React.FC = () => {
   interface ExamSubjectType {
@@ -29,6 +30,7 @@ const ManageExamRoomDetail: React.FC = () => {
     time_start: string;
     time_end: string;
   }
+  applyTheme()
 
   useAdminAuth();
   const location = useLocation();
@@ -262,9 +264,7 @@ const ManageExamRoomDetail: React.FC = () => {
     setCurrentSubjectId(""); // Reset subject_id khi đóng modal
   };
 
-  useEffect(() => {
-    document.documentElement.className = `admin-light`;
-  }, []);
+ 
 
   if (loading) {
     return (
