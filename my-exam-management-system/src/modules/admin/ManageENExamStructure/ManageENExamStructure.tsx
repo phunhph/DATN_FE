@@ -324,8 +324,8 @@ const ManageENExamStructure = () => {
                 </div>
                 {module.levels.map((level, levelIndex) => (
                   <div className="module__title" key={levelIndex}>
-                    <h4 className="lever">{module.title}</h4>
-                    <h4 className="quantity">{level.total}</h4>
+                    <p className="lever lever_content">{module.title}</p>
+                    <p className="quantity">{level.total}</p>
                     <div className="number grid_input">
                       <input
                         type="number"
