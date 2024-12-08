@@ -258,9 +258,15 @@ export const exportQuestions = async (exam_content_id: string) => {
   }
 };
 
-export const importQuestions = async (file: FormData) => {
+export const importQuestions = async (
+  file: FormData,
+  exam_content_id: string
+) => {
   try {
     const token = localStorage.getItem("token");
+    // Thêm exam_content_id vào FormData
+    file.append("exam_content_id", exam_content_id);
+
     const response = await instance.post(
       "/api/admin/questions/import-excel",
       file,

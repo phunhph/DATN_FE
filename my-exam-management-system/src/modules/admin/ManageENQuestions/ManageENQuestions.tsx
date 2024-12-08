@@ -334,22 +334,6 @@ const ManageENQuestions = () => {
   useEffect(() => {
     onLoad();
   }, []);
-  const handleExportContent = async () => {
-    if (!content) {
-      addNotification("Vui lòng chọn nội dung môn thi", false);
-      return;
-    }
-    try {
-      const response = await exportQuestions(content);
-      if (response.success) {
-        addNotification("Xuất file Excel thành công", true);
-      } else {
-        addNotification(response.message || "Xuất file thất bại", false);
-      }
-    } catch (error) {
-      addNotification("Đã xảy ra lỗi khi xuất file", false);
-    }
-  };
 
   const handleFileDrop = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -363,12 +347,16 @@ const ManageENQuestions = () => {
       return;
     }
 
+    if (!content) {
+      addNotification("Vui lòng chọn nội dung môn thi trước khi import", false);
+      return;
+    }
+
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("exam_content_id", content);
 
     try {
-      const response = await importQuestions(formData);
+      const response = await importQuestions(formData, content);
       if (response.success) {
         addNotification("Import thành công", true);
         if (content) {
@@ -410,6 +398,7 @@ const ManageENQuestions = () => {
               <span className="error__number">{errors.kyThi}</span>
             )}
           </div>
+          a
           <div className="filter__select">
             <label htmlFor="monThi">Chọn môn thi:</label>
             <select
@@ -449,6 +438,22 @@ const ManageENQuestions = () => {
           <Button onClick={handleExportContent} className="export-btn" style={{ width: "auto" }}>Xuất file Excel</Button>
         </div> */}
       </div>
+      {/* <div className="question__actions">
+        <form onSubmit={handleFileDrop}>
+          <label htmlFor="upload-file-btn" className="upload-file-btn">
+            Bấm vào đây để tải file lên{" "}
+          </label>
+          <input
+            id="upload-file-btn"
+            className="upload-file-btn"
+            type="file"
+            accept=".xlsx,.xls"
+          />
+          <Button type="submit" className="export-btn">
+            Gửi
+          </Button>
+        </form> */}
+      {/* </div> */}
       <div className="subject__subjectt">
         <Table
           title={title}

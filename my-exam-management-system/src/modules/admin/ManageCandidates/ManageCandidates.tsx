@@ -1,4 +1,10 @@
-import { Notification, PageTitle, UploadFile, Table, Button } from "@/components";
+import {
+  Notification,
+  PageTitle,
+  UploadFile,
+  Table,
+  Button,
+} from "@/components";
 import { Exam } from "@/interfaces/ExamInterface/ExamInterface";
 import React, { useEffect, useState } from "react";
 import AsyncSelect from "react-select/async";
@@ -20,7 +26,7 @@ import { getExamRoomsInExams } from "@/services/repositories/ExamRoomService/Exa
 import { applyTheme } from "@/SCSS/applyTheme";
 
 const ManageCandidates: React.FC = () => {
-  applyTheme()
+  applyTheme();
 
   const title = [
     "Mã sinh viên",
@@ -205,7 +211,6 @@ const ManageCandidates: React.FC = () => {
 
     if (!formData.name) errors.name = "Tên không được để trống.";
     if (!formData.idcode) errors.sbd = "Số báo danh không được để trống.";
-    if (!formData.image) errors.image = "Ảnh không được để trống.";
     if (!formData.dob) errors.dob = "Ngày sinh không được để trống.";
     if (!formData.address) errors.address = "Địa chỉ không được để trống.";
     if (!formData.email) errors.email = "Địa chỉ email không được để trống.";
@@ -447,14 +452,10 @@ const ManageCandidates: React.FC = () => {
           >
             Xuất tất cả
           </Button>
-          <Button className="export-btn"
-            onClick={handleExportByExam}
-          >
+          <Button className="export-btn" onClick={handleExportByExam}>
             Xuất theo kỳ thi
           </Button>
-          <Button className="export-btn"
-            onClick={handleExportByRoom}
-          >
+          <Button className="export-btn" onClick={handleExportByRoom}>
             Xuất theo phòng
           </Button>
         </div>
@@ -547,9 +548,6 @@ const ManageCandidates: React.FC = () => {
                             accept="image/*"
                             disabled={editMode}
                           />
-                          {errors.image && (
-                            <p className="error">{errors.image}</p>
-                          )}
                         </>
                       ) : (
                         <input
