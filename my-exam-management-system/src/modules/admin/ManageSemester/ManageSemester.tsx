@@ -6,7 +6,7 @@ import { SemesterFormMode, SemesterType } from "./Semester.type";
 import {useAdminAuth} from '@hooks/AutherHooks';
 import { addSemester, getAllSemester, removeSemester, updateSemester } from "@/services/repositories/SemesterServices/SemesterServices";
 import { Semester } from "@/interfaces/SemesterInterface/SemestertInterface";
-import applyTheme from "@/SCSS/applyTheme";
+import {applyTheme} from "@/SCSS/applyTheme";
 
 const ManageSemester = () => {
   useAdminAuth();

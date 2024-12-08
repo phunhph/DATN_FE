@@ -8,7 +8,7 @@ import {
   DetailCandidate,
   toggleActiveStatus,
 } from "@/services/repositories/CandidatesService/CandidatesService";
-import applyTheme from "@/SCSS/applyTheme";
+import {applyTheme} from "@/SCSS/applyTheme";
 
 const DetailCandidates: React.FC = () => {
   applyTheme()

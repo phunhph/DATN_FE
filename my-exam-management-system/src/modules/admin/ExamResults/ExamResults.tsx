@@ -7,7 +7,7 @@ import "@scss/theme.scss";
 import "./ExamResults.scss"
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
-import applyTheme from "@/SCSS/applyTheme";
+import {applyTheme} from "@/SCSS/applyTheme";
 
 const ExamResults = () => {
     const [semesterList, setSemesterList] = useState<any>([]);

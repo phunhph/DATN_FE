@@ -7,7 +7,7 @@ import { PieChartComponent } from '@/components';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import '@assets/font/Roboto-Regular-normal.js'
-import applyTheme from '@/SCSS/applyTheme';
+import {applyTheme} from '@/SCSS/applyTheme';
 // import BarChartComponent from '@/components/Chart/Barchart/Barchart';
 
 const ManageReports: React.FC = () => {

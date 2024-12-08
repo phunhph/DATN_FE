@@ -10,7 +10,7 @@ import {
   addSupervisor,
   getAllSupervisors,
 } from "@/services/repositories/SupervisorsService/SupervisorsService";
-import applyTheme from "@/SCSS/applyTheme";
+import {applyTheme} from "@/SCSS/applyTheme";
 
 const ManageSupervisors = () => {
   applyTheme()

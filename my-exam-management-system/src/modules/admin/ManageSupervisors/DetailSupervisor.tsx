@@ -6,7 +6,7 @@ import { useLocation, useParams } from "react-router-dom";
 import { PageTitle, UploadFile } from "@components/index";
 import { Supervisor } from "@/interfaces/SupervisorInterface/SupervisorInterface";
 import { ErrorSupervisor } from "@/interfaces/SupervisorInterface/ErrorSupervisorInterface";
-import applyTheme from "@/SCSS/applyTheme";
+import {applyTheme} from "@/SCSS/applyTheme";
 
 type Props = {};
 

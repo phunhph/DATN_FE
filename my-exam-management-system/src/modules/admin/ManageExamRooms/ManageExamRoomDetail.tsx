@@ -13,7 +13,7 @@ import {
 } from "@/services/repositories/ExamRoomService/ExamRoomService";
 import { useAdminAuth } from "@hooks/AutherHooks";
 import { ErrorExamRoom } from "@interfaces/ExamRoomInterfaces/ErrorExamRoomInterfaces";
-import applyTheme from "@/SCSS/applyTheme";
+import {applyTheme} from "@/SCSS/applyTheme";
 
 const ManageExamRoomDetail: React.FC = () => {
   interface ExamSubjectType {

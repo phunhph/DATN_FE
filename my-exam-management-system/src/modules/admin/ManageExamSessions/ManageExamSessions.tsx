@@ -9,7 +9,7 @@ import {
 import { SessionType } from "./ManageExamSessions.type";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
-import applyTheme from "@/SCSS/applyTheme";
+import {applyTheme} from "@/SCSS/applyTheme";
 
 const ManageExamSessions = () => {
   applyTheme()

@@ -17,7 +17,7 @@ import {
   importCandidates,
 } from "@/services/repositories/CandidatesService/CandidatesService";
 import { getExamRoomsInExams } from "@/services/repositories/ExamRoomService/ExamRoomService";
-import applyTheme from "@/SCSS/applyTheme";
+import {applyTheme} from "@/SCSS/applyTheme";
 
 const ManageCandidates: React.FC = () => {
   applyTheme()

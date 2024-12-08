@@ -15,7 +15,7 @@ import {
   getFinalStructure,
   SubmitStructure,
 } from "@/services/repositories/StructureServices/StructureDetailServices";
-import applyTheme from "@/SCSS/applyTheme";
+import {applyTheme} from "@/SCSS/applyTheme";
 
 interface Errors {
   kyThi?: string;

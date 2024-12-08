@@ -24,7 +24,7 @@ import {
   exportExcelSubjects,
 } from "@/services/repositories/ExamSubjectService/ExamSubjectService";
 import { Semester } from "@/interfaces/SemesterInterface/SemestertInterface";
-import applyTheme from "@/SCSS/applyTheme";
+import {applyTheme} from "@/SCSS/applyTheme";
 
 const Subject: React.FC = () => {
   applyTheme()

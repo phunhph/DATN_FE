@@ -14,6 +14,7 @@ import {
 import { getAllExamContentByIdSubject } from "@/services/repositories/ExamContentService/ExamContentService";
 import { ExamContentInterface } from "@/interfaces/ExamContentInterface/ExamContentInterface";
 import { Question } from "@/interfaces/QuestionInterface/QuestionInterface";
+import { applyTheme } from "@/SCSS/applyTheme";
 
 interface ErrorQuestions {
   [key: string]: string;

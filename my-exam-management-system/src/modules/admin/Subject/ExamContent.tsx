@@ -4,7 +4,7 @@ import {
   ExamContentInterface,
 } from "@/interfaces/ExamContentInterface/ExamContentInterface";
 import { ErrorSubject } from "@/interfaces/SubjectInterface/ErrorExamSubjectInterface";
-import applyTheme from "@/SCSS/applyTheme";
+import {applyTheme} from "@/SCSS/applyTheme";
 import {
   addExamContent,
   getAllExamContentByIdSubject,
