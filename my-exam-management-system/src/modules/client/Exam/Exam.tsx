@@ -362,6 +362,10 @@ const Exam: React.FC<Props> = () => {
           BD.push(data);
         }
       } else if (prefix === "BN") {
+          //API lấy file audio/ link audio
+    audioRef.current = new Audio(
+      e.url_listening
+    );
         // setSelectedListeningAnswers((prev) => {
         //   const newSelectedMultiChoiceAnswers = {
         //     ...prev,
@@ -683,10 +687,6 @@ const Exam: React.FC<Props> = () => {
 
       getInfor(parsedUser.idcode);
     }
-    //API lấy file audio/ link audio
-    audioRef.current = new Audio(
-      "https://www.oxfordonlineenglish.com/wp-content/uploads/2014/02/listening-test-pt-1.mp3?_=1"
-    );
 
     const audioElement = audioRef.current;
     if (audioElement) {
