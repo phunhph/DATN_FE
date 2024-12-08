@@ -477,7 +477,7 @@ export const importExcelSubjects = async (formData: FormData) => {
       const { data } = error.response;
       return {
         success: false,
-        message: data.message || "Lỗi khi import",
+        message: data.message ? "File chứa mã môn thi đã được sử dụng. Vui lòng kiểm tra lại" : "Lỗi khi import",
         errors: data.errors,
       };
     }
