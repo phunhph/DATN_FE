@@ -93,11 +93,15 @@ const Subject: React.FC = () => {
       name: formData.name,
       status: true,
     };
+    const newSubject_: SubjectCreate = {
+      id: formData.id,
+      name: formData.name,
+      status: true,
+    };
 
     const result = await addExamSubject(newSubject);
-    console.log(result);
     if (result.success === true) {
-      setExamSubject([...examSubjects, newSubject]);
+      setExamSubject([...examSubjects, newSubject_]);
 
       addNotification("Thêm mới môn thi thành công!", true);
     } else {
@@ -168,15 +172,17 @@ const Subject: React.FC = () => {
 
   const handleUpdateSubject = () => {
     console.log(formData);
-
+  
     setExamSubject((prevSubjects) =>
       prevSubjects.map((subject) =>
-        subject.id === formData.id ? { ...formData } : subject
+        subject.id === formData.id
+          ? { ...subject, ...formData }
+          : subject
       )
     );
     addNotification("Cập nhật môn thi thành công!", true);
     closeModal();
-  };
+  };  
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

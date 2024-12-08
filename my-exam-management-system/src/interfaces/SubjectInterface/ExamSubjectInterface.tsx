@@ -12,7 +12,7 @@ export interface ApiExamSubjectResponse extends BaseResponse {
 
 export interface SubjectCreate {
   id: number|string;
-  exam_id: number|string;
+  exam_id?: number|string;
   name: string;
   status?: boolean;
 }
