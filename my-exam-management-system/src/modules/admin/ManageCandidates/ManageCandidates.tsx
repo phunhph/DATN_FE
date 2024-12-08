@@ -1,4 +1,4 @@
-import { Notification, PageTitle, UploadFile, Table } from "@/components";
+import { Notification, PageTitle, UploadFile, Table, Button } from "@/components";
 import { Exam } from "@/interfaces/ExamInterface/ExamInterface";
 import React, { useEffect, useState } from "react";
 import AsyncSelect from "react-select/async";
@@ -17,7 +17,7 @@ import {
   importCandidates,
 } from "@/services/repositories/CandidatesService/CandidatesService";
 import { getExamRoomsInExams } from "@/services/repositories/ExamRoomService/ExamRoomService";
-import {applyTheme} from "@/SCSS/applyTheme";
+import { applyTheme } from "@/SCSS/applyTheme";
 
 const ManageCandidates: React.FC = () => {
   applyTheme()
@@ -442,27 +442,27 @@ const ManageCandidates: React.FC = () => {
           }}
         />
         <h2>Xuất mật khẩu</h2>
-        <button
-          style={{ padding: 2, backgroundColor: "red", margin: 2 }}
-          onClick={handleExportAll}
-        >
-          Xuất tất cả
-        </button>
-        <button
-          style={{ padding: 2, backgroundColor: "red", margin: 2 }}
-          onClick={handleExportByExam}
-        >
-          Xuất theo kỳ thi
-        </button>
-        <button
-          style={{ padding: 2, backgroundColor: "red", margin: 2 }}
-          onClick={handleExportByRoom}
-        >
-          Xuất theo phòng
-        </button>
+        <div style={{display:"flex", gap:"0.25rem", marginBottom:"1rem"}}>
+          <Button className="export-btn"
+            onClick={handleExportAll}
+          >
+            Xuất tất cả
+          </Button>
+          <Button className="export-btn"
+            onClick={handleExportByExam}
+          >
+            Xuất theo kỳ thi
+          </Button>
+          <Button className="export-btn"
+            onClick={handleExportByRoom}
+          >
+            Xuất theo phòng
+          </Button>
+        </div>
         <form onSubmit={handleFileDrop}>
-          <input type="file" accept=".xlsx,.xls" />
-          <button type="submit">Import</button>
+          <label htmlFor="upload-file-btn"className="upload-file-btn">Tải file lên </label>
+          <input id="upload-file-btn" className="upload-file-btn" type="file" accept=".xlsx,.xls"/>
+          <Button type="submit" className="export-btn">Gửi</Button>
         </form>
       </div>
 

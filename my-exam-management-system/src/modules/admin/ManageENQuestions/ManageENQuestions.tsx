@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import "./ManageENQuestions.scss";
-import { Notification, Table } from "../../../components";
+import { Button, Notification, Table } from "../../../components";
 import { useNavigate } from "react-router-dom";
 import { Semester } from "@/interfaces/SemesterInterface/SemestertInterface";
 import { ExamSubject } from "@/interfaces/SubjectInterface/ExamSubjectInterface";
@@ -442,10 +442,11 @@ const ManageENQuestions = () => {
         </div>
       </div>
       <div className="question__actions">
-        <button onClick={handleExportContent}>Xuất file Excel</button>
+        <Button onClick={handleExportContent} className="export-btn" style={{width:"auto"}}>Xuất file Excel</Button>
         <form onSubmit={handleFileDrop}>
-          <input type="file" accept=".xlsx,.xls" />
-          <button type="submit">Import</button>
+          <label htmlFor="upload-file-btn"className="upload-file-btn">Bấm vào đây để tải file lên </label>
+          <input id="upload-file-btn" className="upload-file-btn" type="file" accept=".xlsx,.xls"/>
+          <Button type="submit" className="export-btn">Gửi</Button>
         </form>
       </div>
       <div className="subject__subjectt">

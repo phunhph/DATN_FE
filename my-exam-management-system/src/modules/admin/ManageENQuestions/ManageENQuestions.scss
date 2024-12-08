@@ -1,3 +1,4 @@
+@use "@scss/mixin" as m;
 .QuestionsEN__container {
   background-color: #f9f9f9;
 }
@@ -387,5 +388,29 @@
         background-color: rgb(208, 218, 223);
       }
     }
+  }
+}
+
+.question__actions {
+  display: flex;
+  margin-top: 1rem;
+  gap: 2rem;
+}
+.export-btn {
+  background-color: var(--primary80);
+  color:white;
+  margin-top: 1rem;
+  height: auto;
+  max-width: fit-content;
+}
+
+.upload-file-btn {
+  cursor: pointer;
+  margin-right: 1rem;
+}
+
+@include m.responsive-to(md) {
+  .question__actions {
+    flex-direction: column;
   }
 }

@@ -16,20 +16,20 @@ import { ErrorExamRoom } from "@interfaces/ExamRoomInterfaces/ErrorExamRoomInter
 import {applyTheme} from "@/SCSS/applyTheme";
 
 const ManageExamRoomDetail: React.FC = () => {
-  interface ExamSubjectType {
-    id: string;
-    name: string;
-    time_start: string | null;
-    time_end: string | null;
-    exam_date: string | null;
-  }
+  // interface ExamSubjectType {
+  //   id: string;
+  //   name: string;
+  //   time_start: string | null;
+  //   time_end: string | null;
+  //   exam_date: string | null;
+  // }
 
-  interface ExamSessionType {
-    id: string;
-    name: string;
-    time_start: string;
-    time_end: string;
-  }
+  // interface ExamSessionType {
+  //   id: string;
+  //   name: string;
+  //   time_start: string;
+  //   time_end: string;
+  // }
   applyTheme()
 
   useAdminAuth();
@@ -47,16 +47,19 @@ const ManageExamRoomDetail: React.FC = () => {
   const [formData, setFormData] = useState<UpdateExamRoom | undefined>({
     exam_room: {
       id: "",
-      exam_id: "",
       name: "",
       exam_room_detail: {
         id: "",
         exam_room_id: "",
         exam_session_id: "",
+        exam_subject_id: "",
         exam_date: "",
       },
     },
     exam_sessions: [],
+    exam: [], 
+    exam_subjects: [], 
+    exam_date: "",
   });
   const [examSession, setExamSession] = useState();
   const title = [
@@ -88,7 +91,7 @@ const ManageExamRoomDetail: React.FC = () => {
       const result = await getExamRoomDetail(room.id);
 
       if (result.success && result.data) {
-        const { examRoom, exam_room_details, exam_sessions, exam_subjects } =
+        const { exam_room_details, exam_sessions, exam_subjects } =
           result.data;
         setExamSession(exam_sessions);
         setRoomDetail(

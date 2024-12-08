@@ -288,7 +288,6 @@ export const getDataSelectUpdate = async (
       const date = new Date(response.data.data.exam_date);
       examDate = date.toISOString().split("T")[0]; // Format YYYY-MM-DD cho input type="date"
     }
-
     return {
       success: response.data.success,
       data: {
