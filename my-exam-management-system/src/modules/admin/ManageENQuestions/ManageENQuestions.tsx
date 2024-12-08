@@ -16,6 +16,7 @@ import { getAllExamContentByIdSubject, updateExamContent } from "@/services/repo
 import { ExamContentInterface } from "@/interfaces/ExamContentInterface/ExamContentInterface";
 import { Question } from "@/interfaces/QuestionInterface/QuestionInterface";
 import { applyTheme } from "@/SCSS/applyTheme";
+import { useAdminAuth } from "@/hooks";
 
 interface ErrorQuestions {
   [key: string]: string;
@@ -28,7 +29,8 @@ interface DataQuestion {
 }
 
 const ManageENQuestions = () => {
-  applyTheme();
+    useAdminAuth();
+    applyTheme();
 
   const [editMode, setEditMode] = useState(false);
   const [kyThi, setKyThi] = useState("");

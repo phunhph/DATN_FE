@@ -13,7 +13,7 @@ import {
 } from "@/services/repositories/ExamRoomService/ExamRoomService";
 import { useAdminAuth } from "@hooks/AutherHooks";
 import { ErrorExamRoom } from "@interfaces/ExamRoomInterfaces/ErrorExamRoomInterfaces";
-import {applyTheme} from "@/SCSS/applyTheme";
+import { applyTheme } from "@/SCSS/applyTheme";
 
 const ManageExamRoomDetail: React.FC = () => {
   // interface ExamSubjectType {
@@ -57,8 +57,8 @@ const ManageExamRoomDetail: React.FC = () => {
       },
     },
     exam_sessions: [],
-    exam: [], 
-    exam_subjects: [], 
+    exam: [],
+    exam_subjects: [],
     exam_date: "",
   });
   const [examSession, setExamSession] = useState();
@@ -267,7 +267,7 @@ const ManageExamRoomDetail: React.FC = () => {
     setCurrentSubjectId(""); // Reset subject_id khi đóng modal
   };
 
- 
+
 
   if (loading) {
     return (

@@ -11,9 +11,11 @@ import {
   getAllSupervisors,
 } from "@/services/repositories/SupervisorsService/SupervisorsService";
 import {applyTheme} from "@/SCSS/applyTheme";
+import { useAdminAuth } from "@/hooks";
 
 const ManageSupervisors = () => {
-  applyTheme()
+    useAdminAuth();
+    applyTheme()
 
   const [supervisors, setSupervisors] = useState<Supervisor[]>([]);
 

@@ -8,8 +8,12 @@ import "./ExamResults.scss"
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import {applyTheme} from "@/SCSS/applyTheme";
+import { useAdminAuth } from "@/hooks";
 
 const ExamResults = () => {
+    useAdminAuth();
+    applyTheme()
+
     const [semesterList, setSemesterList] = useState<any>([]);
     const [subjectList, setSubjectList] = useState<any>([]);
     const [examRoomList, setExamRoomList] = useState<any>([]);

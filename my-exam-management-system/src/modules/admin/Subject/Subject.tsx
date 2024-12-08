@@ -26,8 +26,10 @@ import {
 } from "@/services/repositories/ExamSubjectService/ExamSubjectService";
 import { Semester } from "@/interfaces/SemesterInterface/SemestertInterface";
 import { applyTheme } from "@/SCSS/applyTheme";
+import { useAdminAuth } from "@/hooks";
 
 const Subject: React.FC = () => {
+  useAdminAuth();
   applyTheme()
 
   const [selectedExamId, setSelectedExamId] = useState<string>("");

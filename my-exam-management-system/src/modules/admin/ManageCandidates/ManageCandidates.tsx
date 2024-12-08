@@ -24,9 +24,11 @@ import {
 } from "@/services/repositories/CandidatesService/CandidatesService";
 import { getExamRoomsInExams } from "@/services/repositories/ExamRoomService/ExamRoomService";
 import { applyTheme } from "@/SCSS/applyTheme";
+import { useAdminAuth } from "@/hooks";
 
 const ManageCandidates: React.FC = () => {
-  applyTheme();
+    useAdminAuth();
+    applyTheme();
 
   const title = [
     "Mã sinh viên",

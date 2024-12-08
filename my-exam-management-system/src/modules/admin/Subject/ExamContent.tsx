@@ -1,4 +1,5 @@
 import { Notification, PageTitle, Table, UploadFile } from "@/components";
+import { useAdminAuth } from "@/hooks";
 import {
   ExamContentCreate,
   ExamContentInterface,
@@ -15,6 +16,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
 const ExamContent: React.FC = () => {
+  useAdminAuth();
   applyTheme()
 
   const location = useLocation();

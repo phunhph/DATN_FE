@@ -8,6 +8,7 @@ import {
     QuestionDetailResponse,
 } from "@/interfaces/QuestionInterface/QuestionInterface";
 import { applyTheme } from "@/SCSS/applyTheme";
+import { useAdminAuth } from "@/hooks";
 
 interface answer {
     current_version_id: string;
@@ -16,7 +17,9 @@ interface answer {
 }
 
 const QuestionDetail = () => {
-    applyTheme
+    applyTheme()
+    useAdminAuth();
+
     const [questions, setQuestions] = useState<Question>();
     const [answer, setAnswer] = useState<answer[]>([]);
     const location = useLocation();
