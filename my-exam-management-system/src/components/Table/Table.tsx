@@ -212,7 +212,7 @@ export const Table = <T extends Record<string, any>>({
               onClick={() => action_dowload.onClick?.("")}
             >
               <img src="/Tải xuống.svg" alt="Tải xuống" />
-              Tải xuống
+              Tải xuống mẫu
             </button>
           )}
           {actions_add && (

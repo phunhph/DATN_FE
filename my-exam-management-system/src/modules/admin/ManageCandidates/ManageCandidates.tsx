@@ -432,7 +432,7 @@ const ManageCandidates: React.FC = () => {
           defaultOptions={roomOptions}
           value={
             roomOptions.length > 0
-              ? roomOptions.find((option) => option.value === selectedRoomId)
+              ? roomOptions.find((option:any) => option.value === selectedRoomId)
               : ""
           }
           onChange={(selectedRoomOption) => {
@@ -441,7 +441,6 @@ const ManageCandidates: React.FC = () => {
             console.log("selectedRoomOption: " + selectedRoomOption?.value);
           }}
         />
-        <h2>Xuất mật khẩu</h2>
         <div style={{display:"flex", gap:"0.25rem", marginBottom:"1rem"}}>
           <Button className="export-btn"
             onClick={handleExportAll}
@@ -459,11 +458,11 @@ const ManageCandidates: React.FC = () => {
             Xuất theo phòng
           </Button>
         </div>
-        <form onSubmit={handleFileDrop}>
+        {/* <form onSubmit={handleFileDrop}>
           <label htmlFor="upload-file-btn"className="upload-file-btn">Tải file lên </label>
           <input id="upload-file-btn" className="upload-file-btn" type="file" accept=".xlsx,.xls"/>
           <Button type="submit" className="export-btn">Gửi</Button>
-        </form>
+        </form> */}
       </div>
 
       <Table

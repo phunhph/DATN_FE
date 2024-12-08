@@ -32,7 +32,7 @@ export const getAllQuestionByIdContent = async (
       return {
         success: false,
         message: errorMessage,
-        status: 500,
+        status: "500",
         data: [],
       };
     } else {
@@ -42,7 +42,7 @@ export const getAllQuestionByIdContent = async (
       return {
         success: false,
         message: generalError,
-        status: 500,
+        status: "500",
         data: [],
       };
     }
