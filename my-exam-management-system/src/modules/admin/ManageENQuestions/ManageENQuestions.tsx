@@ -398,7 +398,6 @@ const ManageENQuestions = () => {
               <span className="error__number">{errors.kyThi}</span>
             )}
           </div>
-          a
           <div className="filter__select">
             <label htmlFor="monThi">Chọn môn thi:</label>
             <select
