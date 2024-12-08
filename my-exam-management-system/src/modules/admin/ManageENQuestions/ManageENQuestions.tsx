@@ -6,7 +6,6 @@ import { Semester } from "@/interfaces/SemesterInterface/SemestertInterface";
 import { ExamSubject } from "@/interfaces/SubjectInterface/ExamSubjectInterface";
 import { getAllSemesterWithExamSubject } from "@/services/repositories/SemesterServices/SemesterServices";
 import { getAllExamSubjectByIdSemesterWithContent } from "@/services/repositories/ExamSubjectService/ExamSubjectService";
-<<<<<<< HEAD
 import {
   createQuestion,
   getAllQuestionByIdContent,
@@ -15,14 +14,6 @@ import {
 import { getAllExamContentByIdSubject } from "@/services/repositories/ExamContentService/ExamContentService";
 import { ExamContentInterface } from "@/interfaces/ExamContentInterface/ExamContentInterface";
 import { Question } from "@/interfaces/QuestionInterface/QuestionInterface";
-import { exportQuestions } from "../../../services/repositories/QuestionServices/QuestionServices";
-=======
-import { createQuestion, getAllQuestionByIdContent } from "@/services/repositories/QuestionServices/QuestionServices";
-import { getAllExamContentByIdSubject, updateExamContent } from "@/services/repositories/ExamContentService/ExamContentService";
-import { ExamContentInterface } from "@/interfaces/ExamContentInterface/ExamContentInterface";
-import { Question } from "@/interfaces/QuestionInterface/QuestionInterface";
-import applyTheme from "@/SCSS/applyTheme";
->>>>>>> e17a48888ad5f3b98997b559ff1c8369c810237e
 
 interface ErrorQuestions {
   [key: string]: string;
@@ -35,7 +26,7 @@ interface DataQuestion {
 }
 
 const ManageENQuestions = () => {
-  applyTheme()
+  applyTheme();
 
   const [editMode, setEditMode] = useState(false);
   const [kyThi, setKyThi] = useState("");
@@ -119,12 +110,8 @@ const ManageENQuestions = () => {
   };
 
   const createQuestion_ = async (formData: Question) => {
-<<<<<<< HEAD
-    const result = await createQuestion(formData);
-=======
     formData.level = "easy";
-    const result = await createQuestion(formData)
->>>>>>> e17a48888ad5f3b98997b559ff1c8369c810237e
+    const result = await createQuestion(formData);
     if (result.success && result.data) {
       console.log(result.data);
 
@@ -184,11 +171,11 @@ const ManageENQuestions = () => {
     const updatedData = dataHardCode.map((item) =>
       item.id === id ? { ...item, status: !item.status } : item
     );
-    console.log(dataHardCode)
-    updatedData.forEach( async (data) => {
-      const res = await updateExamContent(data)
-      if ( res.status == 200) {
-        addNotification("Đã thay đổi trạng thái", true)
+    console.log(dataHardCode);
+    updatedData.forEach(async (data) => {
+      const res = await updateExamContent(data);
+      if (res.status == 200) {
+        addNotification("Đã thay đổi trạng thái", true);
       }
     });
   };
@@ -240,7 +227,7 @@ const ManageENQuestions = () => {
   const formatDataQuestion = (data: unknown): DataQuestion[] => {
     if (Array.isArray(data)) {
       const formattedData: DataQuestion[] = [];
-  
+
       data.forEach((dataItem: unknown) => {
         if (typeof dataItem === "object" && dataItem !== null) {
           const { id, status, title } = dataItem as {
@@ -248,17 +235,17 @@ const ManageENQuestions = () => {
             status: number; // Assuming status is 0 or 1
             title: string;
           };
-  
+
           const question: DataQuestion = {
             id,
             title,
             status: status === 1, // Transform 1 to true and 0 to false
           };
-  
+
           formattedData.push(question);
         }
       });
-  
+
       return formattedData;
     } else {
       throw new Error("Data is not an array");
