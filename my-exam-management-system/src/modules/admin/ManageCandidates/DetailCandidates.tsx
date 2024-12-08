@@ -141,7 +141,7 @@ const DetailCandidates: React.FC = () => {
     return (
       <div className="candidate-info">
         <div className="candidate-info__image">
-          <img src={candidate.image} alt={candidate.name} />
+          <img src={candidate.image?.slice(27)} alt={candidate.name} />
         </div>
         <div className="candidate-info__details">
           <h2>{candidate.name}</h2>
