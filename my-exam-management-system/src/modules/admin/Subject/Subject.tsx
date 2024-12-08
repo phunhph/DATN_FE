@@ -476,13 +476,13 @@ const Subject: React.FC = () => {
                     </label>
                   </div>
                   <div className="modal__button">
-                    <button type="submit" className="modal__button-add">
+                    <Button type="submit" style={{marginRight:"1rem", color:"white"}}>
                       {editMode ? "Cập nhật" : "Thêm mới"}
-                    </button>
+                    </Button>
                     <Button
                       type="button"
-                      className="modal__cancel"
                       onClick={closeModal}
+                      style={{color:"white"}}
                     >
                       Huỷ bỏ
                     </Button>

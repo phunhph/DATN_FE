@@ -452,7 +452,7 @@
 
 .fileInput {
   display: block;
-  width: 400px;
+  width: 100%;
   height: 42px;
   font-size: 0.875rem;
   color: #1f2937; // text-gray-900
@@ -484,6 +484,9 @@
   border-radius: 8px;
   border:2px solid #cccccc;
   padding: 4px;
+}
+.adas87 {
+  width:100%;
 }
 
 @include m.responsive-to(md) {
