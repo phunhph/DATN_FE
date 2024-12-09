@@ -32,14 +32,27 @@ const Home = () => {
         if (response.success === false) {
           setError(response.message || "Lỗi không xác định");
         } else {
-          const formattedData = response.data.map((exam: any) => ({
-            examName: exam.name,
-            examId: exam.id,
-            startDate: exam.time_start,
-            endDate: exam.time_end,
-            subjectCountInExam: exam.exam_subjects?.length || 0,
-            percentage: exam.status === 1 ? 100 : 0,
-          }));
+          const formattedData = response.data.map((exam: any) => {
+            const now = new Date().getTime();
+            const startTime = new Date(exam.time_start).getTime(); 
+            const endTime = new Date(exam.time_end).getTime();
+          
+            const percentage =
+              now >= startTime && now <= endTime
+                ? ((now - startTime) / (endTime - startTime)) * 100
+                : now > endTime
+                ? 100
+                : 0;
+          
+            return {
+              examName: exam.name,
+              examId: exam.id,
+              startDate: exam.time_start,
+              endDate: exam.time_end,
+              subjectCountInExam: exam.exam_subjects?.length || 0,
+              percentage: parseFloat(percentage.toFixed(2)), 
+            };
+          });          
 
           setExamData(formattedData);
           console.log("Formatted Data:", formattedData);
@@ -81,15 +94,21 @@ const Home = () => {
                   <span className="item__span">{exam.examId}</span>
                 </p>
                 <p>Thời gian bắt đầu:</p>
-                <span className="item__span">{exam.startDate}</span>
+                <span className="item__span">{new Date(exam.startDate).toLocaleDateString()}</span>
                 <p>Thời gian kết thúc:</p>
-                <span className="item__span">{exam.endDate}</span>
+                <span className="item__span">{new Date(exam.endDate).toLocaleDateString()}</span>
                 <p>
                   Số lượng môn thi:
                   <span className="item__span">{exam.subjectCountInExam}</span>
                 </p>
                 <CVO percentage={exam.percentage || 0} />
-                <Button onClick={goToSubject}>Vào kỳ thi</Button>
+                <Button 
+  onClick={goToSubject} 
+  disabled={new Date().getTime() < new Date(exam.time_start).getTime() || new Date().getTime() > new Date(exam.time_end).getTime()}
+>
+  Vào kỳ thi
+</Button>
+
               </GridItem>
             ))
           )}
