@@ -7,11 +7,13 @@ import { PageTitle, UploadFile } from "@components/index";
 import { Supervisor } from "@/interfaces/SupervisorInterface/SupervisorInterface";
 import { ErrorSupervisor } from "@/interfaces/SupervisorInterface/ErrorSupervisorInterface";
 import {applyTheme} from "@/SCSS/applyTheme";
+import { useAdminAuth } from "@/hooks";
 
 type Props = {};
 
 const DetailSupervisor = (props: Props) => {
-  applyTheme()
+    useAdminAuth();
+    applyTheme()
 
   const title = [
     "Mã giảng viên",

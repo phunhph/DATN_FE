@@ -9,9 +9,11 @@ import {
   toggleActiveStatus,
 } from "@/services/repositories/CandidatesService/CandidatesService";
 import {applyTheme} from "@/SCSS/applyTheme";
+import { useAdminAuth } from "@/hooks";
 
 const DetailCandidates: React.FC = () => {
-  applyTheme()
+    useAdminAuth();
+    applyTheme()
 
   const title = ["Môn thi", "Trạng thái"];
   const location = useLocation();
@@ -24,15 +26,16 @@ const DetailCandidates: React.FC = () => {
     const callAPI = async (id: string) => {
       try {
         const result = await DetailCandidate(id);
+        console.log(result)
         if (result.success) {
           const data = result.data.data;
           setCandidates(data.candidate);
 
           // Format lại data cho table
-          const datakey = data.exam_subject.map((subject) => ({
+          const datakey = data.exam_subject.map((subject:any) => ({
             subject_name: subject.name,
             status: data.actives.some(
-              (active) => active.exam_subject_id === subject.id && active.status
+              (active:any) => active.exam_subject_id === subject.id && active.status
             )
               ? "Đang hoạt động"
               : "Không hoạt động",

@@ -26,8 +26,10 @@ import {
 } from "@/services/repositories/ExamSubjectService/ExamSubjectService";
 import { Semester } from "@/interfaces/SemesterInterface/SemestertInterface";
 import { applyTheme } from "@/SCSS/applyTheme";
+import { useAdminAuth } from "@/hooks";
 
 const Subject: React.FC = () => {
+  useAdminAuth();
   applyTheme()
 
   const [selectedExamId, setSelectedExamId] = useState<string>("");
@@ -380,13 +382,13 @@ const Subject: React.FC = () => {
           }}
         />
         <div className="subject__actions">
-          <button onClick={handleExportAll}>Xuất tất cả</button>
-          <button onClick={handleExportByExam}>Xuất theo kỳ thi</button>
+          <Button onClick={handleExportAll}>Xuất tất cả</Button>
+          <Button onClick={handleExportByExam}>Xuất theo kỳ thi</Button>
 
-          <form onSubmit={handleFileDrop}>
+          {/* <form onSubmit={handleFileDrop}>
             <input type="file" accept=".xlsx,.xls" />
-            <button type="submit">Import</button>
-          </form>
+            <Button type="submit">Import</Button>
+          </form> */}
         </div>
       </div>
 
@@ -476,13 +478,13 @@ const Subject: React.FC = () => {
                     </label>
                   </div>
                   <div className="modal__button">
-                    <button type="submit" className="modal__button-add">
+                    <Button type="submit" style={{marginRight:"1rem", color:"white"}}>
                       {editMode ? "Cập nhật" : "Thêm mới"}
-                    </button>
+                    </Button>
                     <Button
                       type="button"
-                      className="modal__cancel"
                       onClick={closeModal}
+                      style={{color:"white"}}
                     >
                       Huỷ bỏ
                     </Button>

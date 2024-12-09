@@ -16,6 +16,7 @@ import { getAllExamContentByIdSubject, updateExamContent } from "@/services/repo
 import { ExamContentInterface } from "@/interfaces/ExamContentInterface/ExamContentInterface";
 import { Question } from "@/interfaces/QuestionInterface/QuestionInterface";
 import { applyTheme } from "@/SCSS/applyTheme";
+import { useAdminAuth } from "@/hooks";
 
 interface ErrorQuestions {
   [key: string]: string;
@@ -28,7 +29,8 @@ interface DataQuestion {
 }
 
 const ManageENQuestions = () => {
-  applyTheme();
+    useAdminAuth();
+    applyTheme();
 
   const [editMode, setEditMode] = useState(false);
   const [kyThi, setKyThi] = useState("");
@@ -398,7 +400,6 @@ const ManageENQuestions = () => {
               <span className="error__number">{errors.kyThi}</span>
             )}
           </div>
-          a
           <div className="filter__select">
             <label htmlFor="monThi">Chọn môn thi:</label>
             <select
@@ -500,7 +501,7 @@ const ManageENQuestions = () => {
                 <div className="modal__file-content">
                   <p>Hãy chọn file từ máy tính của bạn.</p>
                   <div className="file-upload-container">
-                    <form onSubmit={handleFileDrop}>
+                    <form onSubmit={handleFileDrop} className="adas87">
                       <input
                         id="upload-file-btn"
                         type="file"
@@ -680,7 +681,7 @@ const ManageENQuestions = () => {
                           name="answer_F3"
                           value={formData.answer_F3}
                           onChange={handleChange}
-                          className="input__input"
+                          className="input__input da89as"
                           placeholder="Nhập đáp sai 3"
                         />
                       </label>
@@ -703,16 +704,16 @@ const ManageENQuestions = () => {
                     </div>
                   </div>
                   <div className="modal1__button">
-                    <button
+                    <Button
                       type="button"
                       onClick={closeModal}
-                      className="modal1__button-close"
+                      style={{marginRight:"1rem", color:"white"}}
                     >
                       Đóng
-                    </button>
-                    <button type="submit" className="modal1__button-add">
+                    </Button>
+                    <Button type="submit" style={{color:"white"}}>
                       Thêm
-                    </button>
+                    </Button>
                   </div>
                 </form>
               )}

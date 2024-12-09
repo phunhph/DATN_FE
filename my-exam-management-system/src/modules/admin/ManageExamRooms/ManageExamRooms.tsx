@@ -11,9 +11,11 @@ import { Semester } from "@/interfaces/SemesterInterface/SemestertInterface";
 import { getExamRoom } from "@/services/repositories/ExamRoomService/ExamRoomService";
 import { useNavigate } from "react-router-dom";
 import {applyTheme} from "@/SCSS/applyTheme";
+import { useAdminAuth } from "@/hooks";
 
 const ManageExamRooms = () => {
-  applyTheme()
+    useAdminAuth();
+    applyTheme()
 
   interface ApiResponse<T> {
     success: boolean;

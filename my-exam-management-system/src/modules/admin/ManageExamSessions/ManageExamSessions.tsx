@@ -10,9 +10,11 @@ import { SessionType } from "./ManageExamSessions.type";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import {applyTheme} from "@/SCSS/applyTheme";
+import { useAdminAuth } from "@/hooks";
 
 const ManageExamSessions = () => {
-  applyTheme()
+    useAdminAuth();
+    applyTheme()
 
   const [openForm, setOpenForm] = useState<boolean>(false);
   const [animateOut, setAnimateOut] = useState<boolean>(false);
