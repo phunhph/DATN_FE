@@ -369,7 +369,7 @@
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.75);
     display: flex;
-    justify-content: right;
+    justify-content: center;
     align-items: center;
   }
 
@@ -378,11 +378,10 @@
     padding: 20px;
     border-radius: 5px;
     position: relative;
-    width: 75%;
+    width: 90%;
     height: 70%;
-    max-width: 100%;
+    max-width: 700px;
     overflow-y: auto;
-    margin-right: 2rem;
   }
 
   &__close {

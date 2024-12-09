@@ -1,11 +1,12 @@
-.Questions__detail__container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: #f9f9f9;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-}
+@use "@scss/mixin" as m;
+// .Questions__detail__container {
+//   max-width: 1200px;
+//   margin: 0 auto;
+//   padding: 20px;
+//   background-color: #f9f9f9;
+//   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+//   border-radius: 8px;
+// }
 
 .Questions__detail__title {
   text-align: center;
@@ -18,7 +19,7 @@
   }
 }
 
-main {
+.ak1j32 {
   display: flex;
   justify-content: space-between;
   gap: 20px;
@@ -78,4 +79,10 @@ main {
   td {
     text-align: center;
   }
+}
+
+@include m.responsive-to(md) {
+.ak1j32 {
+  flex-direction: column;
+}
 }

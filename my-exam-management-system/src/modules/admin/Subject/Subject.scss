@@ -23,7 +23,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 80%;
+    height: 70%;
     position: relative;
   }
 
@@ -57,7 +57,7 @@
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.75);
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     align-items: center;
     z-index: 40;
   }
@@ -67,10 +67,7 @@
     padding: 1.25rem;
     border-radius: 0.3125rem;
     position: relative;
-    width: 60%;
-    height: 30rem;
-    margin-right: 6.25rem;
-    overflow: auto;
+    overflow-y: auto;
     box-sizing: border-box;
   }
 

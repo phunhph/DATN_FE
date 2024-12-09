@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import "./Subject.scss";
 import {
+  Button,
   Notification,
   PageTitle,
   Table,
@@ -24,7 +25,7 @@ import {
   exportExcelSubjects,
 } from "@/services/repositories/ExamSubjectService/ExamSubjectService";
 import { Semester } from "@/interfaces/SemesterInterface/SemestertInterface";
-import {applyTheme} from "@/SCSS/applyTheme";
+import { applyTheme } from "@/SCSS/applyTheme";
 
 const Subject: React.FC = () => {
   applyTheme()
@@ -66,7 +67,7 @@ const Subject: React.FC = () => {
 
   const downloadSample = () => {
     const link = document.createElement("a");
-    link.href = `public/excel/Exam-Subject.xlsx`;
+    link.href = `/excel/Exam-Subject.xlsx`;
     link.download = "Exam-Subject.xlsx";
     document.body.appendChild(link);
     link.click();
@@ -421,21 +422,30 @@ const Subject: React.FC = () => {
       />
 
       {modalIsOpen && (
-        <div className="modal">
-          <div className="modal__overlay">
-            <div className="modal__content">
-              <button className="modal__close" onClick={closeModal}>
+        <div className="modal2">
+          <div className="modal1__overlay">
+            <div className="modal1__content">
+              <button className="modal1__close" onClick={closeModal}>
                 X
               </button>
               <h2 className="modal__title">
                 {modalType === "edit"
                   ? "Chỉnh sửa môn thi"
                   : modalType === "file"
-                  ? "Tải lên file"
-                  : "Thêm mới môn thi"}
+                    ? "Tải lên file"
+                    : "Thêm mới môn thi"}
               </h2>
               {modalType === "file" ? (
-                <UploadFile onFileSelect={handleFileChange} />
+                // <UploadFile onFileSelect={handleFileChange} />
+                <form onSubmit={handleFileDrop}>
+                  <input
+                    id="upload-file-btn"
+                    type="file"
+                    accept=".xlsx,.xls"
+                    className="fileInput Ac7ac"
+                  />
+                  <Button type="submit" className="export-btn">Gửi</Button>
+                </form>
               ) : (
                 <form className="modal__form" onSubmit={handleSubmit}>
                   <div className="modal__firstline">
@@ -469,13 +479,13 @@ const Subject: React.FC = () => {
                     <button type="submit" className="modal__button-add">
                       {editMode ? "Cập nhật" : "Thêm mới"}
                     </button>
-                    <button
+                    <Button
                       type="button"
                       className="modal__cancel"
                       onClick={closeModal}
                     >
                       Huỷ bỏ
-                    </button>
+                    </Button>
                   </div>
                 </form>
               )}

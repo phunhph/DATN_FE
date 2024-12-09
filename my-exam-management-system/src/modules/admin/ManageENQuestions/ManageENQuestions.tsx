@@ -8,10 +8,11 @@ import { getAllSemesterWithExamSubject } from "@/services/repositories/SemesterS
 import { getAllExamSubjectByIdSemesterWithContent } from "@/services/repositories/ExamSubjectService/ExamSubjectService";
 import {
   createQuestion,
+  exportQuestions,
   getAllQuestionByIdContent,
   importQuestions,
 } from "@/services/repositories/QuestionServices/QuestionServices";
-import { getAllExamContentByIdSubject } from "@/services/repositories/ExamContentService/ExamContentService";
+import { getAllExamContentByIdSubject, updateExamContent } from "@/services/repositories/ExamContentService/ExamContentService";
 import { ExamContentInterface } from "@/interfaces/ExamContentInterface/ExamContentInterface";
 import { Question } from "@/interfaces/QuestionInterface/QuestionInterface";
 import { applyTheme } from "@/SCSS/applyTheme";
@@ -114,8 +115,6 @@ const ManageENQuestions = () => {
     formData.level = "easy";
     const result = await createQuestion(formData);
     if (result.success && result.data) {
-      console.log(result.data);
-
       const data: DataQuestion = {
         id: result.data.id,
         title: result.data.title,
@@ -166,7 +165,12 @@ const ManageENQuestions = () => {
   };
 
   const download = () => {
-    alert("Downloading...");
+    const link = document.createElement("a");
+    link.href = `/excel/question-sample.xlsx`;
+    link.download = "question-sample.xlsx";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
   const handlestatusChange = async (id: string) => {
     const updatedData = dataHardCode.map((item) =>
@@ -359,6 +363,7 @@ const ManageENQuestions = () => {
           getQuestionByIdContent(content);
         }
         fileInput.value = "";
+        closeModal()
       } else {
         addNotification(response.message || "Import thất bại", false);
       }
@@ -429,8 +434,11 @@ const ManageENQuestions = () => {
             </select>
           </div>
         </div>
+        {/* <div className="question__actions">
+          <Button onClick={handleExportContent} className="export-btn" style={{ width: "auto" }}>Xuất file Excel</Button>
+        </div> */}
       </div>
-      <div className="question__actions">
+      {/* <div className="question__actions">
         <form onSubmit={handleFileDrop}>
           <label htmlFor="upload-file-btn" className="upload-file-btn">
             Bấm vào đây để tải file lên{" "}
@@ -444,8 +452,8 @@ const ManageENQuestions = () => {
           <Button type="submit" className="export-btn">
             Gửi
           </Button>
-        </form>
-      </div>
+        </form> */}
+      {/* </div> */}
       <div className="subject__subjectt">
         <Table
           title={title}
@@ -475,7 +483,7 @@ const ManageENQuestions = () => {
         onChange={handleFileChange}
       />
       {modalIsOpen && (
-        <div className="modal1">
+        <div className="modal2">
           <div className="modal1__overlay">
             <div className="modal1__content">
               <button className="modal1__close" onClick={closeModal}>
@@ -485,32 +493,22 @@ const ManageENQuestions = () => {
                 {modalType === "edit"
                   ? "Chỉnh sửa câu hỏi"
                   : modalType === "file"
-                  ? "Tải lên file"
-                  : "Thêm mới câu hỏi"}
+                    ? "Tải lên file"
+                    : "Thêm mới câu hỏi"}
               </h2>
               {modalType === "file" ? (
                 <div className="modal__file-content">
                   <p>Hãy chọn file từ máy tính của bạn.</p>
                   <div className="file-upload-container">
-                    <input
-                      type="text"
-                      className="file-input"
-                      value={fileName || "Chưa chọn file"}
-                      readOnly
-                      placeholder="Chưa chọn file"
-                    />
-                    <input
-                      type="file"
-                      ref={fileInputRef}
-                      style={{ display: "none" }}
-                      onChange={handleFileChange}
-                    />
-                    <button
-                      onClick={() => fileInputRef.current?.click()}
-                      className="file-select-button"
-                    >
-                      Chọn file
-                    </button>
+                    <form onSubmit={handleFileDrop}>
+                      <input
+                        id="upload-file-btn"
+                        type="file"
+                        accept=".xlsx,.xls"
+                        className="fileInput Ac7ac"
+                      />
+                      <Button type="submit" className="export-btn">Gửi</Button>
+                    </form>
                   </div>
                 </div>
               ) : (
@@ -562,7 +560,7 @@ const ManageENQuestions = () => {
                         name="title"
                         value={formData.title}
                         onChange={handleChange}
-                        className="modal1__input"
+                        className="modal1__input da89as"
                         placeholder="Nhập nội dung"
                       />
                     </label>
@@ -593,7 +591,7 @@ const ManageENQuestions = () => {
                           name="answer_P"
                           onChange={handleChange}
                           value={formData.answer_P}
-                          className="input__input"
+                          className="input__input da89as"
                           placeholder="Nhận đáp án đúng"
                         />
                       </label>
@@ -622,7 +620,7 @@ const ManageENQuestions = () => {
                           name="answer_F1"
                           value={formData.answer_F1}
                           onChange={handleChange}
-                          className="input__input"
+                          className="input__input da89as"
                           placeholder="Nhập đáp sai 1"
                         />
                       </label>
@@ -653,8 +651,8 @@ const ManageENQuestions = () => {
                           name="answer_F2"
                           value={formData.answer_F2}
                           onChange={handleChange}
-                          className="input__input"
-                          placeholder="Nhập đáp sai 1"
+                          className="input__input da89as"
+                          placeholder="Nhập đáp sai 2"
                         />
                       </label>
                       {/* <div className="upload-file">
@@ -683,7 +681,7 @@ const ManageENQuestions = () => {
                           value={formData.answer_F3}
                           onChange={handleChange}
                           className="input__input"
-                          placeholder="Nhập đáp sai 1"
+                          placeholder="Nhập đáp sai 3"
                         />
                       </label>
                       {/* <div className="upload-file">

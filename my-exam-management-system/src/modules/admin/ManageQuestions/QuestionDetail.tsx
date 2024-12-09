@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "./QuestionDetail.scss";
-import { Notification } from "../../../components";
+import { Button, Notification } from "../../../components";
 import { useLocation } from "react-router-dom";
 import { getQuestionById, updateQuestion } from "@/services/repositories/QuestionServices/QuestionServices";
 import {
@@ -192,80 +192,30 @@ const QuestionDetail = () => {
             <div className="Questions__detail__title">
                 <h1>Chi tiết câu hỏi</h1>
             </div>
-            <main>
+            <div className="ak1j32">
                 {/* Hiển thị chi tiết thông tin câu hỏi */}
                 <div className="detail_question">
                     <h3>
                         Mã câu hỏi: <span>{questions?.id}</span>
                     </h3>
-                    <h3>
+                    <h3 style={{color:"black"}}>
                         Nội dung câu hỏi: <span>{questions?.title}</span>
                     </h3>
-                    {questions?.image_title && (
-                        <div>
-                            <h3>Hình ảnh câu hỏi:</h3>
-                            <img
-                                src={`http://example.com/${questions.image_title}`}
-                                alt="Hình ảnh câu hỏi"
-                                className="question-image"
-                            />
-                        </div>
-                    )}
-                    <h3>
+                    <h5 style={{marginTop:"4px"}}>
                         Đáp án đúng: <span>{questions?.answer_P}</span>
-                    </h3>
-                    {questions?.image_P && (
-                        <div>
-                            <h3>Hình ảnh đáp án đúng:</h3>
-                            <img
-                                src={`http://example.com/${questions.image_P}`}
-                                alt="Hình ảnh đáp án đúng"
-                                className="answer-image"
-                            />
-                        </div>
-                    )}
-                    <h3>
+                    </h5>
+                    <h5 style={{marginTop:"4px"}}>
                         Đáp án sai 1: <span>{questions?.answer_F1}</span>
-                    </h3>
-                    {questions?.image_F1 && (
-                        <div>
-                            <h3>Hình ảnh đáp án sai 1:</h3>
-                            <img
-                                src={`http://example.com/${questions.image_F1}`}
-                                alt="Hình ảnh đáp án sai 1"
-                                className="answer-image"
-                            />
-                        </div>
-                    )}
-                    <h3>
+                    </h5>
+                    <h5 style={{marginTop:"4px"}}>
                         Đáp án sai 2: <span>{questions?.answer_F2}</span>
-                    </h3>
-                    {questions?.image_F2 && (
-                        <div>
-                            <h3>Hình ảnh đáp án sai 2:</h3>
-                            <img
-                                src={`http://example.com/${questions.image_F2}`}
-                                alt="Hình ảnh đáp án sai 2"
-                                className="answer-image"
-                            />
-                        </div>
-                    )}
-                    <h3>
+                    </h5>
+                    <h5 style={{marginTop:"4px"}}>
                         Đáp án sai 3: <span>{questions?.answer_F3}</span>
-                    </h3>
-                    {questions?.image_F3 && (
-                        <div>
-                            <h3>Hình ảnh đáp án sai 3:</h3>
-                            <img
-                                src={`http://example.com/${questions.image_F3}`}
-                                alt="Hình ảnh đáp án sai 3"
-                                className="answer-image"
-                            />
-                        </div>
-                    )}
-                    <button className="" onClick={openEdit}>
+                    </h5>
+                    <Button className="" style={{color:"white", marginTop:"1rem"}} onClick={openEdit}>
                         Sửa
-                    </button>
+                    </Button>
                 </div>
                 {/* Hiển thị thông tin bảng so sánh các phiên bản */}
                 <div className="question_active">
@@ -291,7 +241,7 @@ const QuestionDetail = () => {
                         </tbody>
                     </table>
                 </div>
-            </main>
+            </div>
             {modalIsOpen && (
                 <div className="modal1">
                     <div className="modal1__overlay">
