@@ -8,14 +8,14 @@ import {
   DetailCandidate,
   toggleActiveStatus,
 } from "@/services/repositories/CandidatesService/CandidatesService";
-import {applyTheme} from "@/SCSS/applyTheme";
+import { applyTheme } from "@/SCSS/applyTheme";
 import { useAdminAuth } from "@/hooks";
 
 const DetailCandidates: React.FC = () => {
-    useAdminAuth();
-    applyTheme()
+  useAdminAuth();
+  applyTheme();
 
-  const title = ["Môn thi", "Trạng thái"];
+  const title = ["Id môn thi", "Môn thi", "Trạng thái"];
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const [candidates, setCandidates] = useState<Candidate[]>([]);
@@ -26,16 +26,18 @@ const DetailCandidates: React.FC = () => {
     const callAPI = async (id: string) => {
       try {
         const result = await DetailCandidate(id);
-        console.log(result)
+        console.log(result);
         if (result.success) {
           const data = result.data.data;
           setCandidates(data.candidate);
 
           // Format lại data cho table
-          const datakey = data.exam_subject.map((subject:any) => ({
+          const datakey = data.exam_subject.map((subject: any) => ({
+            id: subject.id,
             subject_name: subject.name,
             status: data.actives.some(
-              (active:any) => active.exam_subject_id === subject.id && active.status
+              (active: any) =>
+                active.exam_subject_id === subject.id && active.status
             )
               ? "Đang hoạt động"
               : "Không hoạt động",
@@ -118,26 +120,32 @@ const DetailCandidates: React.FC = () => {
     addNotification(`Trạng thái của môn thi đã được thay đổi.`, true);
   };
 
-  const handleStatusChange = async (data: any) => {
-    try {
-      const result = await toggleActiveStatus(
-        data._metadata.exam_subject_id,
-        data._metadata.idcode
+  const handleStatusChange = async (id: string) => {
+    const idcode = queryParams.get("idcode");
+    const result = await toggleActiveStatus(id, idcode);
+
+    if (result.success) {
+      const newStatus = result.data.status;
+
+      setDataTable((prevData) =>
+        prevData.map((row) =>
+          row.id === id ? { ...row, status: newStatus } : row
+        )
       );
 
-      if (result.success) {
-        addNotification(result.message, true);
-        // Tải lại data
-        const idcode = queryParams.get("idcode");
-        if (idcode) {
-          callAPI(idcode);
-        }
-      } else {
-        addNotification(result.message, false);
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      addNotification("Có lỗi xảy ra khi cập nhật trạng thái", false);
+      setCandidates((prevCandidates) => ({
+        ...prevCandidates,
+        actives:
+          prevCandidates.actives?.map((active) =>
+            active.exam_subject_id === id
+              ? { ...active, status: newStatus }
+              : active
+          ) || [],
+      }));
+
+      addNotification("Cập nhật trạng thái thành công", true);
+    } else {
+      addNotification(result.message, false);
     }
   };
   const CandidateInfo: React.FC<{ candidate: Candidate }> = ({ candidate }) => {
