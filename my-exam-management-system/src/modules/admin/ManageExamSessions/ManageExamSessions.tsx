@@ -112,20 +112,20 @@ const ManageExamSessions = () => {
       time_start: formData.timeStart,
       time_end: formData.timeEnd,
     };
-
+    console.log(newSession)
     const result = await addSession(newSession);
     console.log(result);
 
-    if (result.success == true) {
-      setSessionList((prevList: any) => [...prevList, newSession]);
-      addNotification("Thêm mới môn thi thành công!", true);
-      closeAddExamSessionForm();
-    } else {
-      addNotification(
-        result.message ?? "Thêm mới môn thi thất bại",
-        result.success
-      );
-    }
+    // if (result.success == true) {
+    //   setSessionList((prevList: any) => [...prevList, newSession]);
+    //   addNotification("Thêm mới môn thi thành công!", true);
+    //   closeAddExamSessionForm();
+    // } else {
+    //   addNotification(
+    //     result.message ?? "Thêm mới môn thi thất bại",
+    //     result.success
+    //   );
+    // }
   };
 
   const handleUpdateSession = async () => {

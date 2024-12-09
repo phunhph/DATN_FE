@@ -247,8 +247,8 @@ const QuestionDetail = () => {
             </div>
             {modalIsOpen && (
                 <div className="modal1">
-                    <div className="modal1__overlay">
-                        <div className="modal1__content">
+                    <div className="modal1__overlay" style={{zIndex:"999"}}>
+                        <div className="modal1__content" style={{height:"80%", maxHeight:"560px"}}>
                             <button className="modal1__close" onClick={closeModal}>
                                 X
                             </button>
@@ -318,7 +318,7 @@ const QuestionDetail = () => {
                                             {errors.questionContent}
                                         </span>
                                     )}
-                                    <div className="upload-file">
+                                    {/* <div className="upload-file">
                                         <input type="file" className="upload-file__input" />
                                         <button className="upload-file__button">
                                             <ion-icon
@@ -328,7 +328,7 @@ const QuestionDetail = () => {
                                             ></ion-icon>
                                             Upload File
                                         </button>
-                                    </div>
+                                    </div> */}
                                 </div>
 
                                 <div className="model1__second">
@@ -343,7 +343,7 @@ const QuestionDetail = () => {
                                                 placeholder="Nhận đáp án đúng"
                                             />
                                         </label>
-                                        <div className="upload-file">
+                                        {/* <div className="upload-file">
                                             <input type="file" className="upload-file__input" />
                                             <button className="upload-file__button">
                                                 <ion-icon
@@ -358,7 +358,7 @@ const QuestionDetail = () => {
                                             <span className="error_question">
                                                 {errors.correctAnswer}
                                             </span>
-                                        )}
+                                        )} */}
                                     </div>
                                     {/*  */}
                                     <div className="model1__input">
@@ -372,7 +372,7 @@ const QuestionDetail = () => {
                                                 placeholder="Nhập đáp sai 1"
                                             />
                                         </label>
-                                        <div className="upload-file">
+                                        {/* <div className="upload-file">
                                             <input type="file" className="upload-file__input" />
                                             <button className="upload-file__button">
                                                 <ion-icon
@@ -387,7 +387,7 @@ const QuestionDetail = () => {
                                             <span className="error_question">
                                                 {errors.wrongAnswer1}
                                             </span>
-                                        )}
+                                        )} */}
                                     </div>
                                 </div>
                                 {/* in1 */}
@@ -403,7 +403,7 @@ const QuestionDetail = () => {
                                                 placeholder="Nhập đáp sai 1"
                                             />
                                         </label>
-                                        <div className="upload-file">
+                                        {/* <div className="upload-file">
                                             <input type="file" className="upload-file__input" />
                                             <button className="upload-file__button">
                                                 <ion-icon
@@ -418,7 +418,7 @@ const QuestionDetail = () => {
                                             <span className="error_question">
                                                 {errors.wrongAnswer2}
                                             </span>
-                                        )}
+                                        )} */}
                                     </div>
                                     {/*  */}
                                     <div className="model1__input">
@@ -432,7 +432,7 @@ const QuestionDetail = () => {
                                                 placeholder="Nhập đáp sai 1"
                                             />
                                         </label>
-                                        <div className="upload-file">
+                                        {/* <div className="upload-file">
                                             <input type="file" className="upload-file__input" />
                                             <button className="upload-file__button">
                                                 <ion-icon
@@ -447,20 +447,20 @@ const QuestionDetail = () => {
                                             <span className="error_question">
                                                 {errors.wrongAnswer3}
                                             </span>
-                                        )}
+                                        )} */}
                                     </div>
                                 </div>
                                 <div className="modal1__button">
-                                    <button
+                                    <Button
                                         type="button"
                                         onClick={closeModal}
-                                        className="modal1__button-close"
+                                        style={{marginRight:"1rem", color:"white"}}
                                     >
                                         Đóng
-                                    </button>
-                                    <button type="submit" className="modal1__button-add">
+                                    </Button>
+                                    <Button type="submit" style={{color:"white"}}>
                                         Thêm
-                                    </button>
+                                    </Button>
                                 </div>
                             </form>
                         </div>
