@@ -40,7 +40,10 @@
 
   &__overlay-content {
     width: 35rem;
-    height: auto;
+    margin: 2rem 0;
+    overflow-y:auto;
+    height: 80%;
+    max-height: 550px;
     padding: 1rem;
     position: relative;
     background-color: white;

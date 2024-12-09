@@ -1,7 +1,7 @@
 import { MenuLink } from "@components/index";
 import { useEffect, useRef, useState } from "react";
-import { NavLink, Outlet } from "react-router-dom";
 import "./AdminLayout.scss";
+import { NavLink, Outlet } from "react-router-dom";
 
 const AdminLayout = () => {
   // consts & variables
@@ -56,12 +56,11 @@ const AdminLayout = () => {
               <MenuLink imgSrc="Trang chủ" title="Trang chủ" location=""></MenuLink>
               <MenuLink imgSrc="Quản lý kỳ thi" title="Quản lý kỳ thi" location="manage-semester"></MenuLink>
               <MenuLink imgSrc="Quản lý môn thi" title="Môn thi" location="subject"></MenuLink>
+              <MenuLink imgSrc="Câu hỏi thường" title="Câu hỏi tiếng Anh" location="manage-en-questions" />
               <MenuLink imgSrc="Quản lý cấu trúc đề" title="Quản lý cấu trúc đề" location="manage-en-exam-structure" />
+              <MenuLink imgSrc="Quản lý thí sinh" title="Quản lý thí sinh" location="manage-candidates" />
               <MenuLink imgSrc="Quản lý phòng thi" title="Quản lý phòng thi" location="manage-exam-rooms" />
               <MenuLink imgSrc="Quản lý ca thi" title="Quản lý ca thi" location="manage-exam-sessions" />
-              <MenuLink imgSrc="Câu hỏi thường" title="Câu hỏi tiếng Anh" location="manage-en-questions" />
-              <MenuLink imgSrc="Quản lý thí sinh" title="Quản lý thí sinh" location="manage-candidates" />
-              {/* <MenuLink imgSrc="Quản lý giám thị" title="Quản lý giám thị" location="manage-supervisors" /> */}
               <MenuLink imgSrc="Kết quả thi" title="Kết quả thi" location="exam-results" />
               <MenuLink imgSrc="Quản lý báo cáo" title="Quản lý báo cáo" location="manage-reports" />
               <MenuLink imgSrc="circle" title="Quản lý trạng thái" location="manage-status" />
