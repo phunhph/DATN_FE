@@ -5,7 +5,7 @@ import { roomStatus, studentStatus } from './ManageStatus.type'
 import Echo from "laravel-echo"
 import {applyTheme} from '@/SCSS/applyTheme'
 
-const API_BASE_URL = 'http://datn_be.com/api'
+const API_BASE_URL = 'http://datn_be.com'
 const PUSHER_KEY = 'be4763917dd3628ba0fe'
 const PUSHER_CLUSTER = 'ap1'
 
@@ -18,10 +18,10 @@ const ManageStatus = () => {
     const [currentRoomId, setCurrentRoomId] = useState<string | null>(null)
     const [studentStatusCounts, setStudentStatusCounts] = useState({
         total: 0,
-        notStarted: 0,
+        // notStarted: 0,
         inProgress: 0, 
         completed: 0,
-        forbidden: 0
+        // forbidden: 0
     })
     const submittedStudents = useRef<Record<string, boolean>>({})
     const echoInstance = useRef<Echo | null>(null)
@@ -32,35 +32,25 @@ const ManageStatus = () => {
     }, [])
 
     const calculateStudentStatusCounts = useCallback((students: studentStatus[]) => {
-        const counts = {
-            total: students.length,
-            notStarted: students.filter(student => student.studentStatus === 0).length,
-            inProgress: students.filter(student => student.studentStatus === 1).length,
-            completed: students.filter(student => student.studentStatus === 2).length,
-            forbidden: students.filter(student => student.studentStatus === 3).length
-        }
-        setStudentStatusCounts(counts)
-    }, [])
+        const counts = students.reduce((acc, student) => {
+            acc.total++;
 
-    const updateStudentStatus = useCallback(async (studentId: string, status: number) => {
-        try {
-            const response = await fetch(`${API_BASE_URL}/candidate/${studentId}/update-status/${status}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${getAuthToken()}`
-                },
-                body: JSON.stringify({
-                    id: studentId,
-                    status,
-                    _method: 'PUT'
-                })
-            })
-            if (!response.ok) throw new Error('Failed to update status')
-        } catch (error) {
-            console.error('Error updating student status:', error)
-        }
-    }, [getAuthToken])
+            if(student.studentStatus == 2){
+                acc.completed++;
+            }
+            
+            return acc;
+        }, {
+            total: 0,
+            // notStarted: 0,
+            inProgress: 0,
+            completed: 0,
+        });
+    
+        counts.inProgress = counts.total - counts.completed;
+    
+        setStudentStatusCounts(counts);
+    }, []);
 
     const updateStudentListStatus = useCallback((studentId: string, newStatus: number) => {
         setStudentStatusList(prevList => {
@@ -111,22 +101,21 @@ const ManageStatus = () => {
 
         channel.joining((user) => {
             updateStudentListStatus(user.id, 1)
-            updateStudentStatus(user.id, 1)
         })
 
         channel.leaving((user) => {
             if (!submittedStudents.current[user.id]) {
-                updateStudentListStatus(user.id, 4)
-                updateStudentStatus(user.id, 4)
+                updateStudentListStatus(user.id, 0)
             }
         })
 
         channel.listen('.student.submitted', (data) => {
+            console.log('ahii');
+            
             submittedStudents.current[data.id] = true
             updateStudentListStatus(data.id, 2)
-            updateStudentStatus(data.id, 2)
         })
-    }, [calculateStudentStatusCounts, updateStudentStatus, updateStudentListStatus])
+    }, [calculateStudentStatusCounts, updateStudentListStatus])
 
     const getListOfStudentStatus = useCallback(async (roomID: string) => {
         try {
@@ -178,11 +167,11 @@ const ManageStatus = () => {
 
     const renderStatusText = (status: number) => {
         const statusMap = {
-            0: <span className='status-yellow'>Chưa thi</span>,
+            0: <span className='status-red'>Mất kết nối</span>,
             1: <span className='status-yellow'>Đang thi</span>,
             2: <span className='status-green'>Đã hoàn thành</span>,
-            3: <span className='status-red'>Cấm thi</span>,
-            4: <span className='status-red'>Mất kết nối</span>
+            // 3: <span className='status-red'>Cấm thi</span>,
+            // 4: <span className='status-red'>Mất kết nối</span>
         }
         return statusMap[status as keyof typeof statusMap]
     }
@@ -221,7 +210,7 @@ const ManageStatus = () => {
                     <PageTitle theme='light'>Trạng thái thí sinh</PageTitle>
                     <div className="student-status-summary">
                         <p>Tổng số: {studentStatusCounts.total}</p>
-                        <p>Chưa thi: {studentStatusCounts.notStarted}</p>
+                        {/* <p>Chưa thi: {studentStatusCounts.notStarted}</p> */}
                         <p>Đang thi: {studentStatusCounts.inProgress}</p>
                         <p>Đã hoàn thành: {studentStatusCounts.completed}</p>
                         {/* <p>Cấm thi: {studentStatusCounts.forbidden}</p> */}
