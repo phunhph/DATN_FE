@@ -235,8 +235,8 @@ const ManageENExamStructure = () => {
 
   const handleOnChange_Subject = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     setMonThi(e.target.value);
-    console.log(e.target.value);
     const subjectDetail = await getFinalStructure(e.target.value);
+    await getStructureSubjiect(e.target.value);
     console.log(subjectDetail);
 
     if (subjectDetail.success) {

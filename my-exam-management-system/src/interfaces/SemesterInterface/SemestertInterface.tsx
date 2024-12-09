@@ -20,6 +20,7 @@ export type ExamWithSubject = {
   questionCount?: number; 
   startDate?: string; 
   endDate?: string; 
+  examDate?: string; 
   subjectCountInExam?: number; 
   percentage?: number; 
 };
