@@ -3,18 +3,19 @@ import { Button, Notification, PageTitle, Table } from "@/components";
 import { SessionCreate } from "@/interfaces/SessionInterface/SessionInterface";
 import {
   addSession,
+  deleteSession,
   getAllSession,
   updateSession,
 } from "@/services/repositories/SessionService/SessionService";
 import { SessionType } from "./ManageExamSessions.type";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
-import {applyTheme} from "@/SCSS/applyTheme";
+import { applyTheme } from "@/SCSS/applyTheme";
 import { useAdminAuth } from "@/hooks";
 
 const ManageExamSessions = () => {
-    useAdminAuth();
-    applyTheme()
+  useAdminAuth();
+  applyTheme()
 
   const [openForm, setOpenForm] = useState<boolean>(false);
   const [animateOut, setAnimateOut] = useState<boolean>(false);
@@ -38,7 +39,6 @@ const ManageExamSessions = () => {
     "Ca thi",
     "Thời gian bắt đầu",
     "Thời gian kết thúc",
-    "Trạng thái",
     "Thao tác",
   ];
 
@@ -51,31 +51,33 @@ const ManageExamSessions = () => {
       name: item.name,
       timeStart: item.time_start,
       timeEnd: item.time_end,
-      status: item.status,
     }))
     .sort((a: any, b: any) => a.name.localeCompare(b.name));
 
+
+  const fetchSessions = async () => {
+    const response = await getAllSession();
+    if (
+      response.success &&
+      response.data &&
+      Array.isArray(response.data)
+    ) {
+      console.log(response.data)
+      setSessionList(response.data);
+    } else {
+      console.error("Invalid data format received from the API");
+    }
+  };
+
   useEffect(() => {
-    const fetchSessions = async () => {
-      const response = await getAllSession();
-      if (
-        response.success &&
-        response.data &&
-        Array.isArray(response.data)
-      ) {
-        setSessionList(response.data);
-      } else {
-        console.error("Invalid data format received from the API");
-      }
-    };
     fetchSessions();
   }, []);
 
   const emptyFormValue: SessionType = {
-    id: "", 
+    id: "",
     name: "",
-    time_start: "",
-    time_end: "",
+    timeStart: "",
+    timeEnd: "",
   };
 
   const handleUpdateStatus = (id: string) => {
@@ -105,10 +107,10 @@ const ManageExamSessions = () => {
   const handleCreateSession = async () => {
     const formData = getValues();
     const newSession: SessionCreate = {
-      id: formData.id || "auto-generated-id", 
+      id: formData.id || "auto-generated-id",
       name: formData.name,
-      time_start: formData.time_start,
-      time_end: formData.time_end,
+      time_start: formData.timeStart,
+      time_end: formData.timeEnd,
     };
 
     const result = await addSession(newSession);
@@ -129,18 +131,17 @@ const ManageExamSessions = () => {
   const handleUpdateSession = async () => {
     const formData = getValues();
 
-    if (!editSession?.id) {
+    if (!formData.id) {
       addNotification("Không tìm thấy ID của ca thi để cập nhật.", false);
       return;
     }
 
     const updatedSession: SessionCreate = {
-      id: editSession.id,
+      id: formData.id,
       name: formData.name,
-      time_start: formData.time_start,
-      time_end: formData.time_end,
+      time_start: formData.timeStart,
+      time_end: formData.timeEnd,
     };
-
     const result = await updateSession(updatedSession);
 
     if (result.success) {
@@ -152,10 +153,7 @@ const ManageExamSessions = () => {
       addNotification("Cập nhật ca thi thành công!", true);
       closeAddExamSessionForm();
     } else {
-      addNotification(
-        result.message ?? "Cập nhật ca thi thất bại",
-        result.success
-      );
+      addNotification( "Cập nhật ca thi thất bại",false);
     }
   };
 
@@ -163,10 +161,10 @@ const ManageExamSessions = () => {
     setIsEditing(true);
     setEditSession(session);
     setOpenForm(true);
-    setValue("id", session.id); 
+    setValue("id", session.id);
     setValue("name", session.name);
-    setValue("time_start", session.time_start);
-    setValue("time_end", session.time_end);
+    setValue("timeStart", session.timeStart);
+    setValue("timeEnd", session.timeEnd);
   };
 
   const openAddExamSessionForm = () => {
@@ -194,7 +192,7 @@ const ManageExamSessions = () => {
   };
 
 
-  
+
   return (
     <div className="examSessions__container">
       <PageTitle theme="light">Quản lý ca thi</PageTitle>
@@ -205,26 +203,45 @@ const ManageExamSessions = () => {
         actions_add={{ name: "Thêm ca thi", onClick: openAddExamSessionForm }}
         actions_edit={{
           name: "Sửa",
-          onClick: (id) => {
-            console.log("ID ca thi được chọn:", id);
-            // const sessionToEdit = sessionList.find(
-            //   (session:any) => session.id === id
-            // );
-            // console.log("SessionToEdit",sessionToEdit);
-            
-            if (id) {
-              openEditForm(id);
+          onClick: (session: SessionType) => {
+            console.log(session)
+            // const selectedSession = sortedData.find((session:SessionType) => session.id === id.id);
+            // console.log(selectedSession)
+            if (session) {
+              openEditForm(session);
+              console.log(session.timeStart)
+            } else {
+              addNotification("Chức năng xóa tạm thời không khả dụng. Xin vui lòng thử lại sau", false)
             }
           },
         }}
-        action_status={handleStatusChange}
+        // action_status={handleStatusChange}
+        actions_detail={{
+          name: "Xóa",
+          onClick: async (id) => {
+            try {
+              const isConfirmed = confirm(`Bạn chắc chắn muốn xóa ca thi với mã id ${id} chứ ?`);
+              if (isConfirmed) {
+                const res = await deleteSession(id);
+                if (res) {
+                  addNotification("Xóa ca thi với mã id ${id} thành công!", true);
+                  fetchSessions();
+                } else {
+                  addNotification("Xóa ca thi với mã id ${id} thất bại!", false);
+                }
+              }
+            } catch (err) {
+              console.error(err);
+            }
+          }
+        }}
+
       />
       <div className={`semester ${openForm ? "" : "hidden"}`}>
         {openForm && (
           <div
-            className={`semester__overlay ${
-              animateOut ? "fade-out" : "fade-in"
-            }`}
+            className={`semester__overlay ${animateOut ? "fade-out" : "fade-in"
+              }`}
           >
             <div className="semester__overlay-content">
               <Button
@@ -253,7 +270,7 @@ const ManageExamSessions = () => {
                       required: "Mã ca thi là bắt buộc",
                     })}
                     defaultValue={isEditing ? editSession?.id : ""}
-                    disabled={isEditing} 
+                    disabled={isEditing}
                   />
                   <div className="form__error">
                     {errors.id && <span>{errors.id.message}</span>}
@@ -280,17 +297,16 @@ const ManageExamSessions = () => {
                     Thời gian bắt đầu:
                   </label>
                   <input
-                    id="time_start"
-                    type="date"
+                    id="name"
+                    type="text"
                     className="form__input"
-                    {...register("time_start", {
+                    placeholder="HH:MM:SS"
+                    {...register("timeStart", {
                       required: "Thời gian bắt đầu là bắt buộc",
                     })}
                   />
                   <div className="form__error">
-                    {errors.time_start && (
-                      <span>{errors.time_start.message}</span>
-                    )}
+                    {errors.timeStart && (<span>{errors.timeStart.message}</span>)}
                   </div>
                 </div>
                 <div className="form__group">
@@ -298,19 +314,20 @@ const ManageExamSessions = () => {
                     Thời gian kết thúc:
                   </label>
                   <input
-                    id="time_end"
-                    type="date"
+                    id="name"
+                    type="text"
                     className="form__input"
-                    {...register("time_end", {
+                    placeholder="HH:MM:SS"
+                    {...register("timeEnd", {
                       required: "Thời gian kết thúc là bắt buộc",
                     })}
                   />
                   <div className="form__error">
-                    {errors.time_end && <span>{errors.time_end.message}</span>}
+                    {errors.timeEnd && <span>{errors.timeEnd.message}</span>}
                   </div>
                 </div>
-                <div className="form__group" style={{alignItems:"end"}}>
-                  <Button type="submit" className="btn" style={{width:"6.5rem", color:"white"}}>
+                <div className="form__group" style={{ alignItems: "end" }}>
+                  <Button type="submit" className="btn" style={{ width: "auto", color: "white" }}>
                     {isEditing ? "Cập nhật" : "Thêm mới"}
                   </Button>
                 </div>

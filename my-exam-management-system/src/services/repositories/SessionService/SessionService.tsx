@@ -132,6 +132,41 @@ export const updateSession = async (data: SessionCreate) => {
   }
 };
 
+export const deleteSession = async (id:string) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+
+    const response: AxiosResponse<ApiSessionResponse> = await instance.delete(
+      `/api/admin/exam-session/${id}`,
+      {
+        headers: headers,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError && error.response) {
+      const { data } = error.response;
+      const errorMessage = `${data.message || "Error occurred"}`;
+
+      return {
+        success: false,
+        message: errorMessage,
+      };
+    } else {
+      const generalError = "An unknown error occurred while fetching sessions.";
+
+      return {
+        success: false,
+        message: generalError,
+      };
+    }
+  }
+};
+
 export const getSessionsBySubjectId = async (subjectId: string) => {
   try {
     const token = localStorage.getItem("token");
