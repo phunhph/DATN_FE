@@ -362,6 +362,10 @@ const Exam: React.FC<Props> = () => {
           BD.push(data);
         }
       } else if (prefix === "BN") {
+          //API lấy file audio/ link audio
+    audioRef.current = new Audio(
+      e.url_listening
+    );
         // setSelectedListeningAnswers((prev) => {
         //   const newSelectedMultiChoiceAnswers = {
         //     ...prev,
@@ -683,10 +687,6 @@ const Exam: React.FC<Props> = () => {
 
       getInfor(parsedUser.idcode);
     }
-    //API lấy file audio/ link audio
-    audioRef.current = new Audio(
-      "https://www.oxfordonlineenglish.com/wp-content/uploads/2014/02/listening-test-pt-1.mp3?_=1"
-    );
 
     const audioElement = audioRef.current;
     if (audioElement) {
@@ -787,9 +787,7 @@ const Exam: React.FC<Props> = () => {
     setHandin(false);
     setSubmitted(true);
 
-    // thay code bằng id học sinh
-    let code = "03cc7093-61d2-3f63-ad0e-0d0d24ca8ab5";
-    studentSubmitted(code);
+    studentSubmitted(data.idCode);
   };
 
   const studentSubmitted = async (studentId: string) => {
@@ -797,14 +795,13 @@ const Exam: React.FC<Props> = () => {
         const response = await fetch(
             `http://datn_be.com/api/candidate/${studentId}/finish`,
             {
-                method: 'PUT',
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${getAuthToken()}`
                 },
                 body: JSON.stringify({
-                    id: studentId,
-                    _method: 'PUT'
+                    id: studentId
                 })
             }
         );
@@ -817,12 +814,12 @@ const Exam: React.FC<Props> = () => {
     }
 }
 
-  const roomId = '501';
-
   const getAuthToken = () => {
     const tokenData = localStorage.getItem('token_client');
     return tokenData ? JSON.parse(tokenData).token : null;
 }
+
+const roomId = candidate.exam_room_id;
 
   useEffect(() => {
     let echoInstance = null;

@@ -251,7 +251,6 @@ const ManageCandidates: React.FC = () => {
         newFormData.append("status", "true");
 
         const result = await addCandidate(newFormData);
-        console.log("ket qua", result);
 
         if (result.success) {
           const newCandidate = result.data.candidate;
@@ -261,8 +260,7 @@ const ManageCandidates: React.FC = () => {
             newCandidate.exam_id,
             newCandidate.exam_room_id
           );
-          console.log("new: ", newCandidate);
-          alert("Thêm thí sinh thành công!");
+          addNotification('Thêm mới thí sinh thành công', true)
           setFormData({
             idcode: "",
             name: "",
@@ -273,6 +271,8 @@ const ManageCandidates: React.FC = () => {
             status: "",
           });
           // setCandidates((prevCandidates) => [...prevCandidates, newCandidate]);
+        } else {
+          addNotification('Thêm mới thí sinh thất bại', false)
         }
       };
       callAPI();

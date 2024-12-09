@@ -117,14 +117,19 @@ const ManageENQuestions = () => {
     formData.level = "easy";
     const result = await createQuestion(formData);
     if (result.success && result.data) {
+      console.log(result);
+      const new_question = result.data.current_version;
+      console.log(new_question);
+      
+      const lastElement = new_question[new_question.length - 1];
       const data: DataQuestion = {
-        id: result.data.id,
-        title: result.data.title,
-        status: result.data.status,
+        id: lastElement.id,
+        title: lastElement.title,
+        status: true,
       };
       setDataHardCode([...dataHardCode, data]);
     }
-    addNotification(result.message, result.success);
+    addNotification("Thêm mới thành công", result.success);
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {

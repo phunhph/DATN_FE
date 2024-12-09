@@ -235,8 +235,8 @@ const ManageENExamStructure = () => {
 
   const handleOnChange_Subject = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     setMonThi(e.target.value);
-    console.log(e.target.value);
     const subjectDetail = await getFinalStructure(e.target.value);
+    await getStructureSubjiect(e.target.value);
     console.log(subjectDetail);
 
     if (subjectDetail.success) {
@@ -326,8 +326,8 @@ const ManageENExamStructure = () => {
                 </div>
                 {module.levels.map((level, levelIndex) => (
                   <div className="module__title" key={levelIndex}>
-                    <h4 className="lever">{module.title}</h4>
-                    <h4 className="quantity">{level.total}</h4>
+                    <p className="lever lever_content">{module.title}</p>
+                    <p className="quantity">{level.total}</p>
                     <div className="number grid_input">
                       <input
                         type="number"

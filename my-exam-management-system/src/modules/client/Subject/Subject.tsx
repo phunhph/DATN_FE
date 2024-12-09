@@ -4,7 +4,10 @@ import { useNavigate } from "react-router-dom";
 import "./Subject.scss";
 import Slideshow from "@components/Slideshow/Slideshow";
 import { Button, CVO, GridItem } from "@/components";
-import { getExamWithSubject } from "@/services/repositories/SemesterServices/SemesterServices";
+import {
+  getExamWithSubject,
+  getExamWSubjectClient,
+} from "@/services/repositories/SemesterServices/SemesterServices";
 import { ExamWithSubject } from "@/interfaces/SemesterInterface/SemestertInterface";
 
 const Subject = () => {
@@ -19,25 +22,39 @@ const Subject = () => {
       try {
         const data = JSON.parse(localStorage.getItem("clientData") ?? "");
 
-        const response = await getExamWithSubject(data.id_exam);
+        const response = await getExamWSubjectClient(data.id_exam, data.idcode);
+        console.log(response);
 
         if (response.success === false) {
           setError(response.message || "Lỗi không xác định");
         } else {
           const formattedData = response.data.flatMap((exam: any) => {
-            
-            return exam.exam_subjects.map((subject: any) => ({
-              examId: exam.id,
-              examName: exam.name,
-              subjectName: subject?.name || "Chưa có tên môn thi",
-              subjectCode: subject?.id || "Chưa có mã môn thi",
-              questionCount: subject?.questions?.length || 0,
-              startDate: exam.time_start,
-              endDate: exam.time_end,
-              subjectCountInExam: exam.exam_subjects.length,
-            }));
-          });
+            const now = new Date().getTime();
 
+            const startTime = new Date(
+              exam.time_start || exam.exam_date
+            ).getTime();
+            const endTime = new Date(exam.time_end || exam.exam_end).getTime();
+
+            const percentage =
+              now >= startTime && now <= endTime
+                ? ((now - startTime) / (endTime - startTime)) * 100
+                : now > endTime
+                ? 100
+                : 0;
+
+            return [
+              {
+                examId: exam.id,
+                examName: exam.name,
+                startDate: exam.time_start || exam.exam_date,
+                endDate: exam.time_end || exam.exam_end,
+                examDate: exam.exam_date,
+                subjectCountInExam: exam.exam_subjects?.length || 0,
+                percentage: parseFloat(percentage.toFixed(2)),
+              },
+            ];
+          });
           setExams(formattedData);
         }
       } catch (error) {
@@ -52,7 +69,7 @@ const Subject = () => {
   }, []);
 
   const navToExamById = (id_subject: string) => {
-    navigate(`/client/exam`,{state: {id_subject}});
+    navigate(`/client/exam`, { state: { id_subject } });
   };
 
   return (
@@ -73,11 +90,10 @@ const Subject = () => {
               <GridItem key={exam.subjectCode} className="group__itemm">
                 <p>
                   Tên Môn thi:{" "}
-                  <span className="item__span">{exam.subjectName}</span>
+                  <span className="item__span">{exam.examName}</span>
                 </p>
                 <p>
-                  Mã Môn thi:{" "}
-                  <span className="item__span">{exam.subjectCode}</span>
+                  Mã Môn thi: <span className="item__span">{exam.examId}</span>
                 </p>
                 {/* <p>
                   Số câu hỏi:{" "}
@@ -92,7 +108,10 @@ const Subject = () => {
                   {new Date(exam.endDate).toLocaleDateString()}
                 </span>
                 <CVO percentage={exam.subjectCountInExam > 0 ? 100 : 0}></CVO>
-                <Button onClick={() => navToExamById(exam.subjectCode)}>
+                <Button
+                  onClick={() => navToExamById(exam.examId)}
+                  disabled={exam.percentage === 0 || exam.percentage === 100}
+                >
                   Làm bài thi
                 </Button>
               </GridItem>
