@@ -674,7 +674,17 @@ const Exam: React.FC<Props> = () => {
   const getInfor = async (id: string) => {
     const result = await CandidateById(id);
     if (result.data) {
-      setCandidate(result.data);
+      console.log(result.data);
+      const data: CandidatesInformation = {
+        id: 1,
+        masv: result.data.idcode,
+        name: result.data.name,
+        dob: result.data.dob,
+        address: result.data.address,
+        email: result.data.email,
+        image: result.data.image,
+          }
+      setCandidate(data);
     }
   };
 

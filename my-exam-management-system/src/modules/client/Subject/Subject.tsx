@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Subject.scss";
 import Slideshow from "@components/Slideshow/Slideshow";
-import { Button, CVO, GridItem } from "@/components";
+import { Button, CVO, GridItem, Notification } from "@/components";
 import {
   getExamWithSubject,
   getExamWSubjectClient,
@@ -15,7 +15,17 @@ const Subject = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [notifications, setNotifications] = useState<
+    Array<{ message: string; isSuccess: boolean }>
+  >([]);
 
+  const addNotification = (message: string, isSuccess: boolean) => {
+    setNotifications((prev) => [...prev, { message, isSuccess }]);
+  };
+
+  const clearNotifications = () => {
+    setNotifications([]);
+  };
   useEffect(() => {
     const fetchExams = async () => {
       setIsLoading(true);
@@ -30,27 +40,50 @@ const Subject = () => {
         } else {
           const formattedData = response.data.flatMap((exam: any) => {
             const now = new Date().getTime();
+            let startTime: number;
+            let endTime: number;
+            let dateExam: number;
+            let percentage: number;
 
-            const startTime = new Date(
-              exam.time_start || exam.exam_date
-            ).getTime();
-            const endTime = new Date(exam.time_end || exam.exam_end).getTime();
+            if (exam.time_start != null) {
+              startTime = new Date(exam.time_start).getTime();
+              endTime = new Date(exam.time_end).getTime();
+              dateExam = new Date(exam.exam_date).getTime();
 
-            const percentage =
-              now >= startTime && now <= endTime
-                ? ((now - startTime) / (endTime - startTime)) * 100
-                : now > endTime
-                ? 100
-                : 0;
+              if (now < dateExam) {
+                percentage = 0;
+              } else if (now >= dateExam) {
+                percentage = 100;
+              } else {
+                percentage =
+                  now >= startTime && now <= endTime
+                    ? ((now - startTime) / (endTime - startTime)) * 100
+                    : now > endTime
+                    ? 100
+                    : 0;
+              }
+            } else {
+              startTime = new Date(exam.exam_date).getTime();
+              endTime = new Date(exam.exam_end).getTime();
+
+              percentage =
+                now >= startTime && now <= endTime
+                  ? ((now - startTime) / (endTime - startTime)) * 100
+                  : now > endTime
+                  ? 100
+                  : 0;
+              console.log(percentage);
+            }
 
             return [
               {
                 examId: exam.id,
                 examName: exam.name,
-                startDate: exam.time_start || exam.exam_date,
-                endDate: exam.time_end || exam.exam_end,
+                startDate: exam.time_start,
+                endDate: exam.time_end,
                 examDate: exam.exam_date,
-                subjectCountInExam: exam.exam_subjects?.length || 0,
+                date_end: exam.exam_end,
+
                 percentage: parseFloat(percentage.toFixed(2)),
               },
             ];
@@ -99,18 +132,40 @@ const Subject = () => {
                   Số câu hỏi:{" "}
                   <span className="item__span">{exam.questionCount}</span>
                 </p> */}
-                <p>Thời gian bắt đầu:</p>
-                <span className="item__span">
-                  {new Date(exam.startDate).toLocaleDateString()}
-                </span>
-                <p>Thời gian kết thúc:</p>
-                <span className="item__span">
-                  {new Date(exam.endDate).toLocaleDateString()}
-                </span>
-                <CVO percentage={exam.subjectCountInExam > 0 ? 100 : 0}></CVO>
+                <div>
+                  {exam.startDate && (
+                    <>
+                      <p>Thời gian bắt đầu:</p>
+                      <span className="item__span">{exam.startDate}</span>
+                      <p>Thời gian kết thúc:</p>
+                      <span className="item__span">{exam.endDate}</span>
+                      <p>Ngày thi</p>
+                      <span className="item__span">
+                        {new Date(exam.examDate).toLocaleDateString()}
+                      </span>
+                      <CVO percentage={exam.percentage || 0}></CVO>
+                    </>
+                  )}
+                  {!exam.startDate && exam.date_end && (
+                    <>
+                      <p>Thời gian bắt đầu:</p>
+                      <span className="item__span">
+                        {new Date(exam.examDate).toLocaleDateString()}
+                      </span>
+                      <p>Thời gian kết thúc:</p>
+                      <span className="item__span">
+                        {new Date(exam.date_end).toLocaleDateString()}
+                      </span>
+                      <CVO percentage={exam.percentage || 0}></CVO>
+                    </>
+                  )}
+                </div>
                 <Button
-                  onClick={() => navToExamById(exam.examId)}
-                  disabled={exam.percentage === 0 || exam.percentage === 100}
+                  onClick={() => {
+                    
+                      navToExamById(exam.examId); // Điều hướng đến trang thi
+                    
+                  }}
                 >
                   Làm bài thi
                 </Button>
@@ -121,6 +176,10 @@ const Subject = () => {
           )}
         </div>
       </div>
+      <Notification
+        notifications={notifications}
+        clearNotifications={clearNotifications}
+      />
     </div>
   );
 };

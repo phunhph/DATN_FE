@@ -6,7 +6,7 @@ import Echo from "laravel-echo"
 import {applyTheme} from '@/SCSS/applyTheme'
 import { useAdminAuth } from '@/hooks'
 
-const API_BASE_URL = 'http://datn_be.com'
+const API_BASE_URL = 'http://datn_be.com/api'
 const PUSHER_KEY = 'be4763917dd3628ba0fe'
 const PUSHER_CLUSTER = 'ap1'
 
