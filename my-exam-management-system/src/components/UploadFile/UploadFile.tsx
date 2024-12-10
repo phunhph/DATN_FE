@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
 import "./UploadFile.scss";
+import Button from "../Button/Button";
 
 interface UploadFileProps {
   onFileSelect: (file: FormData) => void;
@@ -38,7 +39,7 @@ const UploadFile: React.FC<UploadFileProps> = ({ onFileSelect }) => {
     <div className="modal__file-content">
       <p>Hãy chọn file từ máy tính của bạn.</p>
       <div className="file-upload-container">
-        <form className="file-upload-form" onSubmit={handleSubmit}>
+        <form className="file-upload-form" onSubmit={handleSubmit} style={{alignItems:"end"}}>
           <input 
             type="file" 
             id="fileInput" 
@@ -52,7 +53,7 @@ const UploadFile: React.FC<UploadFileProps> = ({ onFileSelect }) => {
             </span>
             <div className="file-select-button right_content">Chọn file</div>
           </label>
-          <button type="submit" className="submit-button">Gửi</button>
+          <Button type="submit" style={{marginTop:"1rem", color:"white"}}>Gửi</Button>
         </form>
       </div>
     </div>

@@ -492,7 +492,7 @@ const ManageCandidates: React.FC = () => {
       {modalIsOpen && (
         <div className="modal">
           <div className="modal__overlay">
-            <div className="modal__content">
+            <div className="modal__content" style={{width:"700px", height:"auto"}}>
               <button className="modal__close" onClick={closeModal}>
                 X
               </button>
@@ -608,16 +608,15 @@ const ManageCandidates: React.FC = () => {
                     </label>
                   </div>
                   <div className="modal__button">
-                    <button
+                    <Button
                       type="button"
                       onClick={closeModal}
-                      className="modal__button-close"
                     >
                       Đóng
-                    </button>
-                    <button type="submit" className="modal__button-add">
+                    </Button>
+                    <Button type="submit" >
                       Thêm
-                    </button>
+                    </Button>
                   </div>
                 </form>
               )}

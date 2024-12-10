@@ -31,7 +31,7 @@
       
           .file-select-button {
             padding: 0.5rem 1rem;
-            background-color: #7267f0;
+            background-color: #8749c1;
             color: white;
             border: 1px solid #000000d0;
             border-left: none;
@@ -41,7 +41,7 @@
             transition: background-color 0.3s ease;
       
             &:hover {
-              background-color: #7267f0d0;
+              background-color: #8749c1;
             }
           }
         }
@@ -75,7 +75,6 @@
           display: flex;
           justify-content: center;
           align-items: center;
-          background-color: #ac1717;
       }
   }
 }

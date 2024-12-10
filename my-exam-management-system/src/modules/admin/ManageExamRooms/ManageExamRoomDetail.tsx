@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Table } from "@components/Table/Table";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Notification } from "@components/index";
+import { Button, Notification } from "@components/index";
 import {
   UpdateExamRoom,
   ExamRoomDetailItem,
@@ -304,7 +304,7 @@ const ManageExamRoomDetail: React.FC = () => {
       {modalIsOpen && (
         <div className="modal">
           <div className="modal__overlay">
-            <div className="modal__content">
+            <div className="modal__content" style={{width:"700px"}}>
               <button className="modal__close" onClick={closeModal}>
                 ×
               </button>
@@ -352,16 +352,16 @@ const ManageExamRoomDetail: React.FC = () => {
                 </div>
 
                 <div className="modal__button">
-                  <button type="submit" className="modal__button-add">
+                  <Button type="submit" style={{color:"white", marginRight:"1rem"}}>
                     Cập nhật
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     type="button"
-                    className="modal__cancel"
                     onClick={closeModal}
+                    style={{color:"white"}}
                   >
                     Huỷ bỏ
-                  </button>
+                  </Button>
                 </div>
               </form>
             </div>

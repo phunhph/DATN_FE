@@ -1,4 +1,4 @@
-import { Notification, PageTitle, Table, UploadFile } from "@/components";
+import { Button, Notification, PageTitle, Table, UploadFile } from "@/components";
 import { useAdminAuth } from "@/hooks";
 import {
   ExamContentCreate,
@@ -282,7 +282,7 @@ const ExamContent: React.FC = () => {
       {modalIsOpen && (
         <div className="modal">
           <div className="modal__overlay">
-            <div className="modal__content">
+            <div className="modal__content" style={{width:"700px"}}>
               <button className="modal__close" onClick={closeModal}>
                 X
               </button>
@@ -343,21 +343,22 @@ const ExamContent: React.FC = () => {
                         value={formData.description}
                         onChange={handleChange}
                         placeholder="Nhập nội dung bài đọc"
+                        style={{resize:"none", height:"100px"}}
                       />
                     </label>
                   </div>
 
-                  <div className="modal__button">
-                    <button type="submit" className="modal__button-add">
+                  <div className="modal__button" style={{paddingBottom:"1rem"}}>
+                    <Button type="submit" style={{color:"white", marginRight:"1rem"}}>
                       {editMode ? "Cập nhật" : "Thêm mới"}
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                       type="button"
                       onClick={closeModal}
-                      className="modal__button-close"
+                      style={{color:"white"}}
                     >
                       Đóng
-                    </button>
+                    </Button>
                   </div>
                 </form>
               )}

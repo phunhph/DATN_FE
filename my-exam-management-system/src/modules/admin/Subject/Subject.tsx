@@ -432,7 +432,7 @@ const Subject: React.FC = () => {
       {modalIsOpen && (
         <div className="modal2">
           <div className="modal1__overlay">
-            <div className="modal1__content">
+            <div className="modal1__content" style={{height:"370px"}}>
               <button className="modal1__close" onClick={closeModal}>
                 X
               </button>
