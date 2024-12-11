@@ -320,6 +320,7 @@ const QuestionDetail = () => {
                       onChange={handleChange}
                       className="modal1__input"
                       placeholder="Nhập nội dung"
+                      style={{resize:"none", height:"80px"}}
                     />
                   </label>
 
@@ -351,6 +352,7 @@ const QuestionDetail = () => {
                         value={formData.answer_P}
                         className="input__input"
                         placeholder="Nhận đáp án đúng"
+                        style={{resize:"none", height:"80px"}}
                       />
                     </label>
                     {/* <div className="upload-file">
@@ -380,6 +382,7 @@ const QuestionDetail = () => {
                         onChange={handleChange}
                         className="input__input"
                         placeholder="Nhập đáp sai 1"
+                        style={{resize:"none", height:"80px"}}
                       />
                     </label>
                     {/* <div className="upload-file">
@@ -410,7 +413,8 @@ const QuestionDetail = () => {
                         value={formData.answer_F2}
                         onChange={handleChange}
                         className="input__input"
-                        placeholder="Nhập đáp sai 1"
+                        placeholder="Nhập đáp sai 2"
+                        style={{resize:"none", height:"80px"}}
                       />
                     </label>
                     {/* <div className="upload-file">
@@ -439,7 +443,8 @@ const QuestionDetail = () => {
                         value={formData.answer_F3}
                         onChange={handleChange}
                         className="input__input"
-                        placeholder="Nhập đáp sai 1"
+                        placeholder="Nhập đáp sai 3"
+                        style={{resize:"none", height:"80px"}}
                       />
                     </label>
                     {/* <div className="upload-file">

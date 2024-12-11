@@ -46,13 +46,13 @@ const Home = () => {
 
       const data = await response.json();
       console.log(data);
-      
+
       if (data.has_incomplete_exam) {
         setHasIncompleteExam(true);
         if (hasIncompleteExam !== "true") {
           if (confirm("Bạn có muốn tiếp tục?")) {
-            const id = data.subject_id
-            navigate(`/client/exam`, { state: { id } });
+            const id_subject = data.subject_id
+            navigate(`/client/exam`, { state: { id_subject } });
             localStorage.setItem("hasIncompleteExam", "true");
           } else {
             localStorage.removeItem("hasIncompleteExam");

@@ -37,6 +37,7 @@ export interface UpdateExamRoom {
   exam_sessions: Session[];
   exam_subjects: ExamSubject[];
   exam_date:string;
+  exam_end:string;
 }
 
 export interface ExamRoomDetailTables {
@@ -62,6 +63,7 @@ export interface ExamRoomUpdate {
     exam_session_id: string;
     exam_subject_id:string;
     exam_date:string;
+    exam_end:string;
   };
 }
 export interface Session {
