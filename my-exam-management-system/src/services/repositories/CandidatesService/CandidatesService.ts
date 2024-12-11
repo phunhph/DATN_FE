@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { instance } from "@/services/api/api";
 import { AxiosResponse, AxiosError } from "axios";
 import {
@@ -293,6 +294,55 @@ export const CandidateById = async (
     }
   }
 };
+
+export const Update_time = async (
+  data: any
+): Promise<ApiCandidateInFoResponse> => {
+  try {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      return {
+        success: false,
+        message: "No token found",
+        status: 401,
+      };
+    }
+
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+
+    // Send data as the second argument, and headers as the third argument
+    const response: AxiosResponse<ApiCandidateInFoResponse> = await instance.post(
+      `/api/client/update_time`,
+      data, // Send data as the body of the POST request
+      { headers } // Pass headers as the third argument in the request configuration
+    );
+
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError && error.response) {
+      const { data } = error.response;
+      const errorMessage = `${data.message || "Error occurred"}`;
+
+      return {
+        success: false,
+        message: errorMessage,
+        status: 500,
+      };
+    } else {
+      const generalError = "An unknown error occurred while updating the time.";
+
+      return {
+        success: false,
+        message: generalError,
+        status: 500,
+      };
+    }
+  }
+};
+
 export const toggleActiveStatus = async (
   exam_subject_id: string,
   idcode: string

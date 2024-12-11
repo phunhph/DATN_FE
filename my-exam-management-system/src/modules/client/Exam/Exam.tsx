@@ -15,12 +15,16 @@ import "./Exam.scss";
 import {
   CandidateById,
   getExamByIdCode,
+  Update_time,
 } from "@/services/repositories/CandidatesService/CandidatesService";
 import {
   Candidate_all,
   Question___,
 } from "@/interfaces/CandidateInterface/CandidateInterface";
-import { finish, submitStemp } from "@/services/repositories/ExamSubjectService/ExamSubjectService";
+import {
+  finish,
+  submitStemp,
+} from "@/services/repositories/ExamSubjectService/ExamSubjectService";
 import Echo from "laravel-echo";
 import Pusher from "pusher-js";
 
@@ -46,8 +50,9 @@ const Exam: React.FC<Props> = () => {
   const [readingQuestions, setReadingQuestions] = useState<Question[]>([]);
 
   const [listeningQuestions, setListeningQuestions] = useState<Question[]>([]);
-  const [paragraphs, setParagraphs] = useState<{ id: number; text: string }[]>([]);
-
+  const [paragraphs, setParagraphs] = useState<{ id: number; text: string }[]>(
+    []
+  );
 
   //lăn câu hỏi
   const multiChoiceRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -186,6 +191,19 @@ const Exam: React.FC<Props> = () => {
   const [playCount, setPlayCount] = useState<number>(0);
   const [progress, setProgress] = useState<number>(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  //Lấy thời gian còn lại
+  const [timeLeft, setTimeLeft] = useState(0);
+  const handleTimeChange = (newTime: number) => {
+    setTimeLeft(newTime);
+  };
+  const formatTime = (timeInSeconds: number) => {
+    const minutes = Math.floor(timeInSeconds / 60);
+    const seconds = Math.floor(timeInSeconds % 60);
+    return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(
+      2,
+      "0"
+    )}`;
+  };
 
   const getExam = async (id: string, code: string) => {
     const result = await getExamByIdCode(id, code);
@@ -193,27 +211,61 @@ const Exam: React.FC<Props> = () => {
       const data: Candidate_all = result.data;
       const arrays = Object.values(data.question).flat();
       renderQuestion(arrays);
-      setTimeLeft(data.time);
+      setTimeLeft((data.time ?? 0) * 60);
     }
   };
-  
+
+  const countRef = useRef(0); // Store count in useRef
+
+  useEffect(() => {
+    const timeCount = setInterval(() => {
+      setTimeLeft((prevTime) => {
+        countRef.current += 1;
+
+        if (prevTime <= 0) {
+          clearInterval(timeCount);
+          return 0;
+        }
+       
+        if (countRef.current > 59) {
+          
+          console.log(countRef.current);
+          countRef.current = 0;
+          update_time();
+        }
+
+        return prevTime - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timeCount);
+  }, [timeLeft]);
+
+  const update_time = async () => {
+    const data = {
+      idcode: candidate.idcode,
+      id_subject: id_subject,
+      time: timeLeft - 1,
+    };
+
+    await Update_time(data); // Call the API to update time
+  };
 
   const renderQuestion = (question: Question___[]) => {
     const BD: Question[] = [];
     const BN: Question[] = [];
     const NP: Question[] = [];
     console.log(question);
-    
+
     question.forEach((e) => {
-      
       const prefix = e.examContentId.split("_")[0];
       if (prefix === "BD") {
-        setParagraphs(
-          [{
-          id: 1,
-          text: e.description || 'Trống',
-          }]
-      )
+        setParagraphs([
+          {
+            id: 1,
+            text: e.description || "Trống",
+          },
+        ]);
         // setSelectedReadingAnswers((prev) => {
         //   const newSelectedMultiChoiceAnswers = {
         //     ...prev,
@@ -362,10 +414,8 @@ const Exam: React.FC<Props> = () => {
           BD.push(data);
         }
       } else if (prefix === "BN") {
-          //API lấy file audio/ link audio
-    audioRef.current = new Audio(
-      e.url_listening
-    );
+        //API lấy file audio/ link audio
+        audioRef.current = new Audio(e.url_listening);
         // setSelectedListeningAnswers((prev) => {
         //   const newSelectedMultiChoiceAnswers = {
         //     ...prev,
@@ -515,7 +565,7 @@ const Exam: React.FC<Props> = () => {
         }
       } else if (prefix === "NP") {
         // setSelectedMultiChoiceAnswers((prev) => {
-          
+
         //   const newSelectedMultiChoiceAnswers = {
         //     ...prev,
         //     [NP.length + 1]: e.answer.temp || null,
@@ -720,20 +770,6 @@ const Exam: React.FC<Props> = () => {
     }
   };
 
-  //Lấy thời gian còn lại
-  const [timeLeft, setTimeLeft] = useState(3600);
-  const handleTimeChange = (newTime: number) => {
-    setTimeLeft(newTime);
-  };
-  const formatTime = (timeInSeconds: number) => {
-    const minutes = Math.floor(timeInSeconds / 60);
-    const seconds = Math.floor(timeInSeconds % 60);
-    return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(
-      2,
-      "0"
-    )}`;
-  };
-
   // Nộp bài
   const [submitted, setSubmitted] = useState<boolean>(false);
   const [handin, setHandin] = useState<boolean>(false);
@@ -774,8 +810,8 @@ const Exam: React.FC<Props> = () => {
   };
 
   const finish_ = async (data: any) => {
-   const result = await finish(data);
-   console.log(result);
+    const result = await finish(data);
+    console.log(result);
   };
 
   const handleSubmit = () => {
@@ -792,71 +828,74 @@ const Exam: React.FC<Props> = () => {
 
   const studentSubmitted = async (studentId: string) => {
     try {
-        const response = await fetch(
-            `http://datn_be.com/api/candidate/${studentId}/finish`,
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${getAuthToken()}`
-                },
-                body: JSON.stringify({
-                    id: studentId
-                })
-            }
-        );
-        
-        if (!response.ok) {
-            throw new Error('Failed to update status');
+      const response = await fetch(
+        `http://datn_be.com/api/candidate/${studentId}/finish`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getAuthToken()}`,
+          },
+          body: JSON.stringify({
+            id: studentId,
+          }),
         }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to update status");
+      }
     } catch (error) {
-        console.error('Error updating student status:', error);
+      console.error("Error updating student status:", error);
     }
-}
+  };
 
   const getAuthToken = () => {
-    const tokenData = localStorage.getItem('token_client');
+    const tokenData = localStorage.getItem("token_client");
     return tokenData ? JSON.parse(tokenData).token : null;
-}
+  };
 
-const roomId = candidate.exam_room_id;
+  const roomId = candidate.exam_room_id;
 
   useEffect(() => {
     let echoInstance = null;
-  
+
     try {
       echoInstance = new Echo({
-        broadcaster: 'pusher',
-        key: 'be4763917dd3628ba0fe',
-        cluster: 'ap1',
+        broadcaster: "pusher",
+        key: "be4763917dd3628ba0fe",
+        cluster: "ap1",
         forceTLS: true,
-        authEndpoint: 'http://datn_be.com/api/custom-broadcasting/auth-client',
+        authEndpoint: "http://datn_be.com/api/custom-broadcasting/auth-client",
         auth: {
           headers: {
-            'Authorization': `Bearer ${getAuthToken()}`,
-          }
+            Authorization: `Bearer ${getAuthToken()}`,
+          },
         },
         withCredentials: true,
       });
-  
+
       // Join presence channel
       const channel = echoInstance.join(`presence-room.${roomId}`);
-  
+
       channel.error((error) => {
-        console.error('Lỗi xảy ra:', error);
+        console.error("Lỗi xảy ra:", error);
       });
-  
+
       return () => {
         try {
           if (echoInstance && echoInstance.leave) {
             echoInstance.leave(`presence-room.${roomId}`);
           }
         } catch (cleanupError) {
-          console.error('Error during channel cleanup:', cleanupError);
+          console.error("Error during channel cleanup:", cleanupError);
         }
       };
     } catch (error) {
-      console.error('Error initializing Echo or joining presence channel:', error);
+      console.error(
+        "Error initializing Echo or joining presence channel:",
+        error
+      );
     }
   }, [roomId]);
 
@@ -869,19 +908,22 @@ const roomId = candidate.exam_room_id;
     const user = JSON.parse(localStorage.getItem("clientData"));
 
     try {
-      const response = await fetch(`http://datn_be.com/api/candidate/${user.idcode}/update-status`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${getAuthToken()}`
+      const response = await fetch(
+        `http://datn_be.com/api/candidate/${user.idcode}/update-status`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getAuthToken()}`,
+          },
         }
-      });
-  
+      );
+
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        throw new Error("Network response was not ok");
       }
     } catch (error) {
-      console.error('Error checking exam status:', error);
+      console.error("Error checking exam status:", error);
     }
   };
 
@@ -1001,7 +1043,6 @@ const roomId = candidate.exam_room_id;
               <CountdownTimer
                 title="Thời gian còn lại"
                 initialTime={timeLeft}
-                onTimeChange={handleTimeChange}
               />
               <div
                 className={currentView !== "Trắc nghiệm" ? "display-none" : ""}

@@ -8,25 +8,14 @@ type CountdownTimerProps = {
     title:string;
 };
 
-const CountdownTimer = ({ initialTime, onTimeChange, freezeTime = false, title }: CountdownTimerProps) => {
+const CountdownTimer = ({ initialTime, title }: CountdownTimerProps) => {
     const [timeLeft, setTimeLeft] = useState(initialTime);
-
+   
     //timer
     useEffect(() => {
-        if (timeLeft <= 0 || freezeTime) return;
+        setTimeLeft(initialTime)
+    }, [initialTime]);
     
-        const intervalId = setInterval(() => {
-            setTimeLeft(prevTime => prevTime - 1);
-        }, 1000);
-    
-        return () => clearInterval(intervalId);
-    }, [timeLeft]);
-    
-    // Call onTimeChange to send the current timeLeft value to the parent component
-    useEffect(() => {
-        onTimeChange?.(timeLeft);
-    }, [timeLeft, onTimeChange]);
-
     const formatTime = (seconds: number) => {
         const hours = Math.floor(seconds / 3600);
         const minutes = Math.floor((seconds % 3600) / 60);
