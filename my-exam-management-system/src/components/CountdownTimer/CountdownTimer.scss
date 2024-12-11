@@ -30,6 +30,17 @@
     }
   }
 
+  @include m.responsive-to(2xl){
+    .countdown {
+      &__container {
+        height: 7rem;
+      }
+      &__timer{
+       height: 7rem;
+      }
+    }
+ }
+
   @include m.responsive-to(xl){
     .countdown {
       &__container{
