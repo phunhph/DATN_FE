@@ -674,17 +674,7 @@ const Exam: React.FC<Props> = () => {
   const getInfor = async (id: string) => {
     const result = await CandidateById(id);
     if (result.data) {
-      console.log(result.data);
-      const data: CandidatesInformation = {
-        id: 1,
-        masv: result.data.idcode,
-        name: result.data.name,
-        dob: result.data.dob,
-        address: result.data.address,
-        email: result.data.email,
-        image: result.data.image,
-          }
-      setCandidate(data);
+      setCandidate(result.data);
     }
   };
 
@@ -869,6 +859,31 @@ const roomId = candidate.exam_room_id;
       console.error('Error initializing Echo or joining presence channel:', error);
     }
   }, [roomId]);
+
+  useEffect(() => {
+    updateExamStatus();
+    localStorage.removeItem("hasIncompleteExam");
+  }, []);
+
+  const updateExamStatus = async () => {
+    const user = JSON.parse(localStorage.getItem("clientData"));
+
+    try {
+      const response = await fetch(`http://datn_be.com/api/candidate/${user.idcode}/update-status`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${getAuthToken()}`
+        }
+      });
+  
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+    } catch (error) {
+      console.error('Error checking exam status:', error);
+    }
+  };
 
   useEffect(() => {
     setCurrentView("Trắc nghiệm");

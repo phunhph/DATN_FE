@@ -164,9 +164,14 @@ const Subject = () => {
                 </div>
                 <Button
                   onClick={() => {
-                    
-                      navToExamById(exam.examId); // Điều hướng đến trang thi
-                    
+                    // if (exam.percentage === 0) {
+                    //   addNotification("Chưa tới thời gian thi!", false);
+                    // } else if (exam.percentage === 100) {
+                    //   addNotification("Đã hết thời gian thi!", false);
+                    // } else {
+                    //   navToExamById(exam.examId); // Điều hướng đến trang thi
+                    // }
+                    navToExamById(exam.examId);
                   }}
                 >
                   Làm bài thi
