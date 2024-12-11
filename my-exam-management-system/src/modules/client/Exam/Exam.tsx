@@ -32,6 +32,7 @@ const Exam: React.FC<Props> = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { id_subject } = location.state || {};
+  console.log(id_subject)
 
   //Đổi màn loại bài thi
   const [currentView, setCurrentView] = useState<string>("");
@@ -675,6 +676,7 @@ const Exam: React.FC<Props> = () => {
     const result = await CandidateById(id);
     if (result.data) {
       setCandidate(result.data);
+      realTime(result.data.idcode)
     }
   };
 
@@ -821,9 +823,8 @@ const Exam: React.FC<Props> = () => {
 
 const roomId = candidate.exam_room_id;
 
-  useEffect(() => {
-    let echoInstance = null;
-  
+ const realTime = (roomId:string) =>{
+  let echoInstance:any = null;
     try {
       echoInstance = new Echo({
         broadcaster: 'pusher',
@@ -842,7 +843,7 @@ const roomId = candidate.exam_room_id;
       // Join presence channel
       const channel = echoInstance.join(`presence-room.${roomId}`);
   
-      channel.error((error) => {
+      channel.error((error:any) => {
         console.error('Lỗi xảy ra:', error);
       });
   
@@ -858,7 +859,45 @@ const roomId = candidate.exam_room_id;
     } catch (error) {
       console.error('Error initializing Echo or joining presence channel:', error);
     }
-  }, [roomId]);
+ }
+  // useEffect(() => {
+  //   let echoInstance:any = null;
+  //   console.log("roomid", roomId)
+  //   try {
+  //     echoInstance = new Echo({
+  //       broadcaster: 'pusher',
+  //       key: 'be4763917dd3628ba0fe',
+  //       cluster: 'ap1',
+  //       forceTLS: true,
+  //       authEndpoint: 'http://datn_be.com/api/custom-broadcasting/auth-client',
+  //       auth: {
+  //         headers: {
+  //           'Authorization': `Bearer ${getAuthToken()}`,
+  //         }
+  //       },
+  //       withCredentials: true,
+  //     });
+  
+  //     // Join presence channel
+  //     const channel = echoInstance.join(`presence-room.${roomId}`);
+  
+  //     channel.error((error:any) => {
+  //       console.error('Lỗi xảy ra:', error);
+  //     });
+  
+  //     return () => {
+  //       try {
+  //         if (echoInstance && echoInstance.leave) {
+  //           echoInstance.leave(`presence-room.${roomId}`);
+  //         }
+  //       } catch (cleanupError) {
+  //         console.error('Error during channel cleanup:', cleanupError);
+  //       }
+  //     };
+  //   } catch (error) {
+  //     console.error('Error initializing Echo or joining presence channel:', error);
+  //   }
+  // }, [roomId]);
 
   useEffect(() => {
     updateExamStatus();

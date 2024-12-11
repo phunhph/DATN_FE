@@ -12,11 +12,11 @@ import {
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <AdminTokenProvider>
     <ClientTokenProvider>
-      <React.StrictMode>
+      {/* <React.StrictMode> */}
         <ThemeProvider>
           <RouterProvider router={routes}></RouterProvider>
         </ThemeProvider>
-      </React.StrictMode>
+      {/* </React.StrictMode> */}
     </ClientTokenProvider>
   </AdminTokenProvider>
 );
