@@ -114,18 +114,18 @@ export const Table = <T extends Record<string, any>>({
     }
   }, [data]);
 
-   const [notifications, setNotifications] = useState<
-     Array<{ message: string; isSuccess: boolean }>
-   >([]);
+  const [notifications, setNotifications] = useState<
+    Array<{ message: string; isSuccess: boolean }>
+  >([]);
 
-   const addNotification = (message: string, isSuccess: boolean) => {
-     setNotifications((prev) => [...prev, { message, isSuccess }]);
-   };
+  const addNotification = (message: string, isSuccess: boolean) => {
+    setNotifications((prev) => [...prev, { message, isSuccess }]);
+  };
 
-   const clearNotifications = () => {
-     setNotifications((prev) => prev.slice(1));
-   };
-  
+  const clearNotifications = () => {
+    setNotifications((prev) => prev.slice(1));
+  };
+
   const renderCellValue = (key: keyof T, value: any) => {
     if (key === "status") {
       return (
@@ -137,7 +137,14 @@ export const Table = <T extends Record<string, any>>({
         />
       );
     } else if (key === "image") {
-      return <img src={value.image} alt="Image" className="table-image" />;
+      return (
+        <img
+          src={value.image}
+          style={{ maxWidth: "17%" }}
+          alt="Image"
+          className="table-image"
+        />
+      );
     } else if (key === "url_listening") {
       return (
         <div className="audio-cell">
@@ -191,7 +198,6 @@ export const Table = <T extends Record<string, any>>({
       return highlightText(String(value[key]));
     }
   };
-
 
   return (
     <div className="table-container">

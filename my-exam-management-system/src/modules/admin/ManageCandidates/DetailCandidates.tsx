@@ -152,7 +152,7 @@ const DetailCandidates: React.FC = () => {
     return (
       <div className="candidate-info">
         <div className="candidate-info__image">
-          <img src={candidate.image?.slice(27)} alt={candidate.name} />
+          <img src={candidate.image} alt={candidate.name} />
         </div>
         <div className="candidate-info__details">
           <h2>{candidate.name}</h2>
@@ -192,10 +192,10 @@ const DetailCandidates: React.FC = () => {
           candidates.length > 0 ? candidates[0].name : ""
         }`}
         data={dataTable}
-        // action_upload={{
-        //   name: "Upload file",
-        //   onClick: () => openModal("file"),
-        // }}
+        action_upload={{
+          name: "Upload file",
+          onClick: () => openModal("file"),
+        }}
         action_dowload={{ name: "Tải mẫu", onClick: downloadSample }}
         action_status={handleStatusChange}
       />
