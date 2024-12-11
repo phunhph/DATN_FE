@@ -44,31 +44,16 @@ const ManageExamRoomDetail: React.FC = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [errors, setErrors] = useState<ErrorExamRoom>({});
   const [currentSubjectId, setCurrentSubjectId] = useState<string>("");
-  const [formData, setFormData] = useState<UpdateExamRoom | undefined>({
-    exam_room: {
-      id: "",
-      name: "",
-      exam_room_detail: {
-        id: "",
-        exam_room_id: "",
-        exam_session_id: "",
-        exam_subject_id: "",
-        exam_date: "",
-      },
-    },
-    exam_sessions: [],
-    exam: [],
-    exam_subjects: [],
-    exam_date: "",
-  });
+  const [formData, setFormData] = useState<UpdateExamRoom | undefined>();
   const [examSession, setExamSession] = useState();
   const title = [
     "Id môn thi",
     "Môn thi",
+    "Ca thi",
     "Thời gian bắt đầu",
     "Thời gian kết thúc",
     "Ngày thi",
-    "Ca thi",
+    "Ngày kết thúc",
     "Thao tác",
   ];
 
@@ -89,30 +74,36 @@ const ManageExamRoomDetail: React.FC = () => {
 
     try {
       const result = await getExamRoomDetail(room.id);
-
       if (result.success && result.data) {
+        console.log("result", result)
         const { exam_room_details, exam_sessions, exam_subjects } =
           result.data;
-        setExamSession(exam_sessions);
+        if (!exam_sessions) {
+          setExamSession(exam_sessions);
+        }
         setRoomDetail(
           exam_subjects.map((subject) => ({
             exam_subject_id: subject.id,
             exam_subject_name: subject.name,
+            exam_session_name:
+              exam_room_details.find(
+                (detail) => detail.exam_subject_id === subject.id && detail.exam_session != null
+              )?.exam_session.name || "Chưa có tên ca thi",
             time_start: subject.time_start || "Chưa có thời gian",
             time_end: subject.time_end || "Chưa có thời gian",
             exam_date: subject.exam_date || "Chưa có ngày thi",
-            exam_session_name:
-              exam_room_details.find(
-                (detail) => detail.exam_subject_id === subject.id
-              )?.exam_session.name || "Chưa có ca thi",
+            end_date: exam_room_details.find(
+              (detail) => detail.exam_subject_id === subject.id && detail.exam_session == null
+            )?.exam_end || "Chưa có tên ca thi",
           }))
         );
         setError("");
       } else {
         setError(result.message || "Lỗi khi lấy thông tin phòng thi");
       }
-    } catch {
+    } catch (err) {
       setError("Lỗi khi tải thông tin phòng thi");
+      console.log(err)
     } finally {
       setLoading(false);
     }
@@ -140,6 +131,10 @@ const ManageExamRoomDetail: React.FC = () => {
 
     if (!exam_date) {
       newErrors.exam_date = "Ngày thi không được để trống";
+    }
+
+    if (!exam_end) {
+      newErrors.exam_end = "Ngày thi không được để trống";
     }
 
     if (!exam_session_id) {
@@ -173,6 +168,7 @@ const ManageExamRoomDetail: React.FC = () => {
       exam_subject_id: currentSubjectId,
       exam_session_id: formData.exam_room.exam_room_detail.exam_session_id,
       exam_date: formData.exam_room.exam_room_detail.exam_date,
+      exam_end: formData.exam_room.exam_room_detail.exam_end,
     };
 
     console.log("Data to be submitted:", data);
@@ -229,6 +225,10 @@ const ManageExamRoomDetail: React.FC = () => {
           updatedFormData.exam_room.exam_room_detail.exam_date = value;
           break;
 
+        case "exam_end":
+          updatedFormData.exam_room.exam_room_detail.exam_end = value;
+          break;
+
         case "exam_sessions":
           updatedFormData.exam_room.exam_room_detail.exam_session_id = value;
           break;
@@ -238,6 +238,35 @@ const ManageExamRoomDetail: React.FC = () => {
       return updatedFormData;
     });
   };
+
+  const handleEndDateChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const { name, value } = e.target;
+    console.log("handleEndDateChange - name:", name, "value:", value);
+
+    setFormData((prev) => {
+      if (!prev) {
+        console.log("Previous formData is undefined");
+        return prev;
+      }
+
+      const updatedFormData = {
+        ...prev,
+        exam_room: {
+          ...prev.exam_room,
+          exam_room_detail: {
+            ...prev.exam_room.exam_room_detail,
+            exam_end: value, // Update exam_end directly
+          },
+        },
+      };
+
+      console.log("Updated formData (exam_end):", updatedFormData);
+      return updatedFormData;
+    });
+  };
+
 
   const openEditModal = async (data: ExamRoomDetailItem) => {
     console.log("id =", data.exam_subject_id);
@@ -304,7 +333,7 @@ const ManageExamRoomDetail: React.FC = () => {
       {modalIsOpen && (
         <div className="modal">
           <div className="modal__overlay">
-            <div className="modal__content" style={{width:"700px"}}>
+            <div className="modal__content" style={{ width: "700px" }}>
               <button className="modal__close" onClick={closeModal}>
                 ×
               </button>
@@ -325,6 +354,24 @@ const ManageExamRoomDetail: React.FC = () => {
                     />
                     {errors.exam_date && (
                       <p className="error">{errors.exam_date}</p>
+                    )}
+                  </label>
+                </div>
+
+                <div className="modal__firstline">
+                  <label className="modal__label">
+                    Ngày thi:
+                    <input
+                      type="date"
+                      name="exam_end"
+                      className="modal__input"
+                      onChange={handleEndDateChange}
+                      value={
+                        formData?.exam_room.exam_room_detail.exam_end || ""
+                      } // Thêm value
+                    />
+                    {errors.exam_end && (
+                      <p className="error">{errors.exam_end}</p>
                     )}
                   </label>
                 </div>
@@ -352,13 +399,13 @@ const ManageExamRoomDetail: React.FC = () => {
                 </div>
 
                 <div className="modal__button">
-                  <Button type="submit" style={{color:"white", marginRight:"1rem"}}>
+                  <Button type="submit" style={{ color: "white", marginRight: "1rem" }}>
                     Cập nhật
                   </Button>
                   <Button
                     type="button"
                     onClick={closeModal}
-                    style={{color:"white"}}
+                    style={{ color: "white" }}
                   >
                     Huỷ bỏ
                   </Button>
