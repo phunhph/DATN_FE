@@ -35,6 +35,14 @@
     }
   }
 
+  @include m.responsive-to(2xl){
+    .candidate{
+      &__information{
+        margin-top: 0.5rem;
+      }
+    }
+ }
+
   @include m.responsive-to(xl){
     .candidate{
       &__information{

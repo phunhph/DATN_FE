@@ -48,6 +48,10 @@
     }
  }
  
+ @include m.responsive-to(2xl){
+  
+ }
+
  @include m.responsive-to(md){
   .countdown {
     &__timer{

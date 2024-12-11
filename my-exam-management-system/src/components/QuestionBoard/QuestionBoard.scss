@@ -86,7 +86,25 @@
       }
     }
   }
+
+  @include m.responsive-to(2xl){
+    .question{
+      &__board{
+        margin-top: 0.5rem;
+      }
+    }
+  }
   
+  @include m.responsive-to(2xl){
+    .question{
+      &__board{
+        &-selection {
+          padding: 0;
+        }
+      }
+    }
+  }
+
   @include m.responsive-to(lg){
     .question{
       &__board{

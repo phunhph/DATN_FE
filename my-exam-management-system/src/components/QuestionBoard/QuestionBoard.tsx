@@ -28,7 +28,7 @@ const QuestionBoard: React.FC<QuestionBoardProps> = ({ questions, selectedAnswer
         return result;
     };
 
-    const chunkedQuestions = chunkQuestions(questions, 5);
+    const chunkedQuestions = chunkQuestions(questions, 6);
 
     useEffect(() => {
         onViewChange(initialView);
