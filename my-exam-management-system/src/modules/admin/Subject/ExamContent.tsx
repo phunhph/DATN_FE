@@ -1,11 +1,17 @@
-import { Button, Notification, PageTitle, Table, UploadFile } from "@/components";
+import {
+  Button,
+  Notification,
+  PageTitle,
+  Table,
+  UploadFile,
+} from "@/components";
 import { useAdminAuth } from "@/hooks";
 import {
   ExamContentCreate,
   ExamContentInterface,
 } from "@/interfaces/ExamContentInterface/ExamContentInterface";
 import { ErrorSubject } from "@/interfaces/SubjectInterface/ErrorExamSubjectInterface";
-import {applyTheme} from "@/SCSS/applyTheme";
+import { applyTheme } from "@/SCSS/applyTheme";
 import {
   addExamContent,
   getAllExamContentByIdSubject,
@@ -17,7 +23,7 @@ import { useLocation } from "react-router-dom";
 
 const ExamContent: React.FC = () => {
   useAdminAuth();
-  applyTheme()
+  applyTheme();
 
   const location = useLocation();
   const { subject } = location.state || {};
@@ -141,6 +147,14 @@ const ExamContent: React.FC = () => {
 
     const result = await addExamContent(newContent);
     if (result.success) {
+      const newContent: ExamContentInterface = {
+        id: formData.id,
+        title: formData.title,
+
+        url_listening: formData.url_listening,
+        description: formData.description,
+        status: true,
+      };
       setExamContent([...examContent, newContent]);
     }
 
@@ -193,15 +207,14 @@ const ExamContent: React.FC = () => {
     }));
   };
 
- const handleUpdateStatus = (id: string) => {
-   setExamContent((prevContents) =>
-     prevContents.map((content) =>
-       content.id === id ? { ...content, status: !content.status } : content
-     )
-   );
-   addNotification(`Trạng thái của môn thi đã được thay đổi.`, true);
- };
-
+  const handleUpdateStatus = (id: string) => {
+    setExamContent((prevContents) =>
+      prevContents.map((content) =>
+        content.id === id ? { ...content, status: !content.status } : content
+      )
+    );
+    addNotification(`Trạng thái của môn thi đã được thay đổi.`, true);
+  };
 
   const handleStatusChange = (id: string) => {
     if (confirm("Are you sure you want to change the status?")) {
@@ -251,8 +264,6 @@ const ExamContent: React.FC = () => {
     }
   }, [subject]);
 
-  
-
   return (
     <div className="examContent__container">
       <PageTitle theme="light" showBack={true}>
@@ -282,7 +293,7 @@ const ExamContent: React.FC = () => {
       {modalIsOpen && (
         <div className="modal">
           <div className="modal__overlay">
-            <div className="modal__content" style={{width:"700px"}}>
+            <div className="modal__content" style={{ width: "700px" }}>
               <button className="modal__close" onClick={closeModal}>
                 X
               </button>
@@ -343,19 +354,25 @@ const ExamContent: React.FC = () => {
                         value={formData.description}
                         onChange={handleChange}
                         placeholder="Nhập nội dung bài đọc"
-                        style={{resize:"none", height:"100px"}}
+                        style={{ resize: "none", height: "100px" }}
                       />
                     </label>
                   </div>
 
-                  <div className="modal__button" style={{paddingBottom:"1rem"}}>
-                    <Button type="submit" style={{color:"white", marginRight:"1rem"}}>
+                  <div
+                    className="modal__button"
+                    style={{ paddingBottom: "1rem" }}
+                  >
+                    <Button
+                      type="submit"
+                      style={{ color: "white", marginRight: "1rem" }}
+                    >
                       {editMode ? "Cập nhật" : "Thêm mới"}
                     </Button>
                     <Button
                       type="button"
                       onClick={closeModal}
-                      style={{color:"white"}}
+                      style={{ color: "white" }}
                     >
                       Đóng
                     </Button>

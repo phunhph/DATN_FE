@@ -192,10 +192,10 @@ const DetailCandidates: React.FC = () => {
           candidates.length > 0 ? candidates[0].name : ""
         }`}
         data={dataTable}
-        // action_upload={{
-        //   name: "Upload file",
-        //   onClick: () => openModal("file"),
-        // }}
+        action_upload={{
+          name: "Upload file",
+          onClick: () => openModal("file"),
+        }}
         action_dowload={{ name: "Tải mẫu", onClick: downloadSample }}
         action_status={handleStatusChange}
       />
