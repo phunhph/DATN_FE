@@ -13,7 +13,6 @@
 }
 
 
-
 @include m.responsive-to(xl){
   .group__contentt {
     grid-template-columns: repeat(3, 1fr);

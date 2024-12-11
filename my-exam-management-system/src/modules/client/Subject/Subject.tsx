@@ -156,6 +156,8 @@ const Subject = () => {
                       <span className="item__span">
                         {new Date(exam.date_end).toLocaleDateString()}
                       </span>
+                      <p> &nbsp;</p>
+                      <span className="item__span"> &nbsp;</span>
                       <CVO percentage={exam.percentage || 0}></CVO>
                     </>
                   )}
