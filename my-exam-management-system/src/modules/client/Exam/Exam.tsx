@@ -36,7 +36,6 @@ const Exam: React.FC<Props> = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { id_subject } = location.state || {};
-  console.log(id_subject)
 
   //Đổi màn loại bài thi
   const [currentView, setCurrentView] = useState<string>("");
@@ -152,6 +151,8 @@ const Exam: React.FC<Props> = () => {
       temp: answerId,
     };
 
+
+
     submit(data);
 
     // console.log(`Câu hỏi bài nghe ${questionNumber}, đã chọn đáp án: ${answerId}`);
@@ -160,6 +161,7 @@ const Exam: React.FC<Props> = () => {
         ...prev,
         [questionNumber]: answerId,
       };
+      console.log(newSelectedMultiChoiceAnswers);
       return newSelectedMultiChoiceAnswers;
     });
   };
@@ -227,10 +229,8 @@ const Exam: React.FC<Props> = () => {
           clearInterval(timeCount);
           return 0;
         }
-       
+
         if (countRef.current > 59) {
-          
-          console.log(countRef.current);
           countRef.current = 0;
           update_time();
         }
@@ -256,8 +256,6 @@ const Exam: React.FC<Props> = () => {
     const BD: Question[] = [];
     const BN: Question[] = [];
     const NP: Question[] = [];
-    console.log(question);
-
     question.forEach((e) => {
       const prefix = e.examContentId.split("_")[0];
       if (prefix === "BD") {
@@ -267,13 +265,19 @@ const Exam: React.FC<Props> = () => {
             text: e.description || "Trống",
           },
         ]);
-        // setSelectedReadingAnswers((prev) => {
-        //   const newSelectedMultiChoiceAnswers = {
-        //     ...prev,
-        //     [BD.length + 1]: e.answer.temp || null,
-        //   };
-        //   return newSelectedMultiChoiceAnswers;
-        // });
+        if (e.answer.temp) {
+
+          const currentBNLength = BD.length;
+
+          setSelectedReadingAnswers((prev) => {
+            const newSelectedMultiChoiceAnswers = {
+              ...prev,
+              [currentBNLength + 1]: e.answer.temp || null,
+            };
+
+            return newSelectedMultiChoiceAnswers;
+          });
+        }
         if (e.answer.id_pass === 1) {
           const data: Question = {
             id: e.id,
@@ -415,15 +419,23 @@ const Exam: React.FC<Props> = () => {
           BD.push(data);
         }
       } else if (prefix === "BN") {
-        //API lấy file audio/ link audio
+        if (e.answer.temp) {
+
+          const currentBNLength = BN.length;
+
+          setSelectedListeningAnswers((prev) => {
+            const newSelectedMultiChoiceAnswers = {
+              ...prev,
+              [currentBNLength + 1]: e.answer.temp || null,
+            };
+
+            return newSelectedMultiChoiceAnswers;
+          });
+        }
+
+
         audioRef.current = new Audio(e.url_listening);
-        // setSelectedListeningAnswers((prev) => {
-        //   const newSelectedMultiChoiceAnswers = {
-        //     ...prev,
-        //     [BN.length + 1]: e.answer.temp || null,
-        //   };
-        //   return newSelectedMultiChoiceAnswers;
-        // });
+
         if (e.answer.id_pass === 1) {
           const data: Question = {
             id: e.id,
@@ -565,14 +577,18 @@ const Exam: React.FC<Props> = () => {
           BN.push(data);
         }
       } else if (prefix === "NP") {
-        // setSelectedMultiChoiceAnswers((prev) => {
+        if (e.answer.temp) {
+          const currentBNLength = NP.length;
 
-        //   const newSelectedMultiChoiceAnswers = {
-        //     ...prev,
-        //     [NP.length + 1]: e.answer.temp || null,
-        //   };
-        //   return newSelectedMultiChoiceAnswers;
-        // });
+          setSelectedMultiChoiceAnswers((prev) => {
+            const newSelectedMultiChoiceAnswers = {
+              ...prev,
+              [currentBNLength + 1]: e.answer.temp || null,
+            };
+            return newSelectedMultiChoiceAnswers;
+          });
+        }
+        
         if (e.answer.id_pass === 1) {
           const data: Question = {
             id: e.id,
@@ -857,11 +873,10 @@ const Exam: React.FC<Props> = () => {
     return tokenData ? JSON.parse(tokenData).token : null;
   };
 
-  const roomId = candidate.exam_room_id;
 
 
- const realTime = (roomId:string) =>{
-  let echoInstance:any = null;
+  const realTime = (roomId: string) => {
+    let echoInstance: any = null;
     try {
       echoInstance = new Echo({
         broadcaster: "pusher",
@@ -899,7 +914,7 @@ const Exam: React.FC<Props> = () => {
         error
       );
     }
- }
+  }
   // useEffect(() => {
   //   let echoInstance:any = null;
   //   console.log("roomid", roomId)
@@ -917,14 +932,14 @@ const Exam: React.FC<Props> = () => {
   //       },
   //       withCredentials: true,
   //     });
-  
+
   //     // Join presence channel
   //     const channel = echoInstance.join(`presence-room.${roomId}`);
-  
+
   //     channel.error((error:any) => {
   //       console.error('Lỗi xảy ra:', error);
   //     });
-  
+
   //     return () => {
   //       try {
   //         if (echoInstance && echoInstance.leave) {
@@ -982,9 +997,8 @@ const Exam: React.FC<Props> = () => {
             {/* Bài trắc nghiệm */}
 
             <div
-              className={`exam__detail-left ${
-                currentView === "Trắc nghiệm" ? "" : "display-none"
-              }`}
+              className={`exam__detail-left ${currentView === "Trắc nghiệm" ? "" : "display-none"
+                }`}
             >
               {questions.map((question, index) => (
                 <div
@@ -1006,9 +1020,8 @@ const Exam: React.FC<Props> = () => {
             {/* Bài đọc */}
 
             <div
-              className={`exam__detail-left ${
-                currentView === "Bài đọc" ? "" : "display-none"
-              }`}
+              className={`exam__detail-left ${currentView === "Bài đọc" ? "" : "display-none"
+                }`}
             >
               <div className="exam__reading">
                 {paragraphs.map((p) => (
@@ -1038,9 +1051,8 @@ const Exam: React.FC<Props> = () => {
             {/* Bài nghe */}
 
             <div
-              className={`exam__detail-left ${
-                currentView !== "Bài nghe" ? "display-none" : ""
-              }`}
+              className={`exam__detail-left ${currentView !== "Bài nghe" ? "display-none" : ""
+                }`}
             >
               <div className="exam__audio">
                 <Button
