@@ -231,7 +231,6 @@ export const getExamByIdCode = async (
         headers: headers,
       }
     );
-    console.log(response);
 
     return response.data;
   } catch (error) {

@@ -21,7 +21,7 @@ const Scores = () => {
 
   const getScores = async (id: string) => {
     const result = await getScoreboard(id);
-
+    
     if (result.success && result.data.length > 0) {
         format(result);
     } else {

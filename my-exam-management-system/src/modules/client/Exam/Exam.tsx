@@ -210,11 +210,18 @@ const Exam: React.FC<Props> = () => {
 
   const getExam = async (id: string, code: string) => {
     const result = await getExamByIdCode(id, code);
+    
     if (result.data) {
-      const data: Candidate_all = result.data;
+      if(result.point){
+        const point = true;
+        navigate("/client/subject" ,{ state: { point }})
+      }else {
+const data: Candidate_all = result.data;
       const arrays = Object.values(data.question).flat();
       renderQuestion(arrays);
       setTimeLeft((data.time ?? 0) * 60);
+      }
+      
     }
   };
 
@@ -226,6 +233,7 @@ const Exam: React.FC<Props> = () => {
         countRef.current += 1;
 
         if (prevTime <= 0) {
+          handleSubmit()
           clearInterval(timeCount);
           return 0;
         }
@@ -255,10 +263,13 @@ const Exam: React.FC<Props> = () => {
   const renderQuestion = (question: Question___[]) => {
     const BD: Question[] = [];
     const BN: Question[] = [];
-    const NP: Question[] = [];
+    const NP: Question[] = [];  
     question.forEach((e) => {
       const prefix = e.examContentId.split("_")[0];
+      
+      
       if (prefix === "BD") {
+        console.log(e);
         setParagraphs([
           {
             id: 1,
@@ -731,7 +742,6 @@ const Exam: React.FC<Props> = () => {
         }
       }
     });
-
     // Cập nhật state
     setQuestions(NP); // Cập nhật nhóm NP
     setReadingQuestions(BD); // Cập nhật nhóm BD

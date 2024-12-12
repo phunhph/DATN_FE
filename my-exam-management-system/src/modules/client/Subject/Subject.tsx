@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import "./Subject.scss";
 import Slideshow from "@components/Slideshow/Slideshow";
 import { Button, CVO, GridItem, Notification } from "@/components";
@@ -9,18 +9,39 @@ import {
   getExamWSubjectClient,
 } from "@/services/repositories/SemesterServices/SemesterServices";
 import { ExamWithSubject } from "@/interfaces/SemesterInterface/SemestertInterface";
+import { getScoreboardByIdSubject } from "@/services/repositories/scoreboard/scoreboardServices";
 
 const Subject = () => {
   const [exams, setExams] = useState<ExamWithSubject[]>([]);
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const location = useLocation();
+  const { point } = location.state || {};
+
   const [notifications, setNotifications] = useState<
     Array<{ message: string; isSuccess: boolean }>
   >([]);
 
   const addNotification = (message: string, isSuccess: boolean) => {
     setNotifications((prev) => [...prev, { message, isSuccess }]);
+  };
+
+  const checkPoint = async (id_subject: string) => {
+    const user = localStorage.getItem("clientData");
+    if (user) {
+      const parsedUser = JSON.parse(user);
+      const result = await getScoreboardByIdSubject(
+        parsedUser.idcode,
+        id_subject
+      );
+
+      if (result.success) {
+        addNotification("Môn thi đã có kết quả", false);
+      } else {
+        navToExamById(id_subject);
+      }
+    }
   };
 
   const clearNotifications = () => {
@@ -164,14 +185,13 @@ const Subject = () => {
                 </div>
                 <Button
                   onClick={() => {
-                    // if (exam.percentage === 0) {
-                    //   addNotification("Chưa tới thời gian thi!", false);
-                    // } else if (exam.percentage === 100) {
-                    //   addNotification("Đã hết thời gian thi!", false);
-                    // } else {
-                    //   navToExamById(exam.examId); // Điều hướng đến trang thi
-                    // }
-                    navToExamById(exam.examId);
+                    if (exam.percentage === 0) {
+                      addNotification("Chưa tới thời gian thi!", false);
+                    } else if (exam.percentage === 100) {
+                      addNotification("Đã hết thời gian thi!", false);
+                    } else {
+                      checkPoint(exam.examId);
+                    }
                   }}
                 >
                   Làm bài thi
