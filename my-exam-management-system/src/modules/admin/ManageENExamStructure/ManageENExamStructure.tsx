@@ -15,7 +15,7 @@ import {
   getFinalStructure,
   SubmitStructure,
 } from "@/services/repositories/StructureServices/StructureDetailServices";
-import {applyTheme} from "@/SCSS/applyTheme";
+import { applyTheme } from "@/SCSS/applyTheme";
 import { useAdminAuth } from "@/hooks";
 
 interface Errors {
@@ -27,8 +27,8 @@ interface Errors {
 }
 
 const ManageENExamStructure = () => {
-    useAdminAuth();
-    applyTheme()
+  useAdminAuth();
+  applyTheme();
 
   const [kyThi, setKyThi] = useState("");
   const [semester, setSemester] = useState<Semester[]>([]);
@@ -97,9 +97,10 @@ const ManageENExamStructure = () => {
     });
 
     if (+tongSoCauHoi > totalQuestions) {
+      newErrors.tongSoCauHoi = `Số câu hỏi phải lớn hơn 0 và không được nhỏ hơn tổng số câu hỏi (${totalQuestions}).`;
+    } else if (+tongSoCauHoi < totalQuestions) {
       newErrors.tongSoCauHoi = `Số câu hỏi phải lớn hơn 0 và không được vượt quá tổng số câu hỏi (${totalQuestions}).`;
     }
-
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       scrollToFirstError();
@@ -114,7 +115,6 @@ const ManageENExamStructure = () => {
     if (validateForm()) {
       submit();
       setErrors({});
-
     }
   };
 
@@ -167,7 +167,7 @@ const ManageENExamStructure = () => {
       const subjectsWithoutId: ExamSubject[] = dataSubject.data;
       const subjectId = String(subjectsWithoutId[0].id);
       setMonThi(subjectId);
-      await getStructureSubjiect(subjectId)
+      await getStructureSubjiect(subjectId);
       setExamSubject(subjectsWithoutId);
     } else {
       setExamSubject([]);
@@ -183,7 +183,6 @@ const ManageENExamStructure = () => {
       setTongSoCauHoi(data.data[0].quantity);
       setThoiGianLamBai(data.data[0].time);
       setCheckCreateStruct(true);
-
     } else {
       setCheckCreateStruct(false);
       setTongSoCauHoi(0);
@@ -220,8 +219,6 @@ const ManageENExamStructure = () => {
 
       const subjectId = String(subjects.data[0].id);
       await getStructureSubjiect(subjectId);
-
-
     } catch (error) {
       console.error("Error in dataStart:", error);
     }
@@ -233,7 +230,9 @@ const ManageENExamStructure = () => {
     await getSubjectsByIdExam(e.target.value);
   };
 
-  const handleOnChange_Subject = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleOnChange_Subject = async (
+    e: React.ChangeEvent<HTMLSelectElement>
+  ) => {
     setMonThi(e.target.value);
     const subjectDetail = await getFinalStructure(e.target.value);
     await getStructureSubjiect(e.target.value);

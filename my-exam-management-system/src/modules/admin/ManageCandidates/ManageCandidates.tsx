@@ -27,8 +27,8 @@ import { applyTheme } from "@/SCSS/applyTheme";
 import { useAdminAuth } from "@/hooks";
 
 const ManageCandidates: React.FC = () => {
-    useAdminAuth();
-    applyTheme();
+  useAdminAuth();
+  applyTheme();
 
   const title = [
     "Mã sinh viên",
@@ -260,7 +260,7 @@ const ManageCandidates: React.FC = () => {
             newCandidate.exam_id,
             newCandidate.exam_room_id
           );
-          addNotification('Thêm mới thí sinh thành công', true)
+          addNotification("Thêm mới thí sinh thành công", true);
           setFormData({
             idcode: "",
             name: "",
@@ -272,7 +272,7 @@ const ManageCandidates: React.FC = () => {
           });
           // setCandidates((prevCandidates) => [...prevCandidates, newCandidate]);
         } else {
-          addNotification('Thêm mới thí sinh thất bại', false)
+          addNotification("Thêm mới thí sinh thất bại", false);
         }
       };
       callAPI();
@@ -439,7 +439,9 @@ const ManageCandidates: React.FC = () => {
           defaultOptions={roomOptions}
           value={
             roomOptions.length > 0
-              ? roomOptions.find((option:any) => option.value === selectedRoomId)
+              ? roomOptions.find(
+                  (option: any) => option.value === selectedRoomId
+                )
               : ""
           }
           onChange={(selectedRoomOption) => {
@@ -448,10 +450,8 @@ const ManageCandidates: React.FC = () => {
             console.log("selectedRoomOption: " + selectedRoomOption?.value);
           }}
         />
-        <div style={{display:"flex", gap:"0.25rem", marginBottom:"1rem"}}>
-          <Button className="export-btn"
-            onClick={handleExportAll}
-          >
+        <div style={{ display: "flex", gap: "0.25rem", marginBottom: "1rem" }}>
+          <Button className="export-btn" onClick={handleExportAll}>
             Xuất tất cả
           </Button>
           <Button className="export-btn" onClick={handleExportByExam}>
@@ -492,7 +492,10 @@ const ManageCandidates: React.FC = () => {
       {modalIsOpen && (
         <div className="modal">
           <div className="modal__overlay">
-            <div className="modal__content" style={{width:"700px", height:"auto"}}>
+            <div
+              className="modal__content"
+              style={{ width: "700px", height: "auto" }}
+            >
               <button className="modal__close" onClick={closeModal}>
                 X
               </button>
@@ -500,7 +503,46 @@ const ManageCandidates: React.FC = () => {
                 {modalType === "add" ? "Thêm mới thí sinh" : "Tải lên file"}
               </h2>
               {modalType === "file" ? (
-                <UploadFile onFileSelect={handleFileSelect} />
+                <div className="modal__file-content">
+                  <p>Hãy chọn file từ máy tính của bạn.</p>
+                  <div className="file-upload-container">
+                    <form
+                      className="file-upload-form"
+                      onSubmit={handleFileDrop}
+                    >
+                      <div className="file-input-container">
+                        <input
+                          id="upload-file-btn"
+                          className="upload-file-btn"
+                          type="file"
+                          accept=".xlsx,.xls"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            setFileName(file ? file.name : "");
+                          }}
+                        />
+                        <label
+                          className="label_upload"
+                          htmlFor="upload-file-btn"
+                        >
+                          <span className="left_content">
+                            {fileName || "Chưa chọn file"}
+                          </span>
+                          <div className="file-select-button right_content">
+                            Chọn file
+                          </div>
+                        </label>
+                      </div>
+                      <button
+                        type="submit"
+                        className="submit-button"
+                        disabled={!fileName} // Disable nút khi chưa chọn file
+                      >
+                        Gửi
+                      </button>
+                    </form>
+                  </div>
+                </div>
               ) : (
                 <form
                   className="modal__form"
@@ -608,15 +650,10 @@ const ManageCandidates: React.FC = () => {
                     </label>
                   </div>
                   <div className="modal__button">
-                    <Button
-                      type="button"
-                      onClick={closeModal}
-                    >
+                    <Button type="button" onClick={closeModal}>
                       Đóng
                     </Button>
-                    <Button type="submit" >
-                      Thêm
-                    </Button>
+                    <Button type="submit">Thêm</Button>
                   </div>
                 </form>
               )}

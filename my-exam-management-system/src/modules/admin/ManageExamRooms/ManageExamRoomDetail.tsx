@@ -30,7 +30,7 @@ const ManageExamRoomDetail: React.FC = () => {
   //   time_start: string;
   //   time_end: string;
   // }
-  applyTheme()
+  applyTheme();
 
   useAdminAuth();
   const location = useLocation();
@@ -75,9 +75,8 @@ const ManageExamRoomDetail: React.FC = () => {
     try {
       const result = await getExamRoomDetail(room.id);
       if (result.success && result.data) {
-        console.log("result", result)
-        const { exam_room_details, exam_sessions, exam_subjects } =
-          result.data;
+        console.log("result", result);
+        const { exam_room_details, exam_sessions, exam_subjects } = result.data;
         if (!exam_sessions) {
           setExamSession(exam_sessions);
         }
@@ -87,14 +86,19 @@ const ManageExamRoomDetail: React.FC = () => {
             exam_subject_name: subject.name,
             exam_session_name:
               exam_room_details.find(
-                (detail) => detail.exam_subject_id === subject.id && detail.exam_session != null
+                (detail) =>
+                  detail.exam_subject_id === subject.id &&
+                  detail.exam_session != null
               )?.exam_session.name || "Chưa có tên ca thi",
             time_start: subject.time_start || "Chưa có thời gian",
             time_end: subject.time_end || "Chưa có thời gian",
             exam_date: subject.exam_date || "Chưa có ngày thi",
-            end_date: exam_room_details.find(
-              (detail) => detail.exam_subject_id === subject.id && detail.exam_session == null
-            )?.exam_end || "Chưa có tên ca thi",
+            end_date:
+              exam_room_details.find(
+                (detail) =>
+                  detail.exam_subject_id === subject.id &&
+                  detail.exam_session == null
+              )?.exam_end || "Chưa có ngày kết thúc",
           }))
         );
         setError("");
@@ -103,7 +107,7 @@ const ManageExamRoomDetail: React.FC = () => {
       }
     } catch (err) {
       setError("Lỗi khi tải thông tin phòng thi");
-      console.log(err)
+      console.log(err);
     } finally {
       setLoading(false);
     }
@@ -239,9 +243,7 @@ const ManageExamRoomDetail: React.FC = () => {
     });
   };
 
-  const handleEndDateChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     console.log("handleEndDateChange - name:", name, "value:", value);
 
@@ -266,7 +268,6 @@ const ManageExamRoomDetail: React.FC = () => {
       return updatedFormData;
     });
   };
-
 
   const openEditModal = async (data: ExamRoomDetailItem) => {
     console.log("id =", data.exam_subject_id);
@@ -295,8 +296,6 @@ const ManageExamRoomDetail: React.FC = () => {
     setErrors({});
     setCurrentSubjectId(""); // Reset subject_id khi đóng modal
   };
-
-
 
   if (loading) {
     return (
@@ -342,7 +341,7 @@ const ManageExamRoomDetail: React.FC = () => {
               <form className="modal__form" onSubmit={handleSubmit}>
                 <div className="modal__firstline">
                   <label className="modal__label">
-                    Ngày thi:
+                    Ngày bắt đầu:
                     <input
                       type="date"
                       name="exam_date"
@@ -360,7 +359,7 @@ const ManageExamRoomDetail: React.FC = () => {
 
                 <div className="modal__firstline">
                   <label className="modal__label">
-                    Ngày thi:
+                    Ngày kết thúc:
                     <input
                       type="date"
                       name="exam_end"
@@ -399,7 +398,10 @@ const ManageExamRoomDetail: React.FC = () => {
                 </div>
 
                 <div className="modal__button">
-                  <Button type="submit" style={{ color: "white", marginRight: "1rem" }}>
+                  <Button
+                    type="submit"
+                    style={{ color: "white", marginRight: "1rem" }}
+                  >
                     Cập nhật
                   </Button>
                   <Button
