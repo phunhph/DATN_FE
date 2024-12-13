@@ -30,7 +30,7 @@ const ExamContent: React.FC = () => {
 
   const downloadSample = () => {
     const link = document.createElement("a");
-    link.href = `public/excel/Exam-Content.xlsx`;
+    link.href = `/excel/Exam-Content.xlsx`;
     link.download = "Exam-Content.xlsx";
     document.body.appendChild(link);
     link.click();
@@ -120,9 +120,15 @@ const ExamContent: React.FC = () => {
 
   const handleFileChange = async (file: FormData) => {
     if (file) {
-      const data = await importFileExcelContent(file);
+      file.append("exam_subject_id", subject.id);
 
+      const data = await importFileExcelContent(file);
       addNotification(data.message || "", data.success);
+
+      if (data.success) {
+        onload();
+        closeModal();
+      }
     }
   };
 
