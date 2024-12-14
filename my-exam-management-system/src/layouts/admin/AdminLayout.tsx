@@ -88,7 +88,7 @@ const AdminLayout = () => {
                       </li>
                       <div className="dropdown__divider"></div>
                       <li className="dropdown__button" onClick={toggleUserMenu}>
-                        <NavLink to="/" className="dropdown__logout">
+                        <NavLink to="/" className="dropdown__logout" onClick={() => localStorage.clear()}>
                           <small>Đăng xuất</small>
                           <img src="/log-out.svg" alt="icon"></img>
                         </NavLink>
