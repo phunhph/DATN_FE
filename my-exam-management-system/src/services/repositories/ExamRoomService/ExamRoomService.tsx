@@ -259,6 +259,7 @@ export const getExamRoomDetail = async (id: any) => {
     };
   }
 };
+
 export const getDataSelectUpdate = async (
   room: any,
   exam_subject_id: string
@@ -284,10 +285,16 @@ export const getDataSelectUpdate = async (
 
     // Format lại data theo cấu trúc formData để hiển thị đúng trong form
     let examDate = "";
+    let examEnd = "";
+
     if (response.data.data.exam_date) {
-      const date = new Date(response.data.data.exam_date);
-      examDate = date.toISOString().split("T")[0]; // Format YYYY-MM-DD cho input type="date"
+      examDate = formatLocalDate(response.data.data.exam_date);
     }
+
+    if (response.data.data.exam_end) {
+      examEnd = formatLocalDate(response.data.data.exam_end);
+    }
+
     return {
       success: response.data.success,
       data: {
@@ -300,6 +307,7 @@ export const getDataSelectUpdate = async (
             exam_room_id: room.id,
             exam_session_id: response.data.data.exam_session?.id || "",
             exam_date: examDate,
+            exam_end: examEnd,
             exam_subject_id: exam_subject_id,
           },
         },
@@ -316,3 +324,10 @@ export const getDataSelectUpdate = async (
     };
   }
 };
+
+// Helper function to convert date string to local date format (YYYY-MM-DD)
+function formatLocalDate(dateStr: string): string {
+  const date = new Date(dateStr); // Parse the date string into a Date object
+  const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000); // Adjust to local time
+  return localDate.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+}
