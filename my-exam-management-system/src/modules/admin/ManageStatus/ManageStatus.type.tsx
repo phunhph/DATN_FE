@@ -1,7 +1,9 @@
 export interface roomStatus {
     id: string
     room: string
+    roomId: string
     subject: string
+    subjectId: string
     totalStudent: number
     notStarted: number,
     inProgress: number,
