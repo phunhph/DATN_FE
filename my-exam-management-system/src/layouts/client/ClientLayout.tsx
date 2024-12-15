@@ -94,10 +94,10 @@ const ClientLayout = () => {
                           {/* <DropdownLink location="client/history" onClick={toggleUserMenu} title="Lịch sử thi"></DropdownLink> */}
                         </div>
                         {/* <DropdownLink location="settings" onClick={toggleUserMenu} title="Cài đặt"></DropdownLink> */}
-                        <li className="dropdown__item">
+                        {/* <li className="dropdown__item">
                           <ToggleSwitch className="nav__toggle" id="" toggleState={theme == "light" ? false : true} onToggle={toggleTheme}></ToggleSwitch><span>Nền {theme == 'light' ? "Sáng" : "Tối"}</span>
-                        </li>
-                        <div className="dropdown__divider"></div>
+                        </li> */}
+                        {/* <div className="dropdown__divider"></div> */}
                         <li className="dropdown__button" onClick={toggleUserMenu}>
                           <NavLink  to="/" className="dropdown__logout" onClick={handleLogout}>
                             <small>Đăng xuất</small>
