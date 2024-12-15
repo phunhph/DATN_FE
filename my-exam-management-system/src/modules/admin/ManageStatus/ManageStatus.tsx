@@ -10,6 +10,14 @@ const API_BASE_URL = 'http://datn_be.com/api'
 const PUSHER_KEY = 'be4763917dd3628ba0fe'
 const PUSHER_CLUSTER = 'ap1'
 
+type EchoChannels = {
+    [channel: string]: {
+      "student.submitted": { id: string; }; // Example event and payload type
+      joining: { id: string; };            // Example for "joining" event
+      leaving: { id: string; };            // Example for "leaving" event
+    };
+  };
+
 const ManageStatus = () => {
     useAdminAuth();
     applyTheme()
@@ -26,7 +34,7 @@ const ManageStatus = () => {
         // forbidden: 0
     })
     const submittedStudents = useRef<Record<string, boolean>>({})
-    const echoInstance = useRef<Echo | null>(null)
+    const echoInstance = useRef<Echo<'pusher'> | null>(null)
     const subjectRef = useRef<any>(null)
 
     const getAuthToken = useCallback(() => {
@@ -92,13 +100,13 @@ const ManageStatus = () => {
         return echoInstance.current
     }, [getAuthToken])
 
-    const setupWebSocketListeners = useCallback((echo: Echo, roomID: string, subjectId: string) => {
+    const setupWebSocketListeners = useCallback((echo: Echo<'pusher'>, roomID: string, subjectId: string) => {
         const channel = echo.join(`presence-room.${roomID}.${subjectId}`)
 
         channel.here((users: any) => {
             setStudentStatusList(prevList => {
                 const updatedList = prevList.map(student => {
-                    const isCurrentlyTakingExam = users.some(user => user.id === student.id)
+                    const isCurrentlyTakingExam = users.some((user:any) => user.id === student.id)
                     return isCurrentlyTakingExam ? { ...student, studentStatus: 1 } : student
                 })
                 calculateStudentStatusCounts(updatedList)
