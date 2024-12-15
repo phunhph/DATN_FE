@@ -27,6 +27,7 @@ const ManageStatus = () => {
     })
     const submittedStudents = useRef<Record<string, boolean>>({})
     const echoInstance = useRef<Echo | null>(null)
+    const subjectRef = useRef<any>(null)
 
     const getAuthToken = useCallback(() => {
         const tokenData = localStorage.getItem('token')
@@ -40,6 +41,10 @@ const ManageStatus = () => {
             if(student.studentStatus == 2){
                 acc.completed++;
             }
+
+            if(student.studentStatus == 1){
+                acc.inProgress++;
+            }
             
             return acc;
         }, {
@@ -49,7 +54,7 @@ const ManageStatus = () => {
             completed: 0,
         });
     
-        counts.inProgress = counts.total - counts.completed;
+        // counts.inProgress = counts.total - counts.completed;
     
         setStudentStatusCounts(counts);
     }, []);
@@ -87,8 +92,8 @@ const ManageStatus = () => {
         return echoInstance.current
     }, [getAuthToken])
 
-    const setupWebSocketListeners = useCallback((echo: Echo, roomID: string) => {
-        const channel = echo.join(`presence-room.${roomID}`)
+    const setupWebSocketListeners = useCallback((echo: Echo, roomID: string, subjectId: string) => {
+        const channel = echo.join(`presence-room.${roomID}.${subjectId}`)
 
         channel.here((users) => {
             setStudentStatusList(prevList => {
@@ -112,23 +117,23 @@ const ManageStatus = () => {
         })
 
         channel.listen('.student.submitted', (data) => {
-            console.log('ahii');
-            
             submittedStudents.current[data.id] = true
             updateStudentListStatus(data.id, 2)
         })
     }, [calculateStudentStatusCounts, updateStudentListStatus])
 
-    const getListOfStudentStatus = useCallback(async (roomID: string) => {
+    const getListOfStudentStatus = useCallback(async (roomID: string, subjectId: string) => {
+        subjectRef.current = subjectId;
+
         try {
-            const response = await fetch(`${API_BASE_URL}/room-status/rooms/${roomID}/students`)
+            const response = await fetch(`${API_BASE_URL}/room-status/rooms/${roomID}/${subjectId}/students`)
             const studentStatuses = await response.json()
             setStudentStatusList(studentStatuses)
             calculateStudentStatusCounts(studentStatuses)
 
             const echo = initializeEcho()
             if (echo) {
-                setupWebSocketListeners(echo, roomID)
+                setupWebSocketListeners(echo, roomID, subjectId)
                 setCurrentRoomId(roomID)
                 setOpenStudentStatus(true)
             }
@@ -139,11 +144,12 @@ const ManageStatus = () => {
 
     const returnToRoomList = useCallback(() => {
         if (currentRoomId && echoInstance.current) {
-            echoInstance.current.leave(`presence-room.${currentRoomId}`)
+            echoInstance.current.leave(`presence-room.${currentRoomId}.${subjectRef.current}`)
         }
         setOpenStudentStatus(false)
         setStudentStatusList([])
         setCurrentRoomId(null)
+        subjectRef.current = null
     }, [currentRoomId])
 
     useEffect(() => {
@@ -163,6 +169,10 @@ const ManageStatus = () => {
         return () => {
             if (echoInstance.current) {
                 echoInstance.current.disconnect()
+            }
+
+            if(subjectRef.current) {
+                subjectRef.current = null
             }
         }
     }, [])
@@ -196,7 +206,7 @@ const ManageStatus = () => {
                                 <div>
                                     <Button 
                                         className='admin-status__detail-btn'
-                                        onClick={() => getListOfStudentStatus(room.id)}
+                                        onClick={() => getListOfStudentStatus(room.roomId, room.subjectId)}
                                     >
                                         Chi tiết
                                     </Button>

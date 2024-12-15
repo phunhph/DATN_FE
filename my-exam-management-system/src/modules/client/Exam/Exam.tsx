@@ -36,6 +36,7 @@ const Exam: React.FC<Props> = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { id_subject } = location.state || {};
+  const echoRef = useRef<any>(null);
 
   //Đổi màn loại bài thi
   const [currentView, setCurrentView] = useState<string>("");
@@ -161,7 +162,7 @@ const Exam: React.FC<Props> = () => {
         ...prev,
         [questionNumber]: answerId,
       };
-      console.log(newSelectedMultiChoiceAnswers);
+      // console.log(newSelectedMultiChoiceAnswers);
       return newSelectedMultiChoiceAnswers;
     });
   };
@@ -269,7 +270,7 @@ const data: Candidate_all = result.data;
       
       
       if (prefix === "BD") {
-        console.log(e);
+        // console.log(e);
         setParagraphs([
           {
             id: 1,
@@ -752,7 +753,7 @@ const data: Candidate_all = result.data;
     const result = await CandidateById(id);
     if (result.data) {
       setCandidate(result.data);
-      realTime(result.data.idcode)
+      realTime(result.data.exam_room_id, id_subject);
     }
   };
 
@@ -783,6 +784,7 @@ const data: Candidate_all = result.data;
         audioElement.pause();
         audioElement.currentTime = 0;
       }
+      cleanupConnection();
     };
   }, []);
 
@@ -829,17 +831,17 @@ const data: Candidate_all = result.data;
     }
 
     // addNotification('Đã nộp bài thành công.', true);
-    console.log("Thời gian làm bài: " + (3600 - timeLeft));
-    console.log("Đáp án trắc nghiệm đã chọn: ", selectedMultiChoiceAnswers);
-    console.log("Đáp án bài đọc đã chọn: ", selectedReadingAnswers);
-    console.log("Đáp án bài nghe đã chọn: ", selectedListeningAnswers);
+    // console.log("Thời gian làm bài: " + (3600 - timeLeft));
+    // console.log("Đáp án trắc nghiệm đã chọn: ", selectedMultiChoiceAnswers);
+    // console.log("Đáp án bài đọc đã chọn: ", selectedReadingAnswers);
+    // console.log("Đáp án bài nghe đã chọn: ", selectedListeningAnswers);
 
     setHandin(true);
   };
 
   const finish_ = async (data: any) => {
     const result = await finish(data);
-    console.log(result);
+    // console.log(result);
   };
 
   const handleSubmit = () => {
@@ -866,6 +868,7 @@ const data: Candidate_all = result.data;
           },
           body: JSON.stringify({
             id: studentId,
+            subjectId: id_subject
           }),
         }
       );
@@ -883,12 +886,9 @@ const data: Candidate_all = result.data;
     return tokenData ? JSON.parse(tokenData).token : null;
   };
 
-
-
-  const realTime = (roomId: string) => {
-    let echoInstance: any = null;
+  const realTime = (roomId: string, subjectId: string) => {
     try {
-      echoInstance = new Echo({
+      echoRef.current = new Echo({
         broadcaster: "pusher",
         key: "be4763917dd3628ba0fe",
         cluster: "ap1",
@@ -902,29 +902,27 @@ const data: Candidate_all = result.data;
         withCredentials: true,
       });
 
-      // Join presence channel
-      const channel = echoInstance.join(`presence-room.${roomId}`);
+      const channel = echoRef.current.join(`presence-room.${roomId}.${subjectId}`);
 
       channel.error((error) => {
         console.error("Lỗi xảy ra:", error);
       });
 
-      return () => {
-        try {
-          if (echoInstance && echoInstance.leave) {
-            echoInstance.leave(`presence-room.${roomId}`);
-          }
-        } catch (cleanupError) {
-          console.error("Error during channel cleanup:", cleanupError);
-        }
-      };
     } catch (error) {
-      console.error(
-        "Error initializing Echo or joining presence channel:",
-        error
-      );
+      console.error("Error initializing Echo:", error);
     }
-  }
+  };
+
+  const cleanupConnection = () => {
+    try {
+      if (echoRef.current) {
+        echoRef.current.disconnect();
+        echoRef.current = null;
+      }
+    } catch (error) {
+      console.error("Error during cleanup:", error);
+    }
+  };
   // useEffect(() => {
   //   let echoInstance:any = null;
   //   console.log("roomid", roomId)
