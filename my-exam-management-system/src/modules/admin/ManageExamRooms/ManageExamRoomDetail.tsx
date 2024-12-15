@@ -2,18 +2,16 @@ import { applyTheme } from "@/SCSS/applyTheme";
 import {
   editExamRoom,
   getDataSelectUpdate,
-  getExamRoomDetail
+  getExamRoomDetail,
 } from "@/services/repositories/ExamRoomService/ExamRoomService";
 import { Button, Notification, PageTitle } from "@components/index";
 import { Table } from "@components/Table/Table";
 import { useAdminAuth } from "@hooks/AutherHooks";
 import { ErrorExamRoom } from "@interfaces/ExamRoomInterfaces/ErrorExamRoomInterfaces";
-import {
-  ExamRoomDetailItem
-} from "@interfaces/ExamRoomInterfaces/ExamRoomInterfaces";
+import { ExamRoomDetailItem } from "@interfaces/ExamRoomInterfaces/ExamRoomInterfaces";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import './ManageExamRoomDetail.scss'
+import "./ManageExamRoomDetail.scss";
 
 const ManageExamRoomDetail: React.FC = () => {
   applyTheme();
@@ -26,7 +24,9 @@ const ManageExamRoomDetail: React.FC = () => {
   const [roomDetail, setRoomDetail] = useState<ExamRoomDetailItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
-  const [notifications, setNotifications] = useState<Array<{ message: string; isSuccess: boolean }>>([]);
+  const [notifications, setNotifications] = useState<
+    Array<{ message: string; isSuccess: boolean }>
+  >([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [errors, setErrors] = useState<ErrorExamRoom>({});
   const [currentSubjectId, setCurrentSubjectId] = useState<string>("");
@@ -57,7 +57,7 @@ const ManageExamRoomDetail: React.FC = () => {
     const dateUTC = new Date(dateStr + " UTC");
 
     // Format the date as YYYY-MM-DD
-    const localDate = dateUTC.toLocaleDateString('en-CA'); // en-CA is the locale that gives YYYY-MM-DD format
+    const localDate = dateUTC.toLocaleDateString("en-CA"); // en-CA is the locale that gives YYYY-MM-DD format
 
     return localDate;
   }
@@ -73,16 +73,16 @@ const ManageExamRoomDetail: React.FC = () => {
       const result = await getExamRoomDetail(room.id);
       if (result.success && result.data) {
         const { exam_room_details, exam_sessions, exam_subjects } = result.data;
-        console.log(result.data)
-        setSessionList(exam_sessions) // danh sách ca thi để update
-        console.log(exam_subjects)
+        console.log(result.data);
+        setSessionList(exam_sessions); // danh sách ca thi để update
+        console.log("thời gian kết thúc", exam_subjects);
         setRoomDetail(
           exam_subjects.map((subject) => {
             const examRoomDetail = exam_room_details.find(
               (detail) => detail.exam_subject_id === subject.id
             );
-            
-            console.log(subject)
+
+            console.log(subject);
             return {
               exam_subject_id: subject.id,
               exam_subject_name: subject.name,
@@ -90,8 +90,10 @@ const ManageExamRoomDetail: React.FC = () => {
                 examRoomDetail?.exam_session?.name || "Chưa có tên ca thi",
               time_start: subject.time_start || "Chưa có thời gian",
               time_end: subject.time_end || "Chưa có thời gian",
-              exam_date: convertToLocalDate(subject.exam_date) || "Chưa có ngày thi",
-              exam_end: convertToLocalDate(subject.exam_end) || "Chưa có ngày thi",
+              exam_date:
+                convertToLocalDate(subject.exam_date) || "Chưa có ngày thi",
+              exam_end:
+                convertToLocalDate(subject.exam_end) || "Chưa có ngày thi",
             };
           })
         );
@@ -112,7 +114,7 @@ const ManageExamRoomDetail: React.FC = () => {
       navigate("/admin/manage-exam-rooms");
       return;
     }
-    console.log("roomDetail", roomDetail)
+    console.log("roomDetail", roomDetail);
     loadExamRoomDetail();
   }, [room, navigate]);
 
@@ -264,15 +266,20 @@ const ManageExamRoomDetail: React.FC = () => {
   //   });
   // };
 
-
   const [dateStart, setDateStart] = useState<Date | undefined>(undefined);
   const [dateEnd, setDateEnd] = useState<Date | undefined>(undefined);
   const [sessionSelected, setSessionSelected] = useState<string | undefined>();
-  const [sessionList, setSessionList] = useState<any[]>()
+  const [sessionList, setSessionList] = useState<any[]>();
+  const [selectedOption, setSelectedOption] = useState<"session" | "endDate">(
+    "session"
+  );
 
   const openEditModal = async (data: ExamRoomDetailItem) => {
     setCurrentSubjectId(data.exam_subject_id);
-    setCurrentSessionId((sessionList?.find(session => session.name == data.exam_session_name)?.id as string))
+    setCurrentSessionId(
+      sessionList?.find((session) => session.name == data.exam_session_name)
+        ?.id as string
+    );
     if (!data.exam_subject_id) {
       addNotification("Không tìm thấy thông tin phòng thi", false);
       return;
@@ -280,17 +287,23 @@ const ManageExamRoomDetail: React.FC = () => {
     try {
       const result = await getDataSelectUpdate(room, data.exam_subject_id);
       if (!result.data) {
-        addNotification("Không tải được dữ liệu phòng thi. Xin vui lòng thử lại sau!", false);
+        addNotification(
+          "Không tải được dữ liệu phòng thi. Xin vui lòng thử lại sau!",
+          false
+        );
         return;
       }
       const start = result.data!.exam_room.exam_room_detail.exam_date;
-      console.log("start", start)
+      console.log("start", start);
       const end = result.data!.exam_room.exam_room_detail.exam_end;
-      console.log("end", end)
-      const oldSession = result.data.exam_sessions.length > 0 ? result.data.exam_sessions?.[0].name : "";
-      setDateStart(start ? new Date(start) : undefined) // ngày bắt đầu
+      console.log("end", end);
+      const oldSession =
+        result.data.exam_sessions.length > 0
+          ? result.data.exam_sessions?.[0].name
+          : "";
+      setDateStart(start ? new Date(start) : undefined); // ngày bắt đầu
       setDateEnd(end && end.trim() ? new Date(end) : undefined); //ngày kết thúc
-      setSessionSelected(oldSession) // ca thi cũ đã chọn, empty string nếu chưa đc chọn
+      setSessionSelected(oldSession); // ca thi cũ đã chọn, empty string nếu chưa đc chọn
       setModalIsOpen(true);
     } catch (error) {
       console.error("Error loading modal data:", error);
@@ -301,9 +314,9 @@ const ManageExamRoomDetail: React.FC = () => {
   const closeModal = () => {
     setModalIsOpen(false);
     setErrors({});
-    setDateStart(undefined)
-    setDateEnd(undefined)
-    setSessionSelected(undefined)
+    setDateStart(undefined);
+    setDateEnd(undefined);
+    setSessionSelected(undefined);
   };
 
   if (loading) {
@@ -315,11 +328,11 @@ const ManageExamRoomDetail: React.FC = () => {
   const formatToMySQLDatetime = (date: Date): string => {
     const localDate = new Date(date); // Parse the date string
     const year = localDate.getFullYear();
-    const month = (localDate.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-indexed
-    const day = localDate.getDate().toString().padStart(2, '0');
-    const hours = localDate.getHours().toString().padStart(2, '0');
-    const minutes = localDate.getMinutes().toString().padStart(2, '0');
-    const seconds = localDate.getSeconds().toString().padStart(2, '0');
+    const month = (localDate.getMonth() + 1).toString().padStart(2, "0"); // Months are 0-indexed
+    const day = localDate.getDate().toString().padStart(2, "0");
+    const hours = localDate.getHours().toString().padStart(2, "0");
+    const minutes = localDate.getMinutes().toString().padStart(2, "0");
+    const seconds = localDate.getSeconds().toString().padStart(2, "0");
 
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`; // Format: 'YYYY-MM-DD HH:mm:ss'
   };
@@ -334,9 +347,10 @@ const ManageExamRoomDetail: React.FC = () => {
         const data = {
           exam_room_id: room.id,
           exam_subject_id: currentSubjectId,
-          exam_session_id: currentSessionId,
           exam_date: formattedExamDate,
-          exam_end: formattedExamEnd,
+          exam_session_id:
+            selectedOption === "session" ? currentSessionId : undefined,
+          exam_end: selectedOption === "endDate" ? formattedExamEnd : undefined,
         };
         console.log(data);
         const result = await editExamRoom(room.id, data);
@@ -347,7 +361,10 @@ const ManageExamRoomDetail: React.FC = () => {
           closeModal();
           await loadExamRoomDetail();
         } else {
-          addNotification(result.message || "Cập nhật không thành công!", false);
+          addNotification(
+            result.message || "Cập nhật không thành công!",
+            false
+          );
         }
       } catch (error) {
         console.error("Lỗi khi cập nhật phòng thi:", error);
@@ -356,10 +373,11 @@ const ManageExamRoomDetail: React.FC = () => {
     }
   };
 
-
   return (
     <div className="room__container">
-      <PageTitle theme="light" showBack>Quản lý phòng thi</PageTitle>
+      <PageTitle theme="light" showBack>
+        Quản lý phòng thi
+      </PageTitle>
       {roomDetail.length > 0 && (
         <Table
           title={title}
@@ -384,99 +402,136 @@ const ManageExamRoomDetail: React.FC = () => {
               <form className="modal__form">
                 <div className="modal__firstline">
                   <label className="modal__label">
+                    <input
+                      type="radio"
+                      checked={selectedOption === "session"}
+                      onChange={() => setSelectedOption("session")}
+                    />
+                    Chọn ngày bắt đầu và ca thi
+                  </label>
+                  <label className="modal__label">
+                    <input
+                      type="radio"
+                      checked={selectedOption === "endDate"}
+                      onChange={() => setSelectedOption("endDate")}
+                    />
+                    Chọn ngày bắt đầu và ngày kết thúc
+                  </label>
+                  <label className="modal__label">
                     Ngày bắt đầu:
                     <input
                       type="date"
                       name="exam_date"
                       className="modal__input"
-                      value={dateStart ? dateStart.toISOString().split("T")[0] : ""}
-                      onBlur={() => {
-                        if (!dateStart) {
-                          setErrors((prev) => ({ ...prev, exam_date: "a" }))
-                        } else {
-                          setErrors((prev) => ({ ...prev, exam_date: "" }))
-                        }
-                      }}
-                      onChange={(e) => {
-                        const newDate = e.target.value ? new Date(e.target.value) : undefined;
-                        setDateStart(newDate);
-                        if (!dateStart) {
-                          setErrors((prev) => ({ ...prev, exam_date: "a" }))
-                        } else {
-                          setErrors((prev) => ({ ...prev, exam_date: "" }))
-                        }
-                      }}
-                    />
-                    {errors.exam_date && <p className="input_error">Ngày bắt đầu không được bỏ trống</p>}
-                  </label>
-                </div>
-
-                <div className="modal__firstline">
-                  <label className="modal__label">
-                    Ngày kết thúc:
-                    <input
-                      type="date"
-                      name="exam_end"
-                      className="modal__input"
-                      value={dateEnd ? dateEnd.toISOString().split("T")[0] : ""}
-                      onBlur={() => {
-                        if (!dateEnd) {
-                          setErrors((prev) => ({ ...prev, exam_end: "a" }))
-                        } else {
-                          setErrors((prev) => ({ ...prev, exam_end: "" }))
-                        }
-                      }}
-                      onChange={(e) => {
-                        const newDate = e.target.value ? new Date(e.target.value) : undefined;
-                        if (newDate && dateStart && newDate < dateStart) {
-                          addNotification("Ngày kết thúc không thể chậm hơn ngày bắt đầu!", false);
-                          return;
-                        }
-                        setDateEnd(newDate);
-                      }}
-                    />
-                    {errors.exam_end && <p className="input_error">Ngày kết thúc không được bỏ trống</p>}
-                  </label>
-                </div>
-
-                <div className="modal__firstline">
-                  <label className="modal__label">
-                    Ca thi:
-                    <select
-                      name="exam_sessions"
-                      className="modal__input"
                       value={
-                        sessionList?.find((session) => session.name === sessionSelected)?.id || ""
+                        dateStart ? dateStart.toISOString().split("T")[0] : ""
                       }
                       onBlur={() => {
-                        if (sessionSelected === "") {
-                          setErrors((prev) => ({ ...prev, exam_session: "Ngày bắt đầu không được bỏ trống" }));
+                        if (!dateStart) {
+                          setErrors((prev) => ({ ...prev, exam_date: "a" }));
                         } else {
-                          setErrors((prev) => ({ ...prev, exam_session: "" }));
+                          setErrors((prev) => ({ ...prev, exam_date: "" }));
                         }
                       }}
                       onChange={(e) => {
-                        console.log(e.target.value)
-                        const selectedSession =
-                          sessionList?.find((session) => session.id == e.target.value) || null;
-                        setSessionSelected(selectedSession ? selectedSession.name : "");
-                        setCurrentSessionId(e.target.value);
-
+                        const newDate = e.target.value
+                          ? new Date(e.target.value)
+                          : undefined;
+                        setDateStart(newDate);
+                        if (!dateStart) {
+                          setErrors((prev) => ({ ...prev, exam_date: "a" }));
+                        } else {
+                          setErrors((prev) => ({ ...prev, exam_date: "" }));
+                        }
                       }}
-                    >
-                      {!sessionList?.find((session) => session.name === sessionSelected)?.id && (
-                        <option value="">Chọn ca thi</option>
-                      )}
-                      {sessionList?.map((session) => (
-                        <option key={session.id} value={session.id}>
-                          {session.name}
-                        </option>
-                      ))}
-                    </select>
-                    {errors.exam_session && <p className="input_error">{errors.exam_session}</p>}
+                    />
+                    {errors.exam_date && (
+                      <p className="input_error">
+                        Ngày bắt đầu không được bỏ trống
+                      </p>
+                    )}
                   </label>
                 </div>
-
+                {selectedOption === "session" && (
+                  <div className="modal__firstline">
+                    <label className="modal__label">
+                      Ca thi:
+                      <select
+                        name="exam_sessions"
+                        className="modal__input"
+                        value={
+                          sessionList?.find(
+                            (session) => session.name === sessionSelected
+                          )?.id || ""
+                        }
+                        onBlur={() => {
+                          if (sessionSelected === "") {
+                            setErrors((prev) => ({
+                              ...prev,
+                              exam_session: "Ngày bắt đầu không được bỏ trống",
+                            }));
+                          } else {
+                            setErrors((prev) => ({
+                              ...prev,
+                              exam_session: "",
+                            }));
+                          }
+                        }}
+                        onChange={(e) => {
+                          console.log(e.target.value);
+                          const selectedSession =
+                            sessionList?.find(
+                              (session) => session.id == e.target.value
+                            ) || null;
+                          setSessionSelected(
+                            selectedSession ? selectedSession.name : ""
+                          );
+                          setCurrentSessionId(e.target.value);
+                        }}
+                      >
+                        {!sessionList?.find(
+                          (session) => session.name === sessionSelected
+                        )?.id && <option value="">Chọn ca thi</option>}
+                        {sessionList?.map((session) => (
+                          <option key={session.id} value={session.id}>
+                            {session.name}
+                          </option>
+                        ))}
+                      </select>
+                      {errors.exam_session && (
+                        <p className="input_error">{errors.exam_session}</p>
+                      )}
+                    </label>
+                  </div>
+                )}
+                {selectedOption === "endDate" && (
+                  <div className="modal__firstline">
+                    <label className="modal__label">
+                      Ngày kết thúc:
+                      <input
+                        type="date"
+                        name="exam_end"
+                        className="modal__input"
+                        value={
+                          dateEnd ? dateEnd.toISOString().split("T")[0] : ""
+                        }
+                        onChange={(e) => {
+                          const newDate = e.target.value
+                            ? new Date(e.target.value)
+                            : undefined;
+                          if (newDate && dateStart && newDate < dateStart) {
+                            addNotification(
+                              "Ngày kết thúc không thể sớm hơn ngày bắt đầu!",
+                              false
+                            );
+                            return;
+                          }
+                          setDateEnd(newDate);
+                        }}
+                      />
+                    </label>
+                  </div>
+                )}
                 <div className="modal__button">
                   <Button
                     type="button"
