@@ -97,6 +97,7 @@
       margin-left: 16px;
       margin-top: 8px;
       font-weight: 600;
+      font-size: 1.275rem;
     }
   }
   h4 {
@@ -139,7 +140,8 @@
       align-items: center;
       min-height: 80px;
       .lever {
-        width: 30%;
+        width: 40%;
+
       }
       .lever_content{
         padding-left: 1%  ;
@@ -228,6 +230,9 @@
 }
 @include m.responsive-to(md) {
   .Structure {
+    h4 {
+      font-size: 1rem;
+    }
     .module__title {
       & .lever {
         width:100px;

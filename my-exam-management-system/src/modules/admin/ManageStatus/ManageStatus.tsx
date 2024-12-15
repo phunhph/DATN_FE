@@ -95,7 +95,7 @@ const ManageStatus = () => {
     const setupWebSocketListeners = useCallback((echo: Echo, roomID: string, subjectId: string) => {
         const channel = echo.join(`presence-room.${roomID}.${subjectId}`)
 
-        channel.here((users) => {
+        channel.here((users:any) => {
             setStudentStatusList(prevList => {
                 const updatedList = prevList.map(student => {
                     const isCurrentlyTakingExam = users.some(user => user.id === student.id)
@@ -106,17 +106,17 @@ const ManageStatus = () => {
             })
         })
 
-        channel.joining((user) => {
+        channel.joining((user:any) => {
             updateStudentListStatus(user.id, 1)
         })
 
-        channel.leaving((user) => {
+        channel.leaving((user:any) => {
             if (!submittedStudents.current[user.id]) {
                 updateStudentListStatus(user.id, 0)
             }
         })
 
-        channel.listen('.student.submitted', (data) => {
+        channel.listen('.student.submitted', (data:any) => {
             submittedStudents.current[data.id] = true
             updateStudentListStatus(data.id, 2)
         })
