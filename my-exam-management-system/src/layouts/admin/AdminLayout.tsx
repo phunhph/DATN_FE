@@ -34,38 +34,25 @@ const AdminLayout = () => {
 
   const handleLogout = async () => {
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        console.error("Không tìm thấy token");
-        navigate("/");
-        return;
-      }
-
-      try {
-        const response = await axios.post(
-          "/api/admin/logout",
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-              Accept: "application/json",
-            },
-            baseURL: "https://datn_be.com",
-          }
-        );
-
-        if (response.data.success) {
-          console.log("Đăng xuất thành công");
+      const response = await axios.post(
+        "/api/admin/logout",
+        {},
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          baseURL: "https://datn_be.com",
         }
-      } catch (error) {
-        console.error("Lỗi khi gọi API logout:", error);
-      } finally {
+      );
+
+      if (response.data.success) {
+        console.log("Đăng xuất thành công");
         localStorage.clear();
         navigate("/");
       }
     } catch (error) {
-      console.error("Lỗi không mong muốn:", error);
+      console.error("Lỗi khi gọi API logout:", error);
       localStorage.clear();
       navigate("/");
     }

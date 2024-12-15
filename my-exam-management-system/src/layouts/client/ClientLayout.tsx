@@ -26,38 +26,25 @@ const ClientLayout = () => {
 
   const handleLogout = async () => {
     try {
-      const token = localStorage.getItem("token_client");
-      if (!token) {
-        console.error("Không tìm thấy token");
-        window.location.href = "/";
-        return;
-      }
-
-      try {
-        const response = await axios.post(
-          "/api/client/logout",
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-              Accept: "application/json",
-            },
-            baseURL: "https://datn_be.com",
-          }
-        );
-
-        if (response.data.success) {
-          console.log("Đăng xuất thành công");
+      const response = await axios.post(
+        "/api/admin/logout",
+        {},
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          baseURL: "https://datn_be.com",
         }
-      } catch (error) {
-        console.error("Lỗi khi gọi API logout:", error);
-      } finally {
+      );
+
+      if (response.data.success) {
+        console.log("Đăng xuất thành công");
         localStorage.clear();
         window.location.href = "/";
       }
     } catch (error) {
-      console.error("Lỗi không mong muốn:", error);
+      console.error("Lỗi khi gọi API logout:", error);
       localStorage.clear();
       window.location.href = "/";
     }
@@ -116,41 +103,55 @@ const ClientLayout = () => {
                   </li> */}
               </ul>
             </div>
-            <div className="navbar__dropdown"  ref={dropDownRef}>
-                <div className="dropdown__button" onClick={toggleUserMenu}>
-                  <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="🗿"></img>
-                  {isUserMenuOpen && (
-                    <>
-                      <ul className="dropdown__menu">
-                        <li className="dropdown__item">
-                          <NavLink to={'/client/candidate-information'}>
-                            <div className="dropdown__user">
-                              <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="🗿"></img>
-                              <span>Username</span>
-                            </div>
-                          </NavLink>
-                        </li>
-                        <div className="dropdown__divider"></div>
-                        <div className="show-responsive-nav">
-                          <DropdownLink location="client/scores" onClick={toggleUserMenu} title="Bảng điểm"></DropdownLink>
-                          {/* <DropdownLink location="client/history" onClick={toggleUserMenu} title="Lịch sử thi"></DropdownLink> */}
-                        </div>
-                        {/* <DropdownLink location="settings" onClick={toggleUserMenu} title="Cài đặt"></DropdownLink> */}
-                        {/* <li className="dropdown__item">
+            <div className="navbar__dropdown" ref={dropDownRef}>
+              <div className="dropdown__button" onClick={toggleUserMenu}>
+                <img
+                  src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png"
+                  alt="🗿"
+                ></img>
+                {isUserMenuOpen && (
+                  <>
+                    <ul className="dropdown__menu">
+                      <li className="dropdown__item">
+                        <NavLink to={"/client/candidate-information"}>
+                          <div className="dropdown__user">
+                            <img
+                              src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png"
+                              alt="🗿"
+                            ></img>
+                            <span>Username</span>
+                          </div>
+                        </NavLink>
+                      </li>
+                      <div className="dropdown__divider"></div>
+                      <div className="show-responsive-nav">
+                        <DropdownLink
+                          location="client/scores"
+                          onClick={toggleUserMenu}
+                          title="Bảng điểm"
+                        ></DropdownLink>
+                        {/* <DropdownLink location="client/history" onClick={toggleUserMenu} title="Lịch sử thi"></DropdownLink> */}
+                      </div>
+                      {/* <DropdownLink location="settings" onClick={toggleUserMenu} title="Cài đặt"></DropdownLink> */}
+                      {/* <li className="dropdown__item">
                           <ToggleSwitch className="nav__toggle" id="" toggleState={theme == "light" ? false : true} onToggle={toggleTheme}></ToggleSwitch><span>Nền {theme == 'light' ? "Sáng" : "Tối"}</span>
                         </li> */}
-                        {/* <div className="dropdown__divider"></div> */}
-                        <li className="dropdown__button" onClick={toggleUserMenu}>
-                          <NavLink  to="/" className="dropdown__logout" onClick={handleLogout}>
-                            <small>Đăng xuất</small>
-                            <img src="/log-out.svg" alt="icon"></img>
-                          </NavLink>
-                          </li>
-                      </ul>
-                    </>
-                  )}
-                </div>
-              </div>  
+                      {/* <div className="dropdown__divider"></div> */}
+                      <li className="dropdown__button" onClick={toggleUserMenu}>
+                        <NavLink
+                          to="/"
+                          className="dropdown__logout"
+                          onClick={handleLogout}
+                        >
+                          <small>Đăng xuất</small>
+                          <img src="/log-out.svg" alt="icon"></img>
+                        </NavLink>
+                      </li>
+                    </ul>
+                  </>
+                )}
+              </div>
+            </div>
           </nav>
         </header>
         <div className="divider"></div>
