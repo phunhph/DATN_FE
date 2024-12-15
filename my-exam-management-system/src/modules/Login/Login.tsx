@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "./login.scss";
 import { login, loginClient } from "@/services/repositories/AutherService/autherService";
 import { useClientToken } from "@/contexts";
-import { Notification } from "@/components";
+import { Button, Notification } from "@/components";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 const Login: React.FC = () => {
@@ -94,11 +94,11 @@ const Login: React.FC = () => {
   }, [navigate, tokenRep, expiresAt, setToken]);
 
   return (
-    <div className="login-container">
+    <div className="login-container-client">
       <div className="content_Login">
         <div className="left">
-          <div className="logo">EASY EXAM</div>
-          <h1>Chào mừng đến với EASY EXAM!</h1>
+          <div className="logo"><img src="/logo-black.svg"></img></div>
+          <h1>Chào mừng đến với SWIFT EXAM!</h1>
           <p>Thi trắc nghiệm online, điểm cao ngất ngưỡng!</p>
           <div className="video-placeholder">
             {/* <button className="play-button">▶</button> */}
@@ -153,9 +153,9 @@ const Login: React.FC = () => {
                 Quên mật khẩu?
               </div>
             </div> */}
-            <button type="submit" className="submit-btn" disabled={loading}>
+            <Button type="submit" className="submit-btn" disabled={loading}>
               {loading ? "Đang đăng nhập..." : "Đăng nhập"}
-            </button>
+            </Button>
           </form>
         </div>
       </div>
