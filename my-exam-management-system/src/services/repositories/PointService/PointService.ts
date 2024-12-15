@@ -189,6 +189,62 @@ export const getStudentPointsByExam = async (
     return handleError(error);
   }
 };
+export const getReportByExam = async (
+  examId: string
+)=> {
+  try {
+    const token = localStorage.getItem("token");
+    const headers = { Authorization: `Bearer ${token}` };
+
+    const response = await instance.get(
+      `/api/admin/reports/byExam/${examId}`,
+      {
+        headers,
+      }
+    );
+    return response;
+  } catch (error) {
+    return handleError(error);
+  }
+};
+export const getReportBySubject = async (
+  examId: string,
+  subjectId:string
+)=> {
+  try {
+    const token = localStorage.getItem("token");
+    const headers = { Authorization: `Bearer ${token}` };
+
+    const response = await instance.get(
+      `api/admin/reports/bySubject/${examId}/subject/${subjectId}`,
+      {
+        headers,
+      }
+    );
+    return response;
+  } catch (error) {
+    return handleError(error);
+  }
+};
+export const getReportByRoom = async (
+  examId: string,
+  roomId: string
+)=> {
+  try {
+    const token = localStorage.getItem("token");
+    const headers = { Authorization: `Bearer ${token}` };
+
+    const response = await instance.get(
+      `api/admin/reports/byRoom/${examId}/room/${roomId}`,
+      {
+        headers,
+      }
+    );
+    return response;
+  } catch (error) {
+    return handleError(error);
+  }
+};
 export default {
   getStudentPoints,
   createPoint,
