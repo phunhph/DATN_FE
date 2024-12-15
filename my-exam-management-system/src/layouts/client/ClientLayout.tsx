@@ -79,8 +79,7 @@ const ClientLayout = () => {
                   <NavLink
                     to={"/client/home"}
                     className={({ isActive, isPending }) =>
-                      ` ${
-                        isPending ? "pending" : isActive ? "client-active" : ""
+                      ` ${isPending ? "pending" : isActive ? "client-active" : ""
                       } `
                     }
                   >
@@ -167,13 +166,20 @@ const ClientLayout = () => {
                 alt="logo"
               ></img>
               <ul className="client-footer__list">
-                <li>Email : swift.exam@gmail.com</li>
-                <li>Địa chỉ : số 2 cạnh nhà hàng xóm, Hà Nội, Việt Nam</li>
-                <li>Liên hệ: 091 234 5678</li>
+                <li>
+                  <span style={{ fontWeight: "bold" }}>ĐỊA CHỈ</span>
+                  <p>Cổng số 1, Tòa nhà FPT Polytechnic, 13 phố Trịnh Văn Bô, phường Phương Canh, quận Nam Từ Liêm, TP Hà Nội
+                    Km12 Cầu Diễn, Phường Phúc Diễn, Quận Bắc Từ Liêm, Hà Nội</p>
+                </li>
+                <li style={{marginTop:"2rem"}}>
+                  <span style={{ fontWeight: "bold" }}>LIÊN HỆ</span>
+                  <p>Số điện thoại: 091 234 5678</p>
+                  <p>Email: swift.exam@gmail.com</p>
+                </li>
               </ul>
             </div>
             <div className="client-footer__link">
-              <p>Link</p>
+              <p>LINK</p>
               <ul className="client-footer__list">
                 <li>
                   <Link to="/client/home">Trang chủ</Link>

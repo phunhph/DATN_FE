@@ -440,8 +440,8 @@ const ManageCandidates: React.FC = () => {
           value={
             roomOptions.length > 0
               ? roomOptions.find(
-                  (option: any) => option.value === selectedRoomId
-                )
+                (option: any) => option.value === selectedRoomId
+              )
               : ""
           }
           onChange={(selectedRoomOption) => {
@@ -650,10 +650,10 @@ const ManageCandidates: React.FC = () => {
                     </label>
                   </div>
                   <div className="modal__button">
-                    <Button type="button" onClick={closeModal}>
+                    <Button type="submit" style={{color:"white", marginRight:"1rem"}}>Thêm</Button>
+                    <Button type="button" onClick={closeModal} style={{color:"white"}}>
                       Đóng
                     </Button>
-                    <Button type="submit">Thêm</Button>
                   </div>
                 </form>
               )}
