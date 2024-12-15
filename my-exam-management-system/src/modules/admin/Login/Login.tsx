@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Notification } from "@/components";
+import { Button, Notification } from "@/components";
 import "./login.scss";
 import { login } from "@/services/repositories/AutherService/autherService";
 import { useAdminToken } from "@/contexts";
@@ -104,6 +104,7 @@ const LoginAdmin: React.FC = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Nhập tài khoản"
+              style={{width:"100%"}}
             />
             {emailError && <span className="error-message">{emailError}</span>}
           </div>
@@ -116,6 +117,7 @@ const LoginAdmin: React.FC = () => {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Nhập mật khẩu"
               autoComplete="current-password"
+              style={{width:"100%"}}
             />
             {passwordError && (
               <span className="error-message">{passwordError}</span>
@@ -135,9 +137,9 @@ const LoginAdmin: React.FC = () => {
               Quên mật khẩu?
             </div>
           </div> */}
-          <button type="submit" className="submit-btn" disabled={loading}>
-            {loading ? "Đang đăng nhập..." : "Đăng nhập"}
-          </button>
+          <Button type="submit" className="submit-btn" disabled={loading}>
+            {loading ? "ĐANG ĐĂNG NHẬP..." : "ĐĂNG NHẬP"}
+          </Button>
         </form>
       </div>
       <Notification
