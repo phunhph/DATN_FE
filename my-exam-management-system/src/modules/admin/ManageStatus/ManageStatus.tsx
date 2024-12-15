@@ -3,7 +3,7 @@ import './ManageStatus.scss'
 import { useEffect, useState, useRef, useCallback } from 'react'
 import { roomStatus, studentStatus } from './ManageStatus.type'
 import Echo from "laravel-echo"
-import {applyTheme} from '@/SCSS/applyTheme'
+import { applyTheme } from '@/SCSS/applyTheme'
 import { useAdminAuth } from '@/hooks'
 
 const API_BASE_URL = 'http://datn_be.com/api'
@@ -21,7 +21,7 @@ const ManageStatus = () => {
     const [studentStatusCounts, setStudentStatusCounts] = useState({
         total: 0,
         // notStarted: 0,
-        inProgress: 0, 
+        inProgress: 0,
         completed: 0,
         // forbidden: 0
     })
@@ -38,14 +38,14 @@ const ManageStatus = () => {
         const counts = students.reduce((acc, student) => {
             acc.total++;
 
-            if(student.studentStatus == 2){
+            if (student.studentStatus == 2) {
                 acc.completed++;
             }
 
-            if(student.studentStatus == 1){
+            if (student.studentStatus == 1) {
                 acc.inProgress++;
             }
-            
+
             return acc;
         }, {
             total: 0,
@@ -53,15 +53,15 @@ const ManageStatus = () => {
             inProgress: 0,
             completed: 0,
         });
-    
+
         // counts.inProgress = counts.total - counts.completed;
-    
+
         setStudentStatusCounts(counts);
     }, []);
 
     const updateStudentListStatus = useCallback((studentId: string, newStatus: number) => {
         setStudentStatusList(prevList => {
-            const updatedList = prevList.map(student => 
+            const updatedList = prevList.map(student =>
                 student.id === studentId ? { ...student, studentStatus: newStatus } : student
             )
             calculateStudentStatusCounts(updatedList)
@@ -95,7 +95,7 @@ const ManageStatus = () => {
     const setupWebSocketListeners = useCallback((echo: Echo, roomID: string, subjectId: string) => {
         const channel = echo.join(`presence-room.${roomID}.${subjectId}`)
 
-        channel.here((users:any) => {
+        channel.here((users: any) => {
             setStudentStatusList(prevList => {
                 const updatedList = prevList.map(student => {
                     const isCurrentlyTakingExam = users.some(user => user.id === student.id)
@@ -106,17 +106,17 @@ const ManageStatus = () => {
             })
         })
 
-        channel.joining((user:any) => {
+        channel.joining((user: any) => {
             updateStudentListStatus(user.id, 1)
         })
 
-        channel.leaving((user:any) => {
+        channel.leaving((user: any) => {
             if (!submittedStudents.current[user.id]) {
                 updateStudentListStatus(user.id, 0)
             }
         })
 
-        channel.listen('.student.submitted', (data:any) => {
+        channel.listen('.student.submitted', (data: any) => {
             submittedStudents.current[data.id] = true
             updateStudentListStatus(data.id, 2)
         })
@@ -155,7 +155,18 @@ const ManageStatus = () => {
     useEffect(() => {
         const fetchRoomStatuses = async () => {
             try {
-                const response = await fetch(`${API_BASE_URL}/room-status/rooms`)
+                const token = JSON.parse(localStorage.getItem("token") || "{}").token;
+
+                if (!token) {
+                    console.error("Token is missing");
+                    return;
+                }
+
+                const response = await fetch(`${API_BASE_URL}/room-status/rooms`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
                 const roomStatuses = await response.json()
                 setRoomStatusList(roomStatuses)
             } catch (error) {
@@ -171,7 +182,7 @@ const ManageStatus = () => {
                 echoInstance.current.disconnect()
             }
 
-            if(subjectRef.current) {
+            if (subjectRef.current) {
                 subjectRef.current = null
             }
         }
@@ -204,7 +215,7 @@ const ManageStatus = () => {
                                     <p>Tổng thí sinh: {room.totalStudent}</p>
                                 </div>
                                 <div>
-                                    <Button 
+                                    <Button
                                         className='admin-status__detail-btn'
                                         onClick={() => getListOfStudentStatus(room.roomId, room.subjectId)}
                                     >
@@ -234,7 +245,7 @@ const ManageStatus = () => {
                         {studentStatusList.map(student => (
                             <GridItem key={student.id} className='admin-status__item cursor-default'>
                                 <div>
-                                    <img 
+                                    <img
                                         className='admin-status__student-image'
                                         src={student.image}
                                         alt={student.studentName}
