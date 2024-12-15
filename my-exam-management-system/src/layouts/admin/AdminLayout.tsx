@@ -1,11 +1,12 @@
 import { MenuLink } from "@components/index";
 import { useEffect, useRef, useState } from "react";
 import "./AdminLayout.scss";
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const AdminLayout = () => {
   // consts & variables
-  // const location = useLocation();
+  const navigate = useNavigate();
   const [isUserMenuOpen, setUserMenuOpen] = useState<boolean>(false);
   const [displayMenu, setDisplayMenu] = useState<boolean>(false);
   const dropDownRef = useRef<HTMLDivElement | null>(null);
@@ -27,6 +28,27 @@ const AdminLayout = () => {
       setDisplayMenu(false);
     }
   }
+
+  const handleLogout = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.post("/api/admin/logout", null, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      if (response.data.success) {
+        localStorage.clear();
+        navigate("/login");
+      } else {
+        console.error("Đăng xuất không thành công");
+      }
+    } catch (error) {
+      console.error("Lỗi khi đăng xuất", error);
+    }
+  };
+
   // effects
   useEffect(() => {
     // close usermenu
@@ -88,7 +110,7 @@ const AdminLayout = () => {
                       </li>
                       <div className="dropdown__divider"></div>
                       <li className="dropdown__button" onClick={toggleUserMenu}>
-                        <NavLink to="/" className="dropdown__logout" onClick={() => localStorage.clear()}>
+                        <NavLink to="/" className="dropdown__logout"  onClick={handleLogout}>
                           <small>Đăng xuất</small>
                           <img src="/log-out.svg" alt="icon"></img>
                         </NavLink>

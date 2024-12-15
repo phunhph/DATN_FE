@@ -97,22 +97,3 @@ export const loginClient = async (
     };
   }
 };
-export const handleLogout = async () => {
-  try {
-    const token = localStorage.getItem("token");
-    const response = await axios.post("/api/admin/logout", null, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (response.data.success) {
-      localStorage.clear();
-      Navigate("/login");
-    } else {
-      console.error("Đăng xuất không thành công");
-    }
-  } catch (error) {
-    console.error("Lỗi khi đăng xuất", error);
-  }
-};

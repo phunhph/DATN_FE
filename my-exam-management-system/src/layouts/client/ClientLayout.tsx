@@ -1,10 +1,13 @@
 import { DropdownLink, ToggleSwitch } from "@components/index";
 import { useEffect, useRef, useState } from "react";
-import { Link, NavLink, Outlet } from "react-router-dom";
+import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import "./CLientLayout.scss";
 import { useTheme } from "@/contexts";
+import axios from "axios";
 
 const ClientLayout = () => {
+  const navigate = useNavigate()
+
   const {theme, toggleTheme} = useTheme()
   const [isUserMenuOpen, setUserMenuOpen] = useState<boolean>(false);
   const dropDownRef = useRef<HTMLDivElement | null>(null);
@@ -15,6 +18,26 @@ const ClientLayout = () => {
   const handleClickOutside = (event: MouseEvent) => {
     if (dropDownRef.current && !dropDownRef.current.contains(event.target as Node)) {
       setUserMenuOpen(false)
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.post("/api/admin/logout", null, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      if (response.data.success) {
+        localStorage.clear();
+        navigate("/login");
+      } else {
+        console.error("Đăng xuất không thành công");
+      }
+    } catch (error) {
+      console.error("Lỗi khi đăng xuất", error);
     }
   };
   
@@ -76,7 +99,7 @@ const ClientLayout = () => {
                         </li>
                         <div className="dropdown__divider"></div>
                         <li className="dropdown__button" onClick={toggleUserMenu}>
-                          <NavLink  to="/" className="dropdown__logout">
+                          <NavLink  to="/" className="dropdown__logout" onClick={handleLogout}>
                             <small>Đăng xuất</small>
                             <img src="/log-out.svg" alt="icon"></img>
                           </NavLink>
