@@ -8,8 +8,15 @@ Chart.register(PieController, ArcElement, Tooltip, Legend);
 interface PieChartProps {
     data: { label: string; percentage: number }[];
     id: string;
-    title:string;
+    title: string;
 }
+
+const generateColors = (numColors: any) => {
+    const predefinedColors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'];
+
+    // If there are more data points than predefined colors, repeat the colors
+    return Array.from({ length: numColors }, (_, i) => predefinedColors[i % predefinedColors.length]);
+};
 
 const PieChartComponent: React.FC<PieChartProps> = ({ data, id, title }) => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -30,8 +37,8 @@ const PieChartComponent: React.FC<PieChartProps> = ({ data, id, title }) => {
                     datasets: [
                         {
                             data: data.map((item) => item.percentage),
-                            backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
-                            hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+                            backgroundColor: generateColors(data.length),
+                            hoverBackgroundColor: generateColors(data.length),
                         },
                     ],
                 },

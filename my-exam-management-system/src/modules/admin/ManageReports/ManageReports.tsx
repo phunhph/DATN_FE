@@ -1,14 +1,7 @@
-import AsyncSelect from "react-select/async";
-import "./ManageReports.scss";
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { BarChartComponent, Button, PageTitle } from "@/components";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { PieChartComponent } from "@/components";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
-import "@assets/font/Roboto-Regular-normal.js";
 import { applyTheme } from "@/SCSS/applyTheme";
+import { Button, PageTitle, PieChartComponent } from "@/components";
 import { useAdminAuth } from "@/hooks";
+import { getAllExamSubjectByIdSemester } from "@/services/repositories/ExamSubjectService/ExamSubjectService";
 import {
   getAllExams,
   getExamRoomsByExam,
@@ -16,7 +9,12 @@ import {
   getReportByRoom,
   getReportBySubject,
 } from "@/services/repositories/PointService/PointService";
-import { getAllExamSubjectByIdSemester } from "@/services/repositories/ExamSubjectService/ExamSubjectService";
+import "@assets/font/Roboto-Regular-normal.js";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+import React, { useCallback, useEffect, useState } from "react";
+import AsyncSelect from "react-select/async";
+import "./ManageReports.scss";
 // import BarChartComponent from '@/components/Chart/Barchart/Barchart';
 
 interface SelectOption {
@@ -63,41 +61,14 @@ const ManageReports: React.FC = () => {
   const [selectedSemester, setSelectedSemester] = useState<SelectOption | null>(
     null
   );
-  const [selectedExamRoom, setSelectedExamRoom] = useState<SelectOption | null>(
-    null
-  );
-  const [selectedExamSubject, setSelectedSubject] =
-    useState<SelectOption | null>(null);
+  // const [selectedExamRoom, setSelectedExamRoom] = useState<SelectOption | null>(
+  //   null
+  // );
+  // const [selectedExamSubject, setSelectedSubject] =
+  //   useState<SelectOption | null>(null);
   const [singleSemesterData, setSingleSemesterData] = useState<any>(null);
   const [touch, setTouch] = useState<boolean>(false);
-  // mock dat
-  const ResponseSemesterData: any = {
-    semesterName: "Fall 2024",
-    semesterCode: "F2024",
-    semesterStart: "2024-09-01",
-    semesterEnd: "2024-12-15",
-    attended: 268,
-    notAttended: 15,
-    semesterScores: {
-      distributionOfScores: [
-        { label: "Không đạt", percentage: 24.78 },
-        { label: "Khá / giỏi", percentage: 59.04 },
-        { label: "Xuất sắc", percentage: 16.18 },
-      ],
-      scoreRangePercentage: [
-        { label: "0-3", percentage: 10 },
-        { label: "3-5", percentage: 15 },
-        { label: "5-7", percentage: 30 },
-        { label: "7-9", percentage: 25 },
-        { label: "9-10", percentage: 20 },
-      ],
-    },
-    topPerformers: [
-      { studentName: "Nguyễn Hữu Phú", score: 9.8 },
-      { studentName: "Nguyễn Mỹ Anh", score: 9.6 },
-      { studentName: "Nguyễn Thị Hạnh", score: 9.5 },
-    ],
-  };
+
   const loadSemester = useCallback(async () => {
     try {
       const response = await getAllExams();
@@ -338,22 +309,21 @@ const ManageReports: React.FC = () => {
     }, 1000);
   };
 
-  const { handleSubmit, setValue } = useForm({});
-  const onSubmit: SubmitHandler<any> = (data: any) => {
-    if (data.semester) {
-      loadSubject(data.semester.value);
-      setSelectedExamRoom(null)
-      setSelectedSubject(null)
-    }
-    if (data.subject) {
-      setSelectedExamRoom(null)
-      loadReports_subject(selectedSemester?.value, data.subject.value)
-    }
-    if (data.room) {
-        setSelectedExamRoom(null)
-        loadReports_room(selectedSemester?.value, data.room.value)
-      }
-  };
+  // const onSubmit: SubmitHandler<any> = (data: any) => {
+  //   if (data.semester) {
+  //     loadSubject(data.semester.value);
+  //     setSelectedExamRoom(null)
+  //     setSelectedSubject(null)
+  //   }
+  //   if (data.subject) {
+  //     setSelectedExamRoom(null)
+  //     loadReports_subject(selectedSemester!.value, data.subject.value)
+  //   }
+  //   if (data.room) {
+  //       setSelectedExamRoom(null)
+  //       loadReports_room(selectedSemester!.value, data.room.value)
+  //     }
+  // };
 
   const handleExportPDF = () => {
     const waitAnimation = setTimeout(() => {
@@ -525,7 +495,7 @@ const ManageReports: React.FC = () => {
                 defaultOptions={semesterList}
                 value={selectedSemester}
                 onChange={(value) => {
-                  loadSubject(value?.value);
+                  loadSubject(value!.value);
                 }}
               />
             </div>
@@ -536,7 +506,7 @@ const ManageReports: React.FC = () => {
                 loadOptions={loadSubjectOptions}
                 defaultOptions={subjectList}
                 onChange={(value) => {
-                  loadReports_subject(selectedSemester?.value, value?.value)
+                  loadReports_subject(selectedSemester!.value, value?.value)
                 }}
               />
             </div>
@@ -547,7 +517,7 @@ const ManageReports: React.FC = () => {
                 loadOptions={loadExamRoomOptions}
                 defaultOptions={ExamRoomList}
                 onChange={(value) => {
-                  loadReports_room(selectedSemester?.value,value?.value)
+                  loadReports_room(selectedSemester!.value,value?.value)
                 }}
               />
             </div>
@@ -608,13 +578,13 @@ const ManageReports: React.FC = () => {
                       <th scope="row">Số thí sinh không tham gia</th>
                       <td>{singleSemesterData.notAttended}</td>
                     </tr>
-                    {singleSemesterData.topPerformers.map((e, index) => (
+                    {singleSemesterData.topPerformers.map((semester:any, index:any) => (
                       <tr key={index}>
                         <th scope="row">
-                          Thí sinh có điểm số hạng {index + 1}
+                          Thí sinh có điểm số hạng {index + 1} ( tên - điểm )
                         </th>
                         <td>
-                          {e.studentName} - {e.score}
+                          {semester.studentName} - {semester.score}
                         </td>
                       </tr>
                     ))}
