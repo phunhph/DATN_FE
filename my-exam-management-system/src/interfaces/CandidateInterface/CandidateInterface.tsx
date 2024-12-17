@@ -11,6 +11,8 @@ export interface Candidate {
   email: string;
   exam_room: Exam_room;
   status: number | string;
+  id:number;
+  masv:string;
 }
 
 export interface ApiCandidateResponse extends BaseResponse {

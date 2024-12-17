@@ -1,3 +1,4 @@
+@use "@scss/mixin" as m;
 .table-container {
   margin-top: 20px;
   padding: 2rem 1rem 1rem 1rem;
@@ -33,8 +34,7 @@
   margin-bottom: 1rem;
 
   .items-per-page {
-    display: flex;
-    align-items: center;
+    margin-bottom: 0;
 
     label {
       font-size: 1rem;
@@ -160,10 +160,6 @@
   }
 
   .items-per-page {
-    display: flex;
-    align-items: center;
-    gap: 0.625rem;
-
     select {
       padding: 0.5rem;
       border: 0.0625rem solid #ddd;
@@ -210,4 +206,29 @@
   }
 }
 
+@include m.responsive-to (lg) {
+  .table-controls .table-search input {
+    margin-left: 2rem;
+    width: 100%;
+  }
+}
 
+@include m.responsive-to (md) {
+  .table-header {
+    gap: 0.5rem;
+    padding:0;
+    padding-bottom: 1rem ;
+  }
+  .table-button-group2 {
+    button {
+      height: 36px;
+    }
+  }
+}
+
+@include m.responsive-to (sm) {
+  .table-button-group2 {
+    flex-wrap: wrap;
+    justify-content: right;
+  }
+}

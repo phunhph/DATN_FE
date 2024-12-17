@@ -203,13 +203,14 @@ export const Table = <T extends Record<string, any>>({
     <div className="table-container">
       <div className="table-header">
         <h1>{tableName}</h1>
-        <div className="table-button-group">
+        <div className="table-button-group table-button-group2">
           {action_upload && (
             <button
               className="table-button"
               onClick={() => action_upload.onClick?.("file")}
             >
               <img src="/Lấy file.svg" alt="Upload file" />
+              Tải lên file excel
             </button>
           )}
           {action_dowload && (
@@ -234,7 +235,7 @@ export const Table = <T extends Record<string, any>>({
 
       <div className="table-controls">
         <div className="items-per-page">
-          <label htmlFor="itemsPerPage">Items per page:</label>
+          <label htmlFor="itemsPerPage">Số lượng mỗi trang:</label>
           <select
             id="itemsPerPage"
             value={itemsPerPage}

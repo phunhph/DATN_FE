@@ -211,18 +211,18 @@ const Exam: React.FC<Props> = () => {
 
   const getExam = async (id: string, code: string) => {
     const result = await getExamByIdCode(id, code);
-    
+
     if (result.data) {
-      if(result.point){
+      if (result.point) {
         const point = true;
-        navigate("/client/subject" ,{ state: { point }})
-      }else {
-const data: Candidate_all = result.data;
-      const arrays = Object.values(data.question).flat();
-      renderQuestion(arrays);
-      setTimeLeft((data.time ?? 0) * 60);
+        navigate("/client/subject", { state: { point } })
+      } else {
+        const data: Candidate_all = result.data;
+        const arrays = Object.values(data.question).flat();
+        renderQuestion(arrays);
+        setTimeLeft((data.time ?? 0) * 60);
       }
-      
+
     }
   };
 
@@ -264,11 +264,11 @@ const data: Candidate_all = result.data;
   const renderQuestion = (question: Question___[]) => {
     const BD: Question[] = [];
     const BN: Question[] = [];
-    const NP: Question[] = [];  
+    const NP: Question[] = [];
     question.forEach((e) => {
       const prefix = e.examContentId.split("_")[0];
-      
-      
+
+
       if (prefix === "BD") {
         // console.log(e);
         setParagraphs([
@@ -600,7 +600,7 @@ const data: Candidate_all = result.data;
             return newSelectedMultiChoiceAnswers;
           });
         }
-        
+
         if (e.answer.id_pass === 1) {
           const data: Question = {
             id: e.id,
@@ -751,9 +751,10 @@ const data: Candidate_all = result.data;
 
   const getInfor = async (id: string) => {
     const result = await CandidateById(id);
+    console.log("fetInfor: ", result)
     if (result.data) {
       setCandidate(result.data);
-      realTime(result.data.exam_room_id, id_subject);
+      realTime(result.data.exam_room_id as string, id_subject);
     }
   };
 
@@ -807,18 +808,24 @@ const data: Candidate_all = result.data;
   const handleHandin = () => {
     // kiểm tra chọn hết câu hỏi trắc nghiệm chưa
     const allMultiChoiceAnswered = questions.every(
-      (question) =>
+      (question) => {
+        console.log(selectedMultiChoiceAnswers[question.questionNumber] !== undefined)
         selectedMultiChoiceAnswers[question.questionNumber] !== undefined
+      }
     );
     // kiểm tra chọn hết câu hỏi bài đọc chưa
     const allReadingAnswered = readingQuestions.every(
-      (question) =>
+      (question) => {
+        console.log(selectedReadingAnswers[question.questionNumber] !== undefined)
         selectedReadingAnswers[question.questionNumber] !== undefined
+      }
     );
     // kiểm tra chọn hết câu hỏi bài đọc chưa
     const allListeningAnswered = listeningQuestions.every(
-      (question) =>
+      (question) => {
+        console.log(selectedListeningAnswers[question.questionNumber] !== undefined)
         selectedListeningAnswers[question.questionNumber] !== undefined
+      }
     );
 
     if (
@@ -827,21 +834,23 @@ const data: Candidate_all = result.data;
       !allListeningAnswered
     ) {
       addNotification("Hãy kiểm tra lại và chọn tất cả đáp án.", false);
+      setHandin(false);
+      console.log(false)
       return;
+    } else {
+      console.log(true)
+      setHandin(true);
+      return
     }
-
-    // addNotification('Đã nộp bài thành công.', true);
-    // console.log("Thời gian làm bài: " + (3600 - timeLeft));
-    // console.log("Đáp án trắc nghiệm đã chọn: ", selectedMultiChoiceAnswers);
-    // console.log("Đáp án bài đọc đã chọn: ", selectedReadingAnswers);
-    // console.log("Đáp án bài nghe đã chọn: ", selectedListeningAnswers);
-
-    setHandin(true);
   };
 
   const finish_ = async (data: any) => {
     const result = await finish(data);
-    // console.log(result);
+    console.log("finish ", result);
+    if (result.success) {
+      return true;
+    }
+    return false;
   };
 
   const handleSubmit = () => {
@@ -849,17 +858,24 @@ const data: Candidate_all = result.data;
       idCode: candidate.idcode,
       subject_id: id_subject,
     };
-    finish_(data);
-    setHandin(false);
-    setSubmitted(true);
+    const isFinish = finish_(data);
+    if (isFinish) {
+      setHandin(false);
+      setSubmitted(true);
+    } else {
+      addNotification("Đã có lỗi trong quá trình nộp bài. Xin vui lòng thử lại.", false);
+      setHandin(false);
+      setSubmitted(false);
+    }
 
-    studentSubmitted(data.idCode);
+
+    studentSubmitted(data.idCode!);
   };
 
   const studentSubmitted = async (studentId: string) => {
     try {
       const response = await fetch(
-        `http://datn_be.com/api/candidate/${studentId}/finish`,
+        `https://wd113.websp.online/api/public/api/candidate/${studentId}/finish`,
         {
           method: "POST",
           headers: {
@@ -893,7 +909,7 @@ const data: Candidate_all = result.data;
         key: "be4763917dd3628ba0fe",
         cluster: "ap1",
         forceTLS: true,
-        authEndpoint: "http://datn_be.com/api/custom-broadcasting/auth-client",
+        authEndpoint: "https://wd113.websp.online/api/public/api/custom-broadcasting/auth-client",
         auth: {
           headers: {
             Authorization: `Bearer ${getAuthToken()}`,
@@ -904,7 +920,7 @@ const data: Candidate_all = result.data;
 
       const channel = echoRef.current.join(`presence-room.${roomId}.${subjectId}`);
 
-      channel.error((error) => {
+      channel.error((error: any) => {
         console.error("Lỗi xảy ra:", error);
       });
 
@@ -923,44 +939,6 @@ const data: Candidate_all = result.data;
       console.error("Error during cleanup:", error);
     }
   };
-  // useEffect(() => {
-  //   let echoInstance:any = null;
-  //   console.log("roomid", roomId)
-  //   try {
-  //     echoInstance = new Echo({
-  //       broadcaster: 'pusher',
-  //       key: 'be4763917dd3628ba0fe',
-  //       cluster: 'ap1',
-  //       forceTLS: true,
-  //       authEndpoint: 'http://datn_be.com/api/custom-broadcasting/auth-client',
-  //       auth: {
-  //         headers: {
-  //           'Authorization': `Bearer ${getAuthToken()}`,
-  //         }
-  //       },
-  //       withCredentials: true,
-  //     });
-
-  //     // Join presence channel
-  //     const channel = echoInstance.join(`presence-room.${roomId}`);
-
-  //     channel.error((error:any) => {
-  //       console.error('Lỗi xảy ra:', error);
-  //     });
-
-  //     return () => {
-  //       try {
-  //         if (echoInstance && echoInstance.leave) {
-  //           echoInstance.leave(`presence-room.${roomId}`);
-  //         }
-  //       } catch (cleanupError) {
-  //         console.error('Error during channel cleanup:', cleanupError);
-  //       }
-  //     };
-  //   } catch (error) {
-  //     console.error('Error initializing Echo or joining presence channel:', error);
-  //   }
-  // }, [roomId]);
 
   useEffect(() => {
     updateExamStatus();
@@ -968,11 +946,11 @@ const data: Candidate_all = result.data;
   }, []);
 
   const updateExamStatus = async () => {
-    const user = JSON.parse(localStorage.getItem("clientData"));
+    const user = JSON.parse(localStorage.getItem("clientData")!);
 
     try {
       const response = await fetch(
-        `http://datn_be.com/api/candidate/${user.idcode}/update-status`,
+        `https://wd113.websp.online/api/public/api/candidate/${user.idcode}/update-status`,
         {
           method: "POST",
           headers: {
@@ -1166,10 +1144,10 @@ const data: Candidate_all = result.data;
         </>
       )}
 
-      {/* <Notification
+      <Notification
         notifications={notifications}
         clearNotifications={clearNotifications}
-      /> */}
+      />
     </div>
   );
 };
