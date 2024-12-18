@@ -152,8 +152,6 @@ const Exam: React.FC<Props> = () => {
       temp: answerId,
     };
 
-
-
     submit(data);
 
     // console.log(`Câu hỏi bài nghe ${questionNumber}, đã chọn đáp án: ${answerId}`);
@@ -215,14 +213,16 @@ const Exam: React.FC<Props> = () => {
     if (result.data) {
       if (result.point) {
         const point = true;
-        navigate("/client/subject", { state: { point } })
+        navigate("/client/subject", { state: { point } });
       } else {
         const data: Candidate_all = result.data;
         const arrays = Object.values(data.question).flat();
         renderQuestion(arrays);
-        setTimeLeft((data.time ?? 0) * 60);
+        if (timeLeft <= 0) {
+          setTimeLeft(data.time ?? 0);
+        }
+        console.log(result.data);
       }
-
     }
   };
 
@@ -232,14 +232,17 @@ const Exam: React.FC<Props> = () => {
     const timeCount = setInterval(() => {
       setTimeLeft((prevTime) => {
         countRef.current += 1;
-
+        console.log(countRef.current);
+        console.log(prevTime);
         if (prevTime <= 0) {
-          handleSubmit()
+          handleSubmit();
           clearInterval(timeCount);
+
           return 0;
         }
 
         if (countRef.current > 59) {
+          console.log(countRef.current);
           countRef.current = 0;
           update_time();
         }
@@ -268,7 +271,6 @@ const Exam: React.FC<Props> = () => {
     question.forEach((e) => {
       const prefix = e.examContentId.split("_")[0];
 
-
       if (prefix === "BD") {
         // console.log(e);
         setParagraphs([
@@ -278,7 +280,6 @@ const Exam: React.FC<Props> = () => {
           },
         ]);
         if (e.answer.temp) {
-
           const currentBNLength = BD.length;
 
           setSelectedReadingAnswers((prev) => {
@@ -432,7 +433,6 @@ const Exam: React.FC<Props> = () => {
         }
       } else if (prefix === "BN") {
         if (e.answer.temp) {
-
           const currentBNLength = BN.length;
 
           setSelectedListeningAnswers((prev) => {
@@ -444,7 +444,6 @@ const Exam: React.FC<Props> = () => {
             return newSelectedMultiChoiceAnswers;
           });
         }
-
 
         audioRef.current = new Audio(e.url_listening);
 
@@ -751,7 +750,7 @@ const Exam: React.FC<Props> = () => {
 
   const getInfor = async (id: string) => {
     const result = await CandidateById(id);
-    console.log("fetInfor: ", result)
+    console.log("fetInfor: ", result);
     if (result.data) {
       setCandidate(result.data);
       realTime(result.data.exam_room_id as string, id_subject);
@@ -807,26 +806,26 @@ const Exam: React.FC<Props> = () => {
 
   const handleHandin = () => {
     // kiểm tra chọn hết câu hỏi trắc nghiệm chưa
-    const allMultiChoiceAnswered = questions.every(
-      (question) => {
-        console.log(selectedMultiChoiceAnswers[question.questionNumber] !== undefined)
+    const allMultiChoiceAnswered = questions.every((question) => {
+      console.log(
         selectedMultiChoiceAnswers[question.questionNumber] !== undefined
-      }
-    );
+      );
+      selectedMultiChoiceAnswers[question.questionNumber] !== undefined;
+    });
     // kiểm tra chọn hết câu hỏi bài đọc chưa
-    const allReadingAnswered = readingQuestions.every(
-      (question) => {
-        console.log(selectedReadingAnswers[question.questionNumber] !== undefined)
+    const allReadingAnswered = readingQuestions.every((question) => {
+      console.log(
         selectedReadingAnswers[question.questionNumber] !== undefined
-      }
-    );
+      );
+      selectedReadingAnswers[question.questionNumber] !== undefined;
+    });
     // kiểm tra chọn hết câu hỏi bài đọc chưa
-    const allListeningAnswered = listeningQuestions.every(
-      (question) => {
-        console.log(selectedListeningAnswers[question.questionNumber] !== undefined)
+    const allListeningAnswered = listeningQuestions.every((question) => {
+      console.log(
         selectedListeningAnswers[question.questionNumber] !== undefined
-      }
-    );
+      );
+      selectedListeningAnswers[question.questionNumber] !== undefined;
+    });
 
     if (
       !allMultiChoiceAnswered ||
@@ -835,12 +834,12 @@ const Exam: React.FC<Props> = () => {
     ) {
       addNotification("Hãy kiểm tra lại và chọn tất cả đáp án.", false);
       setHandin(false);
-      console.log(false)
+      console.log(false);
       return;
     } else {
-      console.log(true)
+      console.log(true);
       setHandin(true);
-      return
+      return;
     }
   };
 
@@ -863,11 +862,13 @@ const Exam: React.FC<Props> = () => {
       setHandin(false);
       setSubmitted(true);
     } else {
-      addNotification("Đã có lỗi trong quá trình nộp bài. Xin vui lòng thử lại.", false);
+      addNotification(
+        "Đã có lỗi trong quá trình nộp bài. Xin vui lòng thử lại.",
+        false
+      );
       setHandin(false);
       setSubmitted(false);
     }
-
 
     studentSubmitted(data.idCode!);
   };
@@ -875,7 +876,7 @@ const Exam: React.FC<Props> = () => {
   const studentSubmitted = async (studentId: string) => {
     try {
       const response = await fetch(
-        `https://wd113.websp.online/api/public/api/candidate/${studentId}/finish`,
+        `https://datn_be.com/api/candidate/${studentId}/finish`,
         {
           method: "POST",
           headers: {
@@ -884,7 +885,7 @@ const Exam: React.FC<Props> = () => {
           },
           body: JSON.stringify({
             id: studentId,
-            subjectId: id_subject
+            subjectId: id_subject,
           }),
         }
       );
@@ -909,7 +910,7 @@ const Exam: React.FC<Props> = () => {
         key: "be4763917dd3628ba0fe",
         cluster: "ap1",
         forceTLS: true,
-        authEndpoint: "https://wd113.websp.online/api/public/api/custom-broadcasting/auth-client",
+        authEndpoint: "https://datn_be.com/api/custom-broadcasting/auth-client",
         auth: {
           headers: {
             Authorization: `Bearer ${getAuthToken()}`,
@@ -918,12 +919,13 @@ const Exam: React.FC<Props> = () => {
         withCredentials: true,
       });
 
-      const channel = echoRef.current.join(`presence-room.${roomId}.${subjectId}`);
+      const channel = echoRef.current.join(
+        `presence-room.${roomId}.${subjectId}`
+      );
 
       channel.error((error: any) => {
         console.error("Lỗi xảy ra:", error);
       });
-
     } catch (error) {
       console.error("Error initializing Echo:", error);
     }
@@ -950,7 +952,7 @@ const Exam: React.FC<Props> = () => {
 
     try {
       const response = await fetch(
-        `https://wd113.websp.online/api/public/api/candidate/${user.idcode}/update-status`,
+        `https://datn_be.com/api/candidate/${user.idcode}/update-status`,
         {
           method: "POST",
           headers: {
@@ -983,8 +985,9 @@ const Exam: React.FC<Props> = () => {
             {/* Bài trắc nghiệm */}
 
             <div
-              className={`exam__detail-left ${currentView === "Trắc nghiệm" ? "" : "display-none"
-                }`}
+              className={`exam__detail-left ${
+                currentView === "Trắc nghiệm" ? "" : "display-none"
+              }`}
             >
               {questions.map((question, index) => (
                 <div
@@ -1006,8 +1009,9 @@ const Exam: React.FC<Props> = () => {
             {/* Bài đọc */}
 
             <div
-              className={`exam__detail-left ${currentView === "Bài đọc" ? "" : "display-none"
-                }`}
+              className={`exam__detail-left ${
+                currentView === "Bài đọc" ? "" : "display-none"
+              }`}
             >
               <div className="exam__reading">
                 {paragraphs.map((p) => (
@@ -1037,8 +1041,9 @@ const Exam: React.FC<Props> = () => {
             {/* Bài nghe */}
 
             <div
-              className={`exam__detail-left ${currentView !== "Bài nghe" ? "display-none" : ""
-                }`}
+              className={`exam__detail-left ${
+                currentView !== "Bài nghe" ? "display-none" : ""
+              }`}
             >
               <div className="exam__audio">
                 <Button
@@ -1144,10 +1149,10 @@ const Exam: React.FC<Props> = () => {
         </>
       )}
 
-      <Notification
+      {/* <Notification
         notifications={notifications}
         clearNotifications={clearNotifications}
-      />
+      /> */}
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const instance = axios.create({
-  baseURL: "https://wd113.websp.online/api/public",
+  baseURL: "https://datn_be.com",
   headers: {
     "Content-Type": "application/json",
   },

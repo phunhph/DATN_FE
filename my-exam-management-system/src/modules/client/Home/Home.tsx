@@ -26,10 +26,11 @@ const Home = () => {
   const checkExamStatus = async () => {
     const user = JSON.parse(localStorage.getItem("clientData") || "");
     const hasIncompleteExam = JSON.parse(
-      localStorage.getItem("hasIncompleteExam")!);
+      localStorage.getItem("hasIncompleteExam")!
+    );
     try {
       const response = await fetch(
-        `https://wd113.websp.online/api/public/api/candidate/${user.idcode}/check-status`,
+        `https://datn_be.com/api/candidate/${user.idcode}/check-status`,
         {
           method: "GET",
           headers: {
@@ -50,7 +51,7 @@ const Home = () => {
         setHasIncompleteExam(true);
         if (hasIncompleteExam !== "true") {
           if (confirm("Bạn có muốn tiếp tục?")) {
-            const id_subject = data.subject_id
+            const id_subject = data.subject_id;
             navigate(`/client/exam`, { state: { id_subject } });
             localStorage.setItem("hasIncompleteExam", "true");
           } else {
@@ -87,8 +88,8 @@ const Home = () => {
             now >= startTime && now <= endTime
               ? ((now - startTime) / (endTime - startTime)) * 100
               : now > endTime
-                ? 100
-                : 0;
+              ? 100
+              : 0;
 
           return {
             examName: exam.name,
@@ -143,11 +144,15 @@ const Home = () => {
                 </p>
                 <p>Thời gian bắt đầu:</p>
                 <span className="item__span">
-                  {exam.startDate ? new Date(exam.startDate).toLocaleDateString() : "Chưa có thời gian"}
+                  {exam.startDate
+                    ? new Date(exam.startDate).toLocaleDateString()
+                    : "Chưa có thời gian"}
                 </span>
                 <p>Thời gian kết thúc:</p>
                 <span className="item__span">
-                  {exam.endDate ? new Date(exam.endDate).toLocaleDateString() : "Chưa có thời gian"}
+                  {exam.endDate
+                    ? new Date(exam.endDate).toLocaleDateString()
+                    : "Chưa có thời gian"}
                 </span>
                 <p>
                   Số lượng môn thi:
@@ -165,11 +170,12 @@ const Home = () => {
                   style={{
                     backgroundColor:
                       !exam.startDate ||
-                        !exam.endDate ||
-                        new Date().getTime() < new Date(exam.startDate).getTime() ||
-                        new Date().getTime() > new Date(exam.endDate).getTime()
+                      !exam.endDate ||
+                      new Date().getTime() <
+                        new Date(exam.startDate).getTime() ||
+                      new Date().getTime() > new Date(exam.endDate).getTime()
                         ? "#cccccc" // Disabled background color
-                        : "" // Default or enabled background color
+                        : "", // Default or enabled background color
                   }}
                 >
                   Vào kỳ thi
