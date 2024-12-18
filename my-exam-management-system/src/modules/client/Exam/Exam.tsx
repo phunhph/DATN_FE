@@ -220,7 +220,7 @@ const Exam: React.FC<Props> = () => {
         const data: Candidate_all = result.data;
         const arrays = Object.values(data.question).flat();
         renderQuestion(arrays);
-        setTimeLeft((data.time ?? 0) * 60);
+        setTimeLeft((data.time ?? 0));
       }
 
     }
