@@ -149,10 +149,6 @@ const Subject = () => {
                 <p>
                   Mã Môn thi: <span className="item__span">{exam.examId}</span>
                 </p>
-                {/* <p>
-                  Số câu hỏi:{" "}
-                  <span className="item__span">{exam.questionCount}</span>
-                </p> */}
                 <div>
                   {exam.startDate && (
                     <>
@@ -162,7 +158,7 @@ const Subject = () => {
                       <span className="item__span">{exam.endDate}</span>
                       <p>Ngày thi</p>
                       <span className="item__span">
-                        {new Date(exam.examDate).toLocaleDateString()}
+                        {exam.examDate ? new Date(exam.examDate).toLocaleDateString() : "Chưa có ngày thi"}
                       </span>
                       <CVO percentage={exam.percentage || 0}></CVO>
                     </>
@@ -171,11 +167,11 @@ const Subject = () => {
                     <>
                       <p>Thời gian bắt đầu:</p>
                       <span className="item__span">
-                        {new Date(exam.examDate).toLocaleDateString()}
+                        { exam.examDate ? new Date(exam.examDate).toLocaleDateString() : "Chưa có thời gian"}
                       </span>
                       <p>Thời gian kết thúc:</p>
                       <span className="item__span">
-                        {new Date(exam.date_end).toLocaleDateString()}
+                        { exam.date_end ? new Date(exam.date_end).toLocaleDateString() : "Chưa có thời gian"}
                       </span>
                       <p> &nbsp;</p>
                       <span className="item__span"> &nbsp;</span>
@@ -190,8 +186,23 @@ const Subject = () => {
                     } else if (exam.percentage === 100) {
                       addNotification("Đã hết thời gian thi!", false);
                     } else {
-                      checkPoint(exam.examId);
+                      checkPoint(exam.examId!);
                     }
+                  }}
+                  disabled={
+                    !exam.examDate ||
+                    !exam.date_end ||
+                    new Date().getTime() < new Date(exam.examDate).getTime() ||
+                    new Date().getTime() > new Date(exam.date_end).getTime()
+                  }
+                  style={{
+                    backgroundColor:
+                      !exam.examDate ||
+                        !exam.date_end ||
+                        new Date().getTime() < new Date(exam.examDate).getTime() ||
+                        new Date().getTime() > new Date(exam.date_end).getTime()
+                        ? "#cccccc" // Disabled background color
+                        : "" // Default or enabled background color
                   }}
                 >
                   Làm bài thi

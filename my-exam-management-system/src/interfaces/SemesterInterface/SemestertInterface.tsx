@@ -23,6 +23,7 @@ export type ExamWithSubject = {
   examDate?: string; 
   subjectCountInExam?: number; 
   percentage?: number; 
+  date_end?:any;
 };
 
 export interface ApiScoreBoardResponse extends BaseResponse {

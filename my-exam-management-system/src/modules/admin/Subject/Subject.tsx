@@ -387,15 +387,15 @@ const Subject: React.FC = () => {
             }
           }}
         />
-        <div className="subject__actions">
+        {/* <div className="subject__actions">
           <Button onClick={handleExportAll}>Xuất tất cả</Button>
           <Button onClick={handleExportByExam}>Xuất theo kỳ thi</Button>
 
-          {/* <form onSubmit={handleFileDrop}>
+          <form onSubmit={handleFileDrop}>
             <input type="file" accept=".xlsx,.xls" />
             <Button type="submit">Import</Button>
-          </form> */}
-        </div>
+          </form>
+        </div> */}
       </div>
 
       <Table

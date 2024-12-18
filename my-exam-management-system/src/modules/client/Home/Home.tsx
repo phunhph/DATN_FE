@@ -24,10 +24,9 @@ const Home = () => {
   };
 
   const checkExamStatus = async () => {
-    const user = JSON.parse(localStorage.getItem("clientData"));
+    const user = JSON.parse(localStorage.getItem("clientData") || "");
     const hasIncompleteExam = JSON.parse(
-      localStorage.getItem("hasIncompleteExam")
-    );
+      localStorage.getItem("hasIncompleteExam")!);
     try {
       const response = await fetch(
         `https://wd113.websp.online/api/public/api/candidate/${user.idcode}/check-status`,
@@ -88,8 +87,8 @@ const Home = () => {
             now >= startTime && now <= endTime
               ? ((now - startTime) / (endTime - startTime)) * 100
               : now > endTime
-              ? 100
-              : 0;
+                ? 100
+                : 0;
 
           return {
             examName: exam.name,
@@ -144,11 +143,11 @@ const Home = () => {
                 </p>
                 <p>Thời gian bắt đầu:</p>
                 <span className="item__span">
-                  {new Date(exam.startDate).toLocaleDateString()}
+                  {exam.startDate ? new Date(exam.startDate).toLocaleDateString() : "Chưa có thời gian"}
                 </span>
                 <p>Thời gian kết thúc:</p>
                 <span className="item__span">
-                  {new Date(exam.endDate).toLocaleDateString()}
+                  {exam.endDate ? new Date(exam.endDate).toLocaleDateString() : "Chưa có thời gian"}
                 </span>
                 <p>
                   Số lượng môn thi:
@@ -158,10 +157,20 @@ const Home = () => {
                 <Button
                   onClick={goToSubject}
                   disabled={
-                    new Date().getTime() <
-                      new Date(exam.time_start).getTime() ||
-                    new Date().getTime() > new Date(exam.time_end).getTime()
+                    !exam.startDate ||
+                    !exam.endDate ||
+                    new Date().getTime() < new Date(exam.startDate).getTime() ||
+                    new Date().getTime() > new Date(exam.endDate).getTime()
                   }
+                  style={{
+                    backgroundColor:
+                      !exam.startDate ||
+                        !exam.endDate ||
+                        new Date().getTime() < new Date(exam.startDate).getTime() ||
+                        new Date().getTime() > new Date(exam.endDate).getTime()
+                        ? "#cccccc" // Disabled background color
+                        : "" // Default or enabled background color
+                  }}
                 >
                   Vào kỳ thi
                 </Button>

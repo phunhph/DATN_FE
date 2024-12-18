@@ -4,7 +4,7 @@ import {
   getDataSelectUpdate,
   getExamRoomDetail,
 } from "@/services/repositories/ExamRoomService/ExamRoomService";
-import { Button, Notification, PageTitle } from "@components/index";
+import { Button, CustomRadio, Notification, PageTitle } from "@components/index";
 import { Table } from "@components/Table/Table";
 import { useAdminAuth } from "@hooks/AutherHooks";
 import { ErrorExamRoom } from "@interfaces/ExamRoomInterfaces/ErrorExamRoomInterfaces";
@@ -401,22 +401,8 @@ const ManageExamRoomDetail: React.FC = () => {
 
               <form className="modal__form">
                 <div className="modal__firstline">
-                  <label className="modal__label">
-                    <input
-                      type="radio"
-                      checked={selectedOption === "session"}
-                      onChange={() => setSelectedOption("session")}
-                    />
-                    Chọn ngày bắt đầu và ca thi
-                  </label>
-                  <label className="modal__label">
-                    <input
-                      type="radio"
-                      checked={selectedOption === "endDate"}
-                      onChange={() => setSelectedOption("endDate")}
-                    />
-                    Chọn ngày bắt đầu và ngày kết thúc
-                  </label>
+                  <CustomRadio id="mode1" name="mode" label="Chọn ngày bắt đầu và ca thi" checked={selectedOption === "session"} onChange={() => setSelectedOption("session")} value={""}></CustomRadio>
+                  <CustomRadio id="mode2" name="mode" label="Chọn ngày bắt đầu và ngày kết thúc" checked={selectedOption === "endDate"} onChange={() => setSelectedOption("endDate")} value={""}></CustomRadio>
                   <label className="modal__label">
                     Ngày bắt đầu:
                     <input

@@ -24,6 +24,7 @@ import validation from "./Form/validation";
 import PieChartComponent from "./Chart/PieChart/PieChart";
 import LineChartComponent from "./Chart/LineChart/LineChart";
 import BarChartComponent from "./Chart/Barchart/BarChart";
+import CustomRadio from "./CustomRadio/CustomRadio";
 
 export {
   Button,
@@ -51,5 +52,6 @@ export {
   validation,
   PieChartComponent,
   LineChartComponent,
-  BarChartComponent
+  BarChartComponent,
+  CustomRadio
 };
