@@ -873,7 +873,7 @@ const Exam: React.FC<Props> = () => {
   const studentSubmitted = async (studentId: string) => {
     try {
       const response = await fetch(
-        `https://datn_be.com/api/candidate/${studentId}/finish`,
+        `https://wd113.websp.online/api/public/api/candidate/${studentId}/finish`,
         {
           method: "POST",
           headers: {
@@ -949,7 +949,7 @@ const Exam: React.FC<Props> = () => {
 
     try {
       const response = await fetch(
-        `https://datn_be.com/api/candidate/${user.idcode}/update-status`,
+        `https://wd113.websp.online/api/public/api/candidate/${user.idcode}/update-status`,
         {
           method: "POST",
           headers: {

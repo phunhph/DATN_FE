@@ -30,7 +30,7 @@ const Home = () => {
     );
     try {
       const response = await fetch(
-        `https://datn_be.com/api/candidate/${user.idcode}/check-status`,
+        `https://wd113.websp.online/api/public/api/candidate/${user.idcode}/check-status`,
         {
           method: "GET",
           headers: {
