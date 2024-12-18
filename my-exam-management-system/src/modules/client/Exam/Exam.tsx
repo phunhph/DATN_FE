@@ -218,10 +218,7 @@ const Exam: React.FC<Props> = () => {
         const data: Candidate_all = result.data;
         const arrays = Object.values(data.question).flat();
         renderQuestion(arrays);
-        if (timeLeft <= 0) {
-          setTimeLeft(data.time ?? 0);
-        }
-        console.log(result.data);
+        setTimeLeft(data.time ?? 0);
       }
     }
   };
